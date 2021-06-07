@@ -1,7 +1,5 @@
 package com.github.celadari.jsonlogicscala.core
 
-import java.util.UUID.randomUUID
-import play.api.libs.json._
 
 object ValueLogic {
 
@@ -10,28 +8,14 @@ object ValueLogic {
    * @since 1.1.0
    * @return [[ValueLogic]] instance.
    */
-  def empty[T]: ValueLogic[T] = new ValueLogic[T]("", None, randomUUID.toString)
-
-  private[core] def decode(jsonLogic: JsObject, jsonLogicData: JsObject)(implicit decoder: Decoder): ValueLogic[_] = {
-    decoder.decode(jsonLogic, jsonLogicData)
-  }
-
-  private[core] def encode(valueLogic: ValueLogic[_])(implicit encoder: Encoder): (JsValue, JsObject) = {
-    // retrieve valueLogic information
-    val (typeData, codenameData, jsonData) = encoder.encode(valueLogic)
-
-    // construct jsonLogic component and jsonLogicData component
-    val jsonLogic = JsObject(Map("var" -> JsString(codenameData), "type" -> JsString(typeData)))
-    val jsonLogicData = JsObject(Map(codenameData -> jsonData))
-    (jsonLogic, jsonLogicData)
-  }
+  def empty[T]: ValueLogic[T] = new ValueLogic[T]("", None)
 
 }
 
 case class ValueLogic[T](
                           override val operator: String,
                           valueOpt: Option[T],
-                          codename: String = randomUUID.toString
+                          typeCodenameOpt: Option[String] = None,
                         ) extends JsonLogicCore(operator) {
 
   /**

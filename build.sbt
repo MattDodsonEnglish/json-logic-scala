@@ -6,9 +6,9 @@ homepage := Some(url("https://github.com/celadari/json-logic-scala"))
 
 version := "1.1.0"
 
-scalaVersion := "2.10.7"
+scalaVersion := "2.13.1"
 
-crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.6", "2.13.1")
+crossScalaVersions := Seq("2.11.12", "2.12.6", "2.13.1")
 
 resolvers ++= Seq(
   "sonatype-snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
@@ -20,13 +20,19 @@ def resolveVersion(scalaV: String, versionsResolver: Map[String, String]): Strin
 
 libraryDependencies ++= {
   Seq(
-    "org.scala-lang" % "scala-compiler" % scalaVersion.value,
-    "com.typesafe.play" %% "play-json" % resolveVersion(scalaVersion.value, typeSafeVersions)
+    //"org.scala-lang" % "scala-compiler" % scalaVersion.value,
+    "com.typesafe.play" %% "play-json" % resolveVersion(scalaVersion.value, typeSafeVersions),
+    "org.apache.xbean" % "xbean-finder" % "4.20",
+    "org.apache.xbean" % "xbean-reflect" % "4.20",
+    "org.scalatest" %% "scalatest" % "3.2.9" % Test
   )
 }
 
 scalacOptions ++= ("-feature" :: "-language:postfixOps" :: "-language:implicitConversions" :: Nil)
-
+scalacOptions += "-language:experimental.macros"
+//scalacOptions += "-Ymacro-annotations"
+//scalacOptions += "-Xplugin-require:macroparadise"
+//addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full)
 // Publishing stuff for sonatype
 publishTo := {
   if (version.value.endsWith("SNAPSHOT")) Some("snapshots" at "https://oss.sonatype.org/content/repositories/snapshots")
@@ -60,6 +66,3 @@ pomExtra := (
 licenses += ("MIT", url("http://mit-license.org/"))
 
 // Scaladoc publishing stuff
-enablePlugins(GhpagesPlugin, SiteScaladocPlugin)
-
-git.remoteRepo := "git@github.com:celadari/json-logic-scala.git"
