@@ -1,6 +1,6 @@
 package com.github.celadari.jsonlogicscala.serialize
 
-import com.github.celadari.jsonlogicscala.core.{ComposeLogic, JsonLogicCore, ValueLogic}
+import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic}
 import com.github.celadari.jsonlogicscala.serialize.defaults.{MarshallerBoolean, MarshallerDouble, MarshallerFloat, MarshallerInt, MarshallerString}
 import org.apache.xbean.recipe.ObjectRecipe
 

@@ -1,4 +1,4 @@
-package com.github.celadari.jsonlogicscala.core
+package com.github.celadari.jsonlogicscala.tree
 
 import com.github.celadari.jsonlogicscala.deserialize.Deserializer
 import com.github.celadari.jsonlogicscala.reduce.ReduceLogic

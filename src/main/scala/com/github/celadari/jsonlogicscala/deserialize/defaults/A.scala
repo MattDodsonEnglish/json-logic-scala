@@ -35,3 +35,8 @@ class C extends B {
   def doNone3[T](so: T): T = so
   def doNone4[T <: Sword](num: T): T = num
 }
+
+object SomeObject {
+  def letsDoIt(a: A): Unit = println("rrtyy")
+  def letsDoIt(b: B): Unit = println("dfgfdg")
+}

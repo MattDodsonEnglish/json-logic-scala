@@ -1,6 +1,6 @@
 package com.github.celadari.jsonlogicscala.deserialize
 
-import com.github.celadari.jsonlogicscala.core.{ComposeLogic, JsonLogicCore, ValueLogic}
+import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic}
 import com.github.celadari.jsonlogicscala.deserialize.defaults._
 import org.apache.xbean.finder.ResourceFinder
 import play.api.libs.json.{JsArray, JsObject, JsValue}

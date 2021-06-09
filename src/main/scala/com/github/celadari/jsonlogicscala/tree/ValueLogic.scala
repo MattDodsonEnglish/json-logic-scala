@@ -1,4 +1,4 @@
-package com.github.celadari.jsonlogicscala.core
+package com.github.celadari.jsonlogicscala.tree
 
 
 object ValueLogic {

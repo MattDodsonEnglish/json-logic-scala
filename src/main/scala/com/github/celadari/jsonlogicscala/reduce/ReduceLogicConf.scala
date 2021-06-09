@@ -1,14 +1,22 @@
 package com.github.celadari.jsonlogicscala.reduce
 
-import scala.reflect.runtime.{universe => ru}
-
 object ReduceLogicConf {
+
+  case class MethodConf(
+                         operator: String,
+                         methodName: String,
+                         pathObjectOpt: Option[String],
+                         ownerMethodOpt: Option[Any],
+                         paramsType: Seq[Class[_]]
+                       ) {
+    def isExternalMethod: Boolean = ownerMethodOpt.isDefined
+  }
 
   implicit val implReduceLogicConf: ReduceLogicConf = new ReduceLogicConf("")
 }
 
 class ReduceLogicConf(path: String) {
-  val operatorToMethodName: Map[String, String] = Map()
-  val operatorToMethodParamsType: Map[String, List[List[ru.Type]]] = Map()
+  val operatorToMethodConf: Map[String, ReduceLogicConf.MethodConf] = Map()
   val classNameToReducer: Map[String, Class[_]] = Map()
+
 }

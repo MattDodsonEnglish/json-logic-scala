@@ -4,6 +4,7 @@ import com.github.celadari.jsonlogicscala.conversions.TypeConverter
 import com.github.celadari.jsonlogicscala.deserialize.defaults2.{DefaultUnmarshallers, identity}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import scala.collection.mutable.ArrayBuffer
 
 import scala.reflect.runtime.{universe => ru}
 
@@ -13,6 +14,11 @@ class TestDefaultUnmarshallerBoolean extends AnyFlatSpec with Matchers {
     println("Size of unmarshallers: " + DefaultUnmarshallers.DEFAULT_UNMARSHALLERS.size)
 
     def getProperty(obj: Any, obj2: Any, property2: String): Unit = {
+      val mirror = ru.runtimeMirror(ru.getClass.getClassLoader)
+      val mp = mirror.reflectModule(mirror.staticModule("com.github.celadari.jsonlogicscala.deserialize.defaults.SomeObject"))
+      println(mp.instance)
+
+
       val m = ru.runtimeMirror(ru.getClass.getClassLoader)
       val im = m.reflect(obj)
 
@@ -50,8 +56,9 @@ class TestDefaultUnmarshallerBoolean extends AnyFlatSpec with Matchers {
       ///////////////////// OBJ2 END
       val classObj2 = obj2.getClass
       classObj2.isInstance()
-      obj2
-      obj.getClass.getMethods().filter(_.getName == property).foreach(m => {
+
+
+      obj.getClass.getMethods.filter(_.getName == property).foreach(m => {
         //println(m)
         val me = m.getGenericParameterTypes()
         if (me.size == 1 /*&& me.head == classObj2*/) {
@@ -65,6 +72,9 @@ class TestDefaultUnmarshallerBoolean extends AnyFlatSpec with Matchers {
       })
       val a = new A
       val imA = m.reflect(a)
+
+      val b = new B
+      SomeObject.letsDoIt(b)
 
       ru.TermName(property)
       //val fld = im.reflectField(symb)
