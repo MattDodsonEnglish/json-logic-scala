@@ -12,7 +12,7 @@ crossScalaVersions := Seq("2.11.12", "2.12.6", "2.13.1")
 
 resolvers ++= Seq(
   "sonatype-snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
-  "sonatype-releases"  at "https://oss.sonatype.org/content/repositories/releases"
+  "sonatype-releases"  at "https://oss.sonatype.org/content/repositories/releases",
 )
 
 val typeSafeVersions = Map("2.10" -> "2.6.14", "2.11" -> "2.7.4", "2.12" -> "2.8.1", "2.13" -> "2.8.1")
@@ -20,7 +20,6 @@ def resolveVersion(scalaV: String, versionsResolver: Map[String, String]): Strin
 
 libraryDependencies ++= {
   Seq(
-    //"org.scala-lang" % "scala-compiler" % scalaVersion.value,
     "com.typesafe.play" %% "play-json" % resolveVersion(scalaVersion.value, typeSafeVersions),
     "org.apache.xbean" % "xbean-finder" % "4.20",
     "org.apache.xbean" % "xbean-reflect" % "4.20",
@@ -28,11 +27,8 @@ libraryDependencies ++= {
   )
 }
 
-scalacOptions ++= ("-feature" :: "-language:postfixOps" :: "-language:implicitConversions" :: Nil)
-scalacOptions += "-language:experimental.macros"
-//scalacOptions += "-Ymacro-annotations"
-//scalacOptions += "-Xplugin-require:macroparadise"
-//addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full)
+//scalacOptions ++= ("-feature" :: "-language:postfixOps" :: "-language:implicitConversions" :: Nil)
+
 // Publishing stuff for sonatype
 publishTo := {
   if (version.value.endsWith("SNAPSHOT")) Some("snapshots" at "https://oss.sonatype.org/content/repositories/snapshots")

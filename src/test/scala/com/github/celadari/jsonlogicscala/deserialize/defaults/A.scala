@@ -1,5 +1,6 @@
 package com.github.celadari.jsonlogicscala.deserialize.defaults
 
+
 trait Sword {
 
 }

@@ -4,8 +4,8 @@ import com.github.celadari.jsonlogicscala.serialize.Marshaller
 import play.api.libs.json.{JsNumber, JsValue}
 
 object MarshallerDouble extends Marshaller {
-  val codename: String = "double"
-  val className: String = classOf[Double].getName
+  val typeCodename: String = "double"
+  val typeClassName: String = classOf[java.lang.Double].getName
 
   def marshal(value: Any): JsValue = JsNumber(value.toString.toDouble)
 }

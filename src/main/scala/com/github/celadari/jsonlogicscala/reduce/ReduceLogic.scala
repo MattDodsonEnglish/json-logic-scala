@@ -1,8 +1,8 @@
 package com.github.celadari.jsonlogicscala.reduce
 
+import java.lang.reflect.Method
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic}
 
-import java.lang.reflect.Method
 
 object ReduceLogic {
 
@@ -32,7 +32,7 @@ object ReduceLogic {
       }
       catch {
         case _: java.lang.IllegalArgumentException => methodsSeq = methodsSeq.tail
-        case _ => methodsSeq = methodsSeq.tail
+        case _: Throwable => methodsSeq = methodsSeq.tail
       }
     }
     valueOpt.getOrElse(throw new IllegalArgumentException("Reduce computed a null result"))
@@ -57,8 +57,14 @@ class ReduceLogic(implicit val conf: ReduceLogicConf) {
 
   def reduceValueLogic(condition: ValueLogic[_]): Any = {
     val value = condition.valueOpt.get
-    val reducerClass = conf.classNameToReducer(value.getClass.getCanonicalName)
-    reducerClass.newInstance().asInstanceOf[ReducerValueLogic].reduceValueLogic(value)
+    val typeValueOpt = condition.typeCodenameOpt
+    if (typeValueOpt.isEmpty) return null
+
+    val reducerClassOpt = conf.valueLogicTypeToReducer.get(typeValueOpt.get)
+    reducerClassOpt
+      .map(_.newInstance())
+      .getOrElse(ReducerValueLogic.identityReducerValueLogic)
+      .reduceValueLogic(value)
   }
 
   def reduce(condition: JsonLogicCore): Any = {

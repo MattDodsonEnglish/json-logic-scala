@@ -20,10 +20,10 @@ object ClassRuntimeOrder {
   private[this] val DEFAULT_CLASSES2 = assignedWeights2.keySet
 
   private[this] def _compare(x: Class[_], y: Class[_]): Int = {
-    if (x.isAssignableFrom(y)) -1
-    else if (y.isAssignableFrom(x)) 1
-    else if (DEFAULT_CLASSES1.contains(x) && DEFAULT_CLASSES1.contains(y)) assignedWeights1(y) - assignedWeights1(x)
-    else if (DEFAULT_CLASSES2.contains(x) && DEFAULT_CLASSES2.contains(y)) assignedWeights2(y) - assignedWeights2(x)
+    if (x.isAssignableFrom(y)) 1
+    else if (y.isAssignableFrom(x)) -1
+    else if (DEFAULT_CLASSES1.contains(x) && DEFAULT_CLASSES1.contains(y)) assignedWeights1(x) - assignedWeights1(y)
+    else if (DEFAULT_CLASSES2.contains(x) && DEFAULT_CLASSES2.contains(y)) assignedWeights2(x) - assignedWeights2(y)
     else 0
   }
 

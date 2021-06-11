@@ -1,17 +1,23 @@
 package com.github.celadari.jsonlogicscala.deserialize.defaults
 
-import com.github.celadari.jsonlogicscala.conversions.TypeConverter
-import com.github.celadari.jsonlogicscala.deserialize.defaults2.{DefaultUnmarshallers, identity}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import scala.collection.mutable.ArrayBuffer
 
 import scala.reflect.runtime.{universe => ru}
 
+import play.api.libs.json._
+
+
 class TestDefaultUnmarshallerBoolean extends AnyFlatSpec with Matchers {
 
+  val js = JsObject(Map("sdf" -> JsString("voiture")))
+
+  println("sdfdsf")
+  class D
+  import scala.reflect.runtime.{currentMirror => m}
+
+
   "Boolean marshaller" should "marshal to boolean" in {
-    println("Size of unmarshallers: " + DefaultUnmarshallers.DEFAULT_UNMARSHALLERS.size)
 
     def getProperty(obj: Any, obj2: Any, property2: String): Unit = {
       val mirror = ru.runtimeMirror(ru.getClass.getClassLoader)
@@ -90,5 +96,7 @@ class TestDefaultUnmarshallerBoolean extends AnyFlatSpec with Matchers {
     println(c2 + 4L)
 
   }
+
+
 
 }

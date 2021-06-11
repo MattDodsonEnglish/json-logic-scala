@@ -1,58 +1,39 @@
 package com.github.celadari.jsonlogicscala.deserialize
 
-import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic}
-import com.github.celadari.jsonlogicscala.deserialize.defaults._
-import org.apache.xbean.finder.ResourceFinder
-import play.api.libs.json.{JsArray, JsObject, JsValue}
-
-import scala.jdk.CollectionConverters.MapHasAsScala
 import scala.collection.mutable
+import play.api.libs.json.{JsArray, JsNull, JsObject, JsValue}
+import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic}
+import com.github.celadari.jsonlogicscala.tree.types.{ArrayTypeValue, MapTypeValue, SimpleTypeValue, TypeValue}
+
 
 object Deserializer {
-  val DEFAULT_UNMARSHALLERS: Map[String, Unmarshaller] = Map(
-    "bool" -> UnmarshallerBoolean,
-    "double" -> UnmarshallerDouble,
-    "float" -> UnmarshallerFloat,
-    "int" -> UnmarshallerInt,
-    "string" -> UnmarshallerString,
-  )
-
-  implicit val defaultDeserializer: Deserializer = new Deserializer(initUnmarshallers = DEFAULT_UNMARSHALLERS)
+  implicit val defaultDeserializer: Deserializer = new Deserializer()
 }
 
-class Deserializer(
-                  loadAllUnmarshallersMetaInfAtOnce: Boolean = true,
-                  initUnmarshallers: Iterable[(String, Unmarshaller)]=Map()
-                  ) {
-  private[this] val unmarshallers: mutable.Map[String, Unmarshaller] = mutable.Map()
-  unmarshallers ++= initUnmarshallers
+class Deserializer(implicit val conf: DeserializerConf) {
 
-  if (loadAllUnmarshallersMetaInfAtOnce) loadUnmarshallersMetaInf()
+  private[this] val unmarshallers = mutable.Map[String, Unmarshaller]() ++ conf.unmarshallersManualAdd
 
-  private[this] def getUnmarshaller(codename: String): Unmarshaller = {
-    if (unmarshallers.contains(codename) || loadAllUnmarshallersMetaInfAtOnce) unmarshallers(codename)
-    else{
-      val finder = new ResourceFinder("META-INF/services/")
-      finder.mapAllImplementations(classOf[Unmarshaller]).get(codename).newInstance()
-    }
-  }
-
-  private[this] def loadUnmarshallersMetaInf(): Unit = {
-    val finder = new ResourceFinder("META-INF/services")
-    val handlers = finder.mapAllImplementations(classOf[Unmarshaller]).asScala
-    for ((typeData, unmarshallerClass) <- handlers) {
-      if (!unmarshallers.contains(typeData)) unmarshallers(typeData) = unmarshallerClass.newInstance()
+  private[this] def getUnmarshaller(typeValue: TypeValue): Unmarshaller = {
+    typeValue match {
+      case SimpleTypeValue(codename) => unmarshallers.getOrElseUpdate(codename, conf.unmarshallerClassesToBeAdded(codename).newInstance())
+      case ArrayTypeValue(paramType) => new Unmarshaller {
+        override def unmarshal(jsValue: JsValue): Any = jsValue.as[JsArray].value.toArray.map(jsValue => getUnmarshaller(paramType).unmarshal(jsValue))
+      }
+      case MapTypeValue(paramType) => new Unmarshaller {
+        override def unmarshal(jsValue: JsValue): Any = jsValue.as[JsObject].value.view.mapValues(jsValue => getUnmarshaller(paramType).unmarshal(jsValue))
+      }
     }
   }
 
   private[this] def deserializeValueLogic(jsonLogic: JsObject, jsonLogicData: JsObject): ValueLogic[_] = {
-    val codename = (jsonLogic \ "type").as[String]
+    val typeValueOpt = (jsonLogic \ "type").asOpt[TypeValue]
     val pathData = (jsonLogic \ "var").as[String]
-    val jsValue = (jsonLogicData \ pathData).get
+    val jsValue = (jsonLogicData \ pathData).getOrElse(JsNull)
 
-    val value = getUnmarshaller(codename).unmarshal(jsValue)
+    val valueOpt = typeValueOpt.map(typeValue => getUnmarshaller(typeValue).unmarshal(jsValue))
 
-    ValueLogic("var", Some(value))
+    ValueLogic(valueOpt, typeValueOpt)
   }
 
   private[this] def deserializeComposeLogic(jsonLogic: JsObject, jsonLogicData: JsObject): ComposeLogic = {

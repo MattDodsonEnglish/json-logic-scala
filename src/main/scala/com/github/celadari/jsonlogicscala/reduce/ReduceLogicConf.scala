@@ -1,5 +1,7 @@
 package com.github.celadari.jsonlogicscala.reduce
 
+import com.github.celadari.jsonlogicscala.tree.types.{ArrayTypeValue, TypeValue}
+
 object ReduceLogicConf {
 
   case class MethodConf(
@@ -17,6 +19,6 @@ object ReduceLogicConf {
 
 class ReduceLogicConf(path: String) {
   val operatorToMethodConf: Map[String, ReduceLogicConf.MethodConf] = Map()
-  val classNameToReducer: Map[String, Class[_]] = Map()
+  val valueLogicTypeToReducer: Map[TypeValue, Class[_ <: ReducerValueLogic]] = Map()
 
 }

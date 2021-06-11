@@ -1,73 +1,51 @@
 package com.github.celadari.jsonlogicscala.serialize
 
-import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic}
-import com.github.celadari.jsonlogicscala.serialize.defaults.{MarshallerBoolean, MarshallerDouble, MarshallerFloat, MarshallerInt, MarshallerString}
-import org.apache.xbean.recipe.ObjectRecipe
-
-import scala.jdk.CollectionConverters.MapHasAsScala
-import org.apache.xbean.finder.ResourceFinder
-import play.api.libs.json._
-
 import scala.collection.mutable
+import java.util.UUID
+import play.api.libs.json._
+import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic}
+import com.github.celadari.jsonlogicscala.tree.types.{ArrayTypeValue, MapTypeValue, SimpleTypeValue, TypeValue}
+
 
 object Serializer {
-  val DEFAULT_MARSHALLERS: Map[String, Marshaller] = Map(
-    MarshallerBoolean.className -> MarshallerBoolean,
-    MarshallerDouble.className -> MarshallerDouble,
-    MarshallerFloat.className -> MarshallerFloat,
-    MarshallerInt.className -> MarshallerInt,
-    MarshallerString.className -> MarshallerString,
-  )
-
-  implicit val defaultSerializer: Serializer = new Serializer(initMarshallers = DEFAULT_MARSHALLERS)
+  implicit val defaultSerializer: Serializer = new Serializer()
 }
 
-class Serializer(
-                  loadAllMarshallersMetaInfAtOnce: Boolean = true,
-                  initMarshallers: Iterable[(String, Marshaller)]=Map()
-                ) {
-  private[this] val marshallers: mutable.Map[String, Marshaller] = mutable.Map()
-  marshallers ++= initMarshallers
+class Serializer(implicit val conf: SerializerConf) {
+  private[this] val marshallers: mutable.Map[String, Marshaller] = mutable.Map[String, Marshaller]() ++ conf.marshallersManualAdd
 
-  if (loadAllMarshallersMetaInfAtOnce) loadMarshallersMetaInf()
+  private[this] def getMarshaller(typeValue: TypeValue): Marshaller = {
+    typeValue match {
+      case SimpleTypeValue(codename) => marshallers.getOrElseUpdate(codename, conf.marshallerRecipesToBeAdded(codename).create().asInstanceOf[Marshaller])
+      case ArrayTypeValue(paramType) => new Marshaller {
+        override val typeCodename: String = null
+        override val typeClassName: String = null
+        override def marshal(value: Any): JsValue = JsArray(value.asInstanceOf[Array[Any]].map(el => getMarshaller(paramType).marshal(el)))
+      }
+      case MapTypeValue(paramType) => new Marshaller {
+        override val typeCodename: String = null
+        override val typeClassName: String = null
 
-  private[this] def getMarshaller(className: String): Marshaller = {
-    if (!marshallers.contains(className) && !loadAllMarshallersMetaInfAtOnce) {
-      val finder = new ResourceFinder("META-INF/services/")
-      val prop = finder.mapAllProperties(classOf[Marshaller].getName).get(className)
-      val recipe = new ObjectRecipe(prop.remove("className").toString)
-      recipe.setAllProperties(prop)
-      marshallers(className) = recipe.create().asInstanceOf[Marshaller]
+        override def marshal(value: Any): JsValue = JsObject(value.asInstanceOf[Map[String, Any]].view.mapValues(el => getMarshaller(paramType).marshal(el)).toMap)
+      }
+      case _ => throw new IllegalArgumentException("Wrong argument type value")
     }
-    marshallers(className)
   }
 
-  private[this] def loadMarshallersMetaInf(): Unit = {
-    val finder = new ResourceFinder("META-INF/services/")
-    val classNameToProperties = finder.mapAllProperties(classOf[Marshaller].getName).asScala
-    classNameToProperties
-      .filterKeys(className => !marshallers.contains(className))
-      .foreach{case (className, prop) => {
-      val recipe = new ObjectRecipe(prop.remove("className").toString)
-      recipe.setAllProperties(prop)
-      marshallers(className) = recipe.create().asInstanceOf[Marshaller]
-    }}
-    /*val handlers = finder.mapAllImplementations(classOf[Marshaller])
-    for ((typeData, marshallerClass) <- handlers) {
-      if (!marshallers.contains(typeData)) marshallers(typeData) = marshallerClass.newInstance()
-    }*/
-  }
+  private[this] def serializeValueLogic(valueLogic: ValueLogic[_]): (JsValue, JsValue) = {
 
-  private[this] def serializeValueLogic(valueLogic: ValueLogic[_]): (JsString, JsValue) = {
-
-    val (jsTypeData, jsValue) = valueLogic
+    val (jsType, jsonLogicDatum) = valueLogic
       .valueOpt
       .map(value => {
-        val marshaller = getMarshaller(value.getClass.getName)
-        (JsString(marshaller.codename), marshaller.marshal(value))
+        val typeCodenameOpt = valueLogic.typeCodenameOpt
+        if (typeCodenameOpt.isEmpty) return (JsString("null"), JsNull)
+        val marshaller = getMarshaller(typeCodenameOpt.get)
+        (Json.toJson(typeCodenameOpt.get), marshaller.marshal(value))
       })
       .getOrElse((JsString("null"), JsNull))
-    (jsTypeData, jsValue)
+
+    val uuid = UUID.randomUUID.toString
+    (JsObject(Map("var" -> JsString(uuid), "type" -> jsType)), JsObject(Map(uuid -> jsonLogicDatum)))
   }
 
   private[this] def serializeComposeLogic(composeLogic: ComposeLogic): (JsValue, JsObject) = {
