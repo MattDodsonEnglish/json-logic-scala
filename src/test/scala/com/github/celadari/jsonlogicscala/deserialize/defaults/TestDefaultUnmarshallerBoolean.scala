@@ -1,11 +1,13 @@
 package com.github.celadari.jsonlogicscala.deserialize.defaults
 
+import com.github.celadari.jsonlogicscala.reduce.defaults.OperatorPlus
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 import scala.reflect.runtime.{universe => ru}
-
+import ru._
 import play.api.libs.json._
+
 
 
 class TestDefaultUnmarshallerBoolean extends AnyFlatSpec with Matchers {
@@ -13,9 +15,33 @@ class TestDefaultUnmarshallerBoolean extends AnyFlatSpec with Matchers {
   val js = JsObject(Map("sdf" -> JsString("voiture")))
 
   println("sdfdsf")
-  class D
-  import scala.reflect.runtime.{currentMirror => m}
 
+  class Parent
+  trait Family
+  class Child extends Parent with Family
+
+  def trySth(a: Parent): Any = a
+  def trySth(c: Child): Any = c
+  def trySth(b: Family): Any = b
+
+  val parent = new Parent
+  val child = new Child
+  val fam: Family = new Family{}
+
+  println(trySth(parent))
+  println(trySth(fam))
+  println(trySth(child))
+
+  class D
+  new A + 5
+  OperatorPlus.$plus(Int.box(4), Int.box(5))
+  import scala.reflect.runtime.{currentMirror => m}
+  val x: java.lang.Integer = 4
+  val y: java.lang.Integer = 4
+  x + y
+  val tree = Apply(Select(Ident(TermName("x")), TermName("$plus")), List(Literal(Constant(2))))
+  println(tree)
+  println(5.getClass.getMethods.map(_.getName).toSeq)
 
   "Boolean marshaller" should "marshal to boolean" in {
 
@@ -90,7 +116,8 @@ class TestDefaultUnmarshallerBoolean extends AnyFlatSpec with Matchers {
 
     val c = (new C).asInstanceOf[Any]
     val e = 4
-    getProperty(c, e, "$plus")
+    //getProperty(c, e, "$plus")
+    //getProperty(4, 5, "+")
 
     val c2 = new C
     println(c2 + 4L)
