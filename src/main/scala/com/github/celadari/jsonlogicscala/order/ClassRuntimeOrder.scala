@@ -39,7 +39,7 @@ object ClassRuntimeOrder {
       else _compare(x.get, y.get)
     }
   }
-
+/*
   /**
    * Returns minimum super-classes of classOb
    * @example A   B     C
@@ -67,8 +67,8 @@ object ClassRuntimeOrder {
     }
 
     closests.toSet
-  }
-
+  }*/
+/*
   def maxMins(classObj1: Class[_], classObj2: Class[_], classesToScan: Set[(Class[_], Class[_])]): Set[(Class[_], Class[_])] = {
     // retrieve super classes of classObj
     val closeClasses = mutable.Set[(Class[_], Class[_])]()
@@ -86,6 +86,6 @@ object ClassRuntimeOrder {
     }
 
     closests.toSet
-  }
+  }*/
 
 }

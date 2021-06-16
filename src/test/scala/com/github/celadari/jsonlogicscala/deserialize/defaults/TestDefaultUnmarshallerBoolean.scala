@@ -20,17 +20,26 @@ class TestDefaultUnmarshallerBoolean extends AnyFlatSpec with Matchers {
   trait Family
   class Child extends Parent with Family
 
-  def trySth(a: Parent): Any = a
-  def trySth(c: Child): Any = c
-  def trySth(b: Family): Any = b
+  def trySth(a: Array[Parent]): Any = {
+    println("parent")
+    a
+  }
+  def trySth(c: Array[Child]): Any = {
+    println("child")
+    c
+  }
+  def trySth(b: Array[Family]): Any = {
+    println("family")
+    b
+  }
 
   val parent = new Parent
   val child = new Child
   val fam: Family = new Family{}
 
-  println(trySth(parent))
-  println(trySth(fam))
-  println(trySth(child))
+  println(trySth(Array(parent)))
+  println(trySth(Array(fam)))
+  println(trySth(Array(child)))
 
   class D
   new A + 5

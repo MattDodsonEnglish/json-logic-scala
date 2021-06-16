@@ -1,14 +1,14 @@
 package com.github.celadari.jsonlogicscala.reduce
 
 import java.lang.reflect.Method
-import scala.collection.mutable
 
 object Operator {
-
+/*
   import com.github.celadari.jsonlogicscala.order.ClassRuntimeOrder
   implicit val orderClass: Ordering[Class[_]] = ClassRuntimeOrder.orderClass
   implicit val orderClassOpt: Ordering[Option[Class[_]]] = ClassRuntimeOrder.orderClassOpt
-
+*/
+  /*
   private[this] def applyValueWithMostFittedMethod(obj: Any, value1: Any, value2: Any, methods: Array[Method]): Any = {
     var methodsSeq = methods.toSeq
     var valueOpt: Option[Any] = None
@@ -81,7 +81,7 @@ object Operator {
       }}*/
     }
   }
-
+*/
 
 }
 

@@ -1,15 +1,10 @@
 package com.github.celadari.jsonlogicscala.reduce
 
-import java.lang.reflect.Method
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic}
 
 
 object ReduceLogic {
-
-
-
   implicit val reduceLogic: ReduceLogic = new ReduceLogic
-
 
 }
 
@@ -20,14 +15,25 @@ class ReduceLogic(implicit val conf: ReduceLogicConf) {
     val conditionsEval = condition.conditions.map(reduce)
     val operator = condition.operator
     val confMethod = conf.operatorToMethodConf(operator)
-    val methodName = confMethod.methodName
 
-    conditionsEval.reduce[Any]{case (value1, value2) => {
-      val obj = if (confMethod.isExternalMethod) confMethod.ownerMethodOpt.get else value1
-      val methods = ReduceLogic.retrieveMethodsFromObj(obj, methodName)
-      ReduceLogic.applyValueWithMostFittedMethod(obj, value1, value2, methods)
-    }}
+    if (!confMethod.isReduceType) {
+      val methods = confMethod.ownerMethodOpt.get.getClass.getMethods.filter(_.getName == confMethod.methodName).toSet
+      val paramTypes = MethodSignatureFinder.maxMins(conditionsEval.getClass, methods.map(_.getParameterTypes.apply(0)))
 
+      if (paramTypes.isEmpty) throw new Error(s"Method ${confMethod.methodName} doesn't accept parameter of type: ${conditionsEval.getClass}")
+
+      val method = methods.find(_.getParameterTypes.apply(0) == paramTypes.head).get
+      method.invoke(confMethod.ownerMethodOpt.get, conditionsEval)
+    }
+
+    val methodsAndIsOwned = new MethodSignatureFinder(conditionsEval, confMethod).findPaths().head
+
+    methodsAndIsOwned
+      .zip(conditionsEval.tail)
+      .foldLeft[Any](conditionsEval.head){case (conditionEval1, ((method, isMethodOwnedByReducedValue), conditionEval2)) => {
+        if (isMethodOwnedByReducedValue) method.invoke(conditionEval1, conditionEval1, conditionEval2)
+        else method.invoke(confMethod.ownerMethodOpt.get, conditionEval1, conditionEval2)
+      }}
   }
 
   def reduceValueLogic(condition: ValueLogic[_]): Any = {

@@ -30,7 +30,8 @@ object ReduceLogicConf {
                          methodName: String,
                          pathObjectOpt: Option[String],
                          ownerMethodOpt: Option[Operator],
-                         paramsType: Seq[Class[_]]
+                         paramsType: Seq[Class[_]],
+                         isReduceType: Boolean = true
                        ) {
     def isExternalMethod: Boolean = ownerMethodOpt.isDefined
   }
