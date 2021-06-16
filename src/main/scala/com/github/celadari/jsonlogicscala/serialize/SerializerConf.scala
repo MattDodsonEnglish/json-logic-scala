@@ -1,20 +1,21 @@
 package com.github.celadari.jsonlogicscala.serialize
 
 import scala.jdk.CollectionConverters.MapHasAsScala
+import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
 import com.github.celadari.jsonlogicscala.serialize.defaults._
 import org.apache.xbean.finder.ResourceFinder
 import org.apache.xbean.recipe.ObjectRecipe
 
 object SerializerConf {
   val DEFAULTS_MARSHALLERS = Map(
-    "bool" -> MarshallerBoolean,
-    "double" -> MarshallerDouble,
-    "float" -> MarshallerFloat,
-    "int" -> MarshallerInt,
-    "string" -> MarshallerString,
-    "long" -> MarshallerLong,
-    "byte" -> MarshallerByte,
-    "short" -> MarshallerShort
+    BOOL_CODENAME -> MarshallerBoolean,
+    DOUBLE_CODENAME -> MarshallerDouble,
+    FLOAT_CODENAME -> MarshallerFloat,
+    INT_CODENAME -> MarshallerInt,
+    STRING_CODENAME -> MarshallerString,
+    LONG_CODENAME -> MarshallerLong,
+    BYTE_CODENAME -> MarshallerByte,
+    SHORT_CODENAME -> MarshallerShort
   )
 
   def createConf(

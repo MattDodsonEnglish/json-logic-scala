@@ -1,46 +1,58 @@
 package com.github.celadari.jsonlogicscala.reduce
 
+import scala.collection.mutable
+import com.github.celadari.jsonlogicscala.reduce.defaults.OperatorPlus
 import com.github.celadari.jsonlogicscala.tree.types.TypeValue
 
 object ReduceLogicConf {
 
-  val DEFAULT_OPERATORS_TO_METHODNAME: Map[String, String] = Map(
-    "<" -> "$less",
-    "<=" -> "$less$eq",
-    ">" -> "$greater",
-    ">=" -> "$greater$eq",
-    "<<" -> "$less$less",
-    ">>" -> "$greater$greater",
-    ">>>" -> "$greater$greater$greater",
-    "+" -> "$plus",
-    "-" -> "$minus",
-    "*" -> "$times",
-    "/" -> "$div",
-    "%" -> "$percent",
-    "^" -> "$up",
-    "|" -> "$bar",
-    "or" -> "$bar$bar",
-    "&" -> "$amp",
-    "and" -> "$amp$amp",
-    "!" -> "unary_$bang"
+  val DEFAULT_OPERATORS_TO_METHODNAME: Map[String, (String, Operator)] = Map(
+    //"<" -> ("$less", OperatorLess),
+    //"<=" -> ("$less$eq", OperatorLessEq),
+    //">" -> ("$greater", OperatorGreater),
+    //">=" -> ("$greater$eq", OperatorGreaterEq),
+    //"<<" -> ("$less$less", OperatorLessLess),
+    //">>" -> ("$greater$greater", OperatorGreaterGreater),
+    //">>>" -> ("$greater$greater$greater", OperatorGreaterGreaterGreater),
+    "+" -> ("$plus", OperatorPlus)
+    //"-" -> ("$minus", OperatorMinus),
+    //"*" -> ("$times", OperatorTimes),
+    //"/" -> ("$div", OperatorDiv),
+    //"%" -> ("$percent", OperatorModulo),
+    //"^" -> ("$up", OperatorXor),
+    //"|" -> ("$bar", OperatorBar),
+    //"or" -> ("$bar$bar", OperatorOr),
+    //"&" -> ("$amp", OperatorAmp),
+    //"and" -> ("$amp$amp", OperatorAnd),
+    //"!" -> ("unary_$bang", OperatorNeg)
   )
+  val DEFAULT_METHOD_CONFS: Map[String, MethodConf] = DEFAULT_OPERATORS_TO_METHODNAME.map{case (operator, (methodName, objOperator)) => {
+    operator -> MethodConf(
+      operator,
+      methodName,
+      Some(objOperator)
+    )
+  }}
 
   case class MethodConf(
                          operator: String,
                          methodName: String,
-                         pathObjectOpt: Option[String],
                          ownerMethodOpt: Option[Operator],
-                         paramsType: Seq[Class[_]],
                          isReduceType: Boolean = true
                        ) {
     def isExternalMethod: Boolean = ownerMethodOpt.isDefined
   }
 
-  implicit val implReduceLogicConf: ReduceLogicConf = new ReduceLogicConf("")
+  implicit val implReduceLogicConf: ReduceLogicConf = new ReduceLogicConf("") {
+    _operatorToMethodConf ++= DEFAULT_METHOD_CONFS
+  }
 }
 
 class ReduceLogicConf(path: String) {
-  val operatorToMethodConf: Map[String, ReduceLogicConf.MethodConf] = Map()
-  val valueLogicTypeToReducer: Map[TypeValue, Class[_ <: ReducerValueLogic]] = Map()
+  protected[this] val _operatorToMethodConf: mutable.Map[String, ReduceLogicConf.MethodConf] = mutable.Map()
+  protected[this] val _valueLogicTypeToReducer: mutable.Map[TypeValue, Class[_ <: ReducerValueLogic]] = mutable.Map()
+
+  def operatorToMethodConf: Map[String, ReduceLogicConf.MethodConf] = _operatorToMethodConf.toMap
+  def valueLogicTypeToReducer: Map[TypeValue, Class[_ <: ReducerValueLogic]] = _valueLogicTypeToReducer.toMap
 
 }

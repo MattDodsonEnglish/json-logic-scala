@@ -27,6 +27,7 @@ class ReduceLogic(implicit val conf: ReduceLogicConf) {
     }
 
     val methodsAndIsOwned = new MethodSignatureFinder(conditionsEval, confMethod).findPaths().head
+    println(methodsAndIsOwned.toSeq)
 
     methodsAndIsOwned
       .zip(conditionsEval.tail)

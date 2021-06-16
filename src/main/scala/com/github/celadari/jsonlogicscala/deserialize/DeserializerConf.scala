@@ -2,18 +2,19 @@ package com.github.celadari.jsonlogicscala.deserialize
 
 import scala.jdk.CollectionConverters.MapHasAsScala
 import org.apache.xbean.finder.ResourceFinder
+import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
 import com.github.celadari.jsonlogicscala.deserialize.defaults._
 
 object DeserializerConf {
   val DEFAULTS_UNMARSHALLERS = Map(
-    "bool" -> UnmarshallerBoolean,
-    "double" -> UnmarshallerDouble,
-    "float" -> UnmarshallerFloat,
-    "int" -> UnmarshallerInt,
-    "string" -> UnmarshallerString,
-    "long" -> UnmarshallerLong,
-    "byte" -> UnmarshallerByte,
-    "short" -> UnmarshallerShort
+    BOOL_CODENAME -> UnmarshallerBoolean,
+    DOUBLE_CODENAME -> UnmarshallerDouble,
+    FLOAT_CODENAME -> UnmarshallerFloat,
+    INT_CODENAME -> UnmarshallerInt,
+    STRING_CODENAME -> UnmarshallerString,
+    LONG_CODENAME -> UnmarshallerLong,
+    BYTE_CODENAME -> UnmarshallerByte,
+    SHORT_CODENAME -> UnmarshallerShort
   )
 
   def createConf(

@@ -1,6 +1,8 @@
 package com.github.celadari.jsonlogicscala.reduce.defaults
 
-object OperatorPlus {
+import com.github.celadari.jsonlogicscala.reduce.Operator
+
+object OperatorPlus extends Operator {
 
   def $plus(num1: java.lang.Byte, num2: java.lang.Byte): java.lang.Byte = (num1 + num2).toByte
   def $plus(num1: java.lang.Byte, num2: java.lang.Short): java.lang.Short = (num1 + num2).toShort
