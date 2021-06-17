@@ -11,20 +11,25 @@ object ReduceLogicConf {
     "<=" -> ("$less$eq", OperatorLessEq),
     ">" -> ("$greater", OperatorGreater),
     ">=" -> ("$greater$eq", OperatorGreaterEq),
-    //"<<" -> ("$less$less", OperatorLessLess),
-    //">>" -> ("$greater$greater", OperatorGreaterGreater),
-    //">>>" -> ("$greater$greater$greater", OperatorGreaterGreaterGreater),
+    "<<" -> ("$less$less", OperatorLeftShiftBitwise),
+    ">>" -> ("$greater$greater", OperatorRightShiftBitwise),
+    ">>>" -> ("$greater$greater$greater", OperatorRightShiftZeroFillerBitwise),
     "+" -> ("$plus", OperatorPlus),
     "-" -> ("$minus", OperatorMinus),
     "*" -> ("$times", OperatorTimes),
     "/" -> ("$div", OperatorDiv),
     "%" -> ("$percent", OperatorModulo),
-    "^" -> ("$up", OperatorXor)
-    //"|" -> ("$bar", OperatorBar),
-    //"or" -> ("$bar$bar", OperatorOr),
-    //"&" -> ("$amp", OperatorAmp),
-    //"and" -> ("$amp$amp", OperatorAnd),
-    //"!" -> ("unary_$bang", OperatorNeg)
+    "^" -> ("$up", OperatorXor),
+    "|" -> ("$bar", OperatorOrBitwise),
+    "or" -> ("$bar$bar", OperatorOr),
+    "&" -> ("$amp", OperatorAndBitwise),
+    "and" -> ("$amp$amp", OperatorAnd),
+    "!" -> ("unary_$bang", OperatorNeg),
+    "==" -> ("$eq$eq", OperatorEqWithTypeCoercion),
+    "===" -> ("$eq$eq$eq", OperatorEqStrict),
+    "!=" -> ("$bang$eq", OperatorNEqWithTypeCoercion),
+    "!==" -> ("$bang$eq$eq", OperatorNEqStrict),
+    "if" -> ("ifElse", OperatorIfElse)
   )
   val DEFAULT_METHOD_CONFS: Map[String, MethodConf] = DEFAULT_OPERATORS_TO_METHODNAME.map{case (operator, (methodName, objOperator)) => {
     operator -> MethodConf(
