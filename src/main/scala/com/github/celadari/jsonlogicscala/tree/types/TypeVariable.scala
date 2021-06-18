@@ -5,4 +5,4 @@ object TypeVariable {
 
 }
 
-case class TypeVariable(variableName: String, paramType: TypeValue) extends TypeValue(TypeVariable.CODENAME_TYPE)
+case class TypeVariable(variableName: String) extends TypeValue(TypeVariable.CODENAME_TYPE)

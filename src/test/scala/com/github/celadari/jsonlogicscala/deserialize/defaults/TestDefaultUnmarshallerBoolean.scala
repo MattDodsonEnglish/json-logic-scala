@@ -1,6 +1,6 @@
 package com.github.celadari.jsonlogicscala.deserialize.defaults
 
-import com.github.celadari.jsonlogicscala.reduce.defaults.OperatorPlus
+import com.github.celadari.jsonlogicscala.evaluate.defaults.OperatorPlus
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 

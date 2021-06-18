@@ -40,7 +40,7 @@ object TypeValue {
         "codename" -> JsString(MapTypeValue.CODENAME_TYPE),
         "paramType" -> serializeTypeValue(paramType)
       ))
-      case TypeVariable => JsObject(Map(
+      case TypeVariable(variableName) => JsObject(Map(
         "codename" -> JsString(TypeVariable.CODENAME_TYPE)
       ))
       case _ => throw new IllegalArgumentException("Wrong type for type value")

@@ -1,7 +1,7 @@
 package com.github.celadari.jsonlogicscala.tree
 
 import com.github.celadari.jsonlogicscala.deserialize.Deserializer
-import com.github.celadari.jsonlogicscala.reduce.ReduceLogic
+import com.github.celadari.jsonlogicscala.evaluate.EvaluatorLogic
 import com.github.celadari.jsonlogicscala.serialize.Serializer
 import play.api.libs.json._
 
@@ -45,7 +45,7 @@ object JsonLogicCore {
 
 abstract class JsonLogicCore(val operator: String) {
 
-  def reduce(implicit reducer: ReduceLogic): Any = {
+  def reduce(implicit reducer: EvaluatorLogic): Any = {
     reducer.reduce(this)
   }
 
