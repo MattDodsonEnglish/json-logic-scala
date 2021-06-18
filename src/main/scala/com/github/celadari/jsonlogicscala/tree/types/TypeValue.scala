@@ -12,6 +12,7 @@ object TypeValue {
       .map(jsParamType => codename match {
         case ArrayTypeValue.CODENAME_TYPE => ArrayTypeValue(parseTypeValue(jsParamType))
         case MapTypeValue.CODENAME_TYPE => MapTypeValue(parseTypeValue(jsParamType))
+        case TypeVariable.CODENAME_TYPE => TypeVariable
         case _ => throw new IllegalArgumentException("Wrong type")
       })
       .getOrElse(SimpleTypeValue(codename))
@@ -30,14 +31,17 @@ object TypeValue {
 
   private[this] def serializeTypeValue(typeValue: TypeValue): JsValue = {
     typeValue match {
-      case SimpleTypeValue(codename) => JsObject(Map("codename" -> JsString(typeValue.codename)))
+      case SimpleTypeValue(codename) => JsObject(Map("codename" -> JsString(codename)))
       case ArrayTypeValue(paramType) => JsObject(Map(
         "codename" -> JsString(ArrayTypeValue.CODENAME_TYPE),
         "paramType" -> serializeTypeValue(paramType)
       ))
       case MapTypeValue(paramType) => JsObject(Map(
-        "codename" -> JsString(typeValue.codename),
+        "codename" -> JsString(MapTypeValue.CODENAME_TYPE),
         "paramType" -> serializeTypeValue(paramType)
+      ))
+      case TypeVariable => JsObject(Map(
+        "codename" -> JsString(TypeVariable.CODENAME_TYPE)
       ))
       case _ => throw new IllegalArgumentException("Wrong type for type value")
     }

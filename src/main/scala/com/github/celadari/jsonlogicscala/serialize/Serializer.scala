@@ -4,7 +4,7 @@ import scala.collection.mutable
 import java.util.UUID
 import play.api.libs.json._
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic}
-import com.github.celadari.jsonlogicscala.tree.types.{ArrayTypeValue, MapTypeValue, SimpleTypeValue, TypeValue}
+import com.github.celadari.jsonlogicscala.tree.types.{ArrayTypeValue, MapTypeValue, SimpleTypeValue, TypeValue, TypeVariable}
 
 
 object Serializer {
@@ -27,6 +27,12 @@ class Serializer(implicit val conf: SerializerConf) {
         override val typeClassName: String = null
 
         override def marshal(value: Any): JsValue = JsObject(value.asInstanceOf[Map[String, Any]].view.mapValues(el => getMarshaller(paramType).marshal(el)).toMap)
+      }
+      case TypeVariable(_, _) => new Marshaller {
+        override val typeCodename: String = null
+        override val typeClassName: String = null
+
+        override def marshal(value: Any): JsValue = JsNull
       }
       case _ => throw new IllegalArgumentException("Wrong argument type value")
     }

@@ -43,7 +43,8 @@ object ReduceLogicConf {
                          operator: String,
                          methodName: String,
                          ownerMethodOpt: Option[Operator],
-                         isReduceType: Boolean = true
+                         isReduceType: Boolean = true,
+                         isCompositionOperator: Boolean = false
                        ) {
     def isExternalMethod: Boolean = ownerMethodOpt.isDefined
   }

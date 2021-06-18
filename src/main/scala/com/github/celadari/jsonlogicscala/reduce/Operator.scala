@@ -88,13 +88,14 @@ object Operator {
 
 trait Operator {
 
+  /*
   def evaluate(conditionsValues: Array[Any], confMethod: ReduceLogicConf.MethodConf): Any = {
     val methods: Array[Method] = null
 
     conditionsValues.zipWithIndex.reduce[(Any, Int)]{case ((evaluedVal, idx), (value, _)) => {
       (methods(idx).invoke(this, evaluedVal, value), idx + 1)
     }}._1
-  }
+  }*/
 
 
 }

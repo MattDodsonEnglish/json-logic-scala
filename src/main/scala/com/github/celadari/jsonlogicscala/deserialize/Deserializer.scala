@@ -3,7 +3,7 @@ package com.github.celadari.jsonlogicscala.deserialize
 import scala.collection.mutable
 import play.api.libs.json.{JsArray, JsNull, JsObject, JsValue}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic}
-import com.github.celadari.jsonlogicscala.tree.types.{ArrayTypeValue, MapTypeValue, SimpleTypeValue, TypeValue}
+import com.github.celadari.jsonlogicscala.tree.types.{ArrayTypeValue, MapTypeValue, SimpleTypeValue, TypeValue, TypeVariable}
 
 
 object Deserializer {
@@ -22,6 +22,9 @@ class Deserializer(implicit val conf: DeserializerConf) {
       }
       case MapTypeValue(paramType) => new Unmarshaller {
         override def unmarshal(jsValue: JsValue): Any = jsValue.as[JsObject].value.view.mapValues(jsValue => getUnmarshaller(paramType).unmarshal(jsValue))
+      }
+      case TypeVariable(_, _) => new Unmarshaller {
+        override def unmarshal(jsValue: JsValue): Any = null
       }
     }
   }

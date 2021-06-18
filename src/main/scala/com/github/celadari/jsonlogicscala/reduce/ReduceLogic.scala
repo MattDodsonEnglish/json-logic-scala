@@ -12,10 +12,19 @@ object ReduceLogic {
 class ReduceLogic(implicit val conf: ReduceLogicConf) {
 
   def reduceComposeLogic(condition: ComposeLogic): Any = {
-    val conditionsEval = condition.conditions.map(reduce)
     val operator = condition.operator
     val confMethod = conf.operatorToMethodConf(operator)
 
+    // Composition operators: map, filter, reduce
+    if (confMethod.isCompositionOperator) {
+      val arrValues = reduce(condition.conditions(0)).asInstanceOf[Array[Any]]
+      val composeLogic = condition.conditions.slice(1, condition.conditions.length)
+      return confMethod.ownerMethodOpt.get.asInstanceOf[CompositionOperator].composeOperator(arrValues, composeLogic, this)
+    }
+
+    val conditionsEval = condition.conditions.map(reduce)
+
+    // Global operators: ifElse, merge, in
     if (!confMethod.isReduceType) {
       val methods = confMethod.ownerMethodOpt.get.getClass.getMethods.filter(_.getName == confMethod.methodName).toSet
       val paramTypes = MethodSignatureFinder.maxMins(conditionsEval.getClass, methods.map(_.getParameterTypes.apply(0)))
