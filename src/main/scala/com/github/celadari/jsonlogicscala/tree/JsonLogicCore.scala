@@ -45,10 +45,6 @@ object JsonLogicCore {
 
 abstract class JsonLogicCore(val operator: String) {
 
-  def reduce(implicit reducer: EvaluatorLogic): Any = {
-    reducer.reduce(this)
-  }
-
   /**
    * Indicates if this represents an empty condition.
    * @since 1.1.0

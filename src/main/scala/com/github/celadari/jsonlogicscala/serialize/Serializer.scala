@@ -36,6 +36,8 @@ class Serializer(implicit val conf: SerializerConf) {
 
   private[this] def serializeValueLogic(valueLogic: ValueLogic[_]): (JsValue, JsValue) = {
 
+    if (valueLogic.variableNameOpt.isDefined) return (JsObject(Map("var" -> JsString(valueLogic.variableNameOpt.get))), JsObject(Map[String, JsString]()))
+
     val (jsType, jsonLogicDatum) = valueLogic
       .valueOpt
       .map(value => {

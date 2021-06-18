@@ -1,6 +1,7 @@
 package com.github.celadari.jsonlogicscala.evaluate
 
-import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic}
+import com.github.celadari.jsonlogicscala.evaluate.CompositionOperator.ComposeJsonLogicCore
+import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic, VariableLogic}
 
 
 object EvaluatorLogic {
@@ -11,18 +12,18 @@ object EvaluatorLogic {
 
 class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
 
-  def reduceComposeLogic(condition: ComposeLogic): Any = {
+  protected[this] def reduceComposeLogic(condition: ComposeLogic, logicToValue: Map[ComposeLogic, Map[String, Any]]): Any = {
     val operator = condition.operator
     val confMethod = conf.operatorToMethodConf(operator)
 
     // Composition operators: map, filter, reduce
     if (confMethod.isCompositionOperator) {
-      val arrValues = reduce(condition.conditions(0)).asInstanceOf[Array[Any]]
-      val composeLogic = condition.conditions.slice(1, condition.conditions.length)
-      return confMethod.ownerMethodOpt.get.asInstanceOf[CompositionOperator].composeOperator(arrValues, composeLogic, this)
+      val arrValues = reduce(condition.conditions(0), logicToValue).asInstanceOf[Array[Any]]
+      val logicArr = condition.conditions.slice(1, condition.conditions.length)
+      return confMethod.ownerMethodOpt.get.asInstanceOf[CompositionOperator].composeOperator(arrValues, logicArr, condition, this, logicToValue)
     }
 
-    val conditionsEval = condition.conditions.map(reduce)
+    val conditionsEval = condition.conditions.map(cond => reduce(cond, logicToValue))
 
     // Global operators: ifElse, merge, in
     if (!confMethod.isReduceType) {
@@ -36,7 +37,6 @@ class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
     }
 
     val methodsAndIsOwned = new MethodSignatureFinder(conditionsEval, confMethod).findPaths().head
-    println(methodsAndIsOwned.toSeq)
 
     methodsAndIsOwned
       .zip(conditionsEval.tail)
@@ -46,7 +46,7 @@ class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
       }}
   }
 
-  def reduceValueLogic(condition: ValueLogic[_]): Any = {
+  protected[this] def reduceValueLogic(condition: ValueLogic[_]): Any = {
     val value = condition.valueOpt.get
     val typeValueOpt = condition.typeCodenameOpt
     if (typeValueOpt.isEmpty) return null
@@ -58,13 +58,19 @@ class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
       .reduceValueLogic(value)
   }
 
-  def reduce(condition: JsonLogicCore): Any = {
+  def reduce(condition: JsonLogicCore, logicOperatorToValue: Map[ComposeLogic, Map[String, Any]]): Any = {
     condition match {
-      case composeLogic: ComposeLogic => reduceComposeLogic(composeLogic)
+      case composeLogic: ComposeLogic => reduceComposeLogic(composeLogic, logicOperatorToValue)
       case valueLogic: ValueLogic[_] => reduceValueLogic(valueLogic)
+      case VariableLogic(variableName, composeOperator) => logicOperatorToValue(composeOperator)(variableName)
       case other => throw new IllegalArgumentException(s"Invalid argument: $other")
     }
+  }
 
+  def evaluate(jsonLogicCore: JsonLogicCore): Any = {
+    val composedLogic = new ComposeJsonLogicCore(jsonLogicCore).evaluate()
+    val logicOperatorToValue: Map[ComposeLogic, Map[String, Any]] = Map()
+    reduce(composedLogic, logicOperatorToValue)
   }
 
 }

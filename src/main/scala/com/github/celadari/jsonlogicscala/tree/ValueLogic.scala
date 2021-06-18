@@ -19,6 +19,7 @@ object ValueLogic {
 case class ValueLogic[T](
                           valueOpt: Option[T],
                           typeCodenameOpt: Option[TypeValue] = None,
+                          variableNameOpt: Option[String] = None
                         ) extends JsonLogicCore(ValueLogic.OPERATOR_CODENAME) {
 
   /**

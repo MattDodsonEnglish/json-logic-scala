@@ -9,9 +9,10 @@ object ComposeLogic {
    */
   def empty: ComposeLogic = new ComposeLogic("", Array())
 
+  def unapply(composeLogic: ComposeLogic): Some[(String, Array[JsonLogicCore])] = Some((composeLogic.operator, composeLogic.conditions))
 }
 
-case class ComposeLogic(override val operator: String, conditions: Array[JsonLogicCore]) extends JsonLogicCore(operator) {
+class ComposeLogic(override val operator: String, private[this] var _conditions: Array[JsonLogicCore]) extends JsonLogicCore(operator) {
 
   /**
    * Indicates if this represents an empty condition.
@@ -19,4 +20,8 @@ case class ComposeLogic(override val operator: String, conditions: Array[JsonLog
    * @return boolean to indicate if all sub-conditions are empty as well or if sub-conditions array is empty.
    */
   def isEmpty: Boolean = conditions.forall(_.isEmpty)
+
+  def conditions: Array[JsonLogicCore] = _conditions
+  def conditions_=(conds: Array[JsonLogicCore]): Unit = _conditions = conds
+
 }
