@@ -12,7 +12,6 @@ object TypeValue {
       .map(jsParamType => codename match {
         case ArrayTypeValue.CODENAME_TYPE => ArrayTypeValue(parseTypeValue(jsParamType))
         case MapTypeValue.CODENAME_TYPE => MapTypeValue(parseTypeValue(jsParamType))
-        case TypeVariable.CODENAME_TYPE => TypeVariable
         case _ => throw new IllegalArgumentException("Wrong type")
       })
       .getOrElse(SimpleTypeValue(codename))
@@ -39,9 +38,6 @@ object TypeValue {
       case MapTypeValue(paramType) => JsObject(Map(
         "codename" -> JsString(MapTypeValue.CODENAME_TYPE),
         "paramType" -> serializeTypeValue(paramType)
-      ))
-      case TypeVariable(variableName) => JsObject(Map(
-        "codename" -> JsString(TypeVariable.CODENAME_TYPE)
       ))
       case _ => throw new IllegalArgumentException("Wrong type for type value")
     }
