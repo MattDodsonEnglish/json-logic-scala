@@ -3,6 +3,10 @@ package com.github.celadari.jsonlogicscala.evaluate
 import scala.collection.mutable
 import com.github.celadari.jsonlogicscala.evaluate.defaults._
 import com.github.celadari.jsonlogicscala.tree.types.TypeValue
+import org.apache.xbean.finder.ResourceFinder
+import org.apache.xbean.recipe.ObjectRecipe
+
+import scala.jdk.CollectionConverters.MapHasAsScala
 
 object EvaluatorLogicConf {
 
@@ -88,16 +92,36 @@ object EvaluatorLogicConf {
     def isExternalMethod: Boolean = ownerMethodOpt.isDefined
   }
 
-  implicit val implReduceLogicConf: EvaluatorLogicConf = new EvaluatorLogicConf("") {
-    _operatorToMethodConf ++= DEFAULT_METHOD_CONFS
+  def createConf(
+                  path: String = "META-INF/services/",
+                  operatorsManualAdd: Map[String, MethodConf] = DEFAULT_METHOD_CONFS,
+                  evaluatorValueLogicManualAdd: Map[TypeValue, EvaluatorValueLogic] = Map()
+                ): EvaluatorLogicConf = {
+    val finder = new ResourceFinder(path)
+    val propsConf = finder.mapAllProperties(classOf[MethodConf].getName).asScala
+    val methodConfsLoaded = propsConf.view.mapValues(prop => {
+      val objectRecipe = new ObjectRecipe(propsConf.remove("className").toString)
+      objectRecipe.setAllProperties(prop)
+      objectRecipe.create().asInstanceOf[MethodConf]
+    }).toMap
+
+    val propsEvaluatorValueLogic = finder.mapAllProperties(classOf[EvaluatorValueLogic].getName).asScala
+    val evaluatorValueLogicLoaded = propsConf.view.mapValues(prop => {
+      val objectRecipe = new ObjectRecipe(propsEvaluatorValueLogic.remove("className").toString)
+      objectRecipe.setAllProperties(prop)
+      objectRecipe.create().asInstanceOf[EvaluatorValueLogic]
+      // TODO Parse and create create TypeValue
+
+    }).toMap.asInstanceOf[Map[TypeValue, EvaluatorValueLogic]]
+
+    EvaluatorLogicConf(methodConfsLoaded ++ operatorsManualAdd, evaluatorValueLogicLoaded ++ evaluatorValueLogicManualAdd)
   }
-}
 
-class EvaluatorLogicConf(path: String) {
-  protected[this] val _operatorToMethodConf: mutable.Map[String, EvaluatorLogicConf.MethodConf] = mutable.Map()
-  protected[this] val _valueLogicTypeToReducer: mutable.Map[TypeValue, Class[_ <: EvaluatorValueLogic]] = mutable.Map()
-
-  def operatorToMethodConf: Map[String, EvaluatorLogicConf.MethodConf] = _operatorToMethodConf.toMap
-  def valueLogicTypeToReducer: Map[TypeValue, Class[_ <: EvaluatorValueLogic]] = _valueLogicTypeToReducer.toMap
+  implicit val implReduceLogicConf: EvaluatorLogicConf = createConf()
 
 }
+
+case class EvaluatorLogicConf(
+                               operatorToMethodConf: Map[String, EvaluatorLogicConf.MethodConf],
+                               valueLogicTypeToReducer: Map[TypeValue, EvaluatorValueLogic]
+                             )

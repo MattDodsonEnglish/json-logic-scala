@@ -53,7 +53,6 @@ class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
 
     val reducerClassOpt = conf.valueLogicTypeToReducer.get(typeValueOpt.get)
     reducerClassOpt
-      .map(_.newInstance())
       .getOrElse(EvaluatorValueLogic.identityReducerValueLogic)
       .reduceValueLogic(value)
   }

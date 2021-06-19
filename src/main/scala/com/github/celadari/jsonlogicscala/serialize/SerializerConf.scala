@@ -22,7 +22,7 @@ object SerializerConf {
                   path: String = "META-INF/services/",
                   marshallersClassesManualAdd: Map[String, Marshaller] = DEFAULTS_MARSHALLERS
                 ): SerializerConf = {
-    val finder = new ResourceFinder("META-INF/services/")
+    val finder = new ResourceFinder(path)
     val props = finder.mapAllProperties(classOf[Marshaller].getName).asScala
     val recipes = props.view.mapValues(prop => {
       val objectRecipe = new ObjectRecipe(prop.remove("className").toString)
