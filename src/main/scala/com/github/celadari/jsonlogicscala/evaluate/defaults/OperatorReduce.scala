@@ -12,12 +12,13 @@ object OperatorReduce extends CompositionOperator {
                                 reduceLogic: EvaluatorLogic,
                                 logicOperatorToValue: Map[ComposeLogic, Map[String, Any]]
                               ): Any = {
-    if (logicArr.length != 2) throw new IllegalArgumentException(s"Map operator " +
-      s"requires exactly 1 jsonLogicCore: ${logicArr.toSeq}")
+    if (logicArr.length != 2) throw new IllegalArgumentException(s"Reduce operator " +
+      s"requires exactly 2 jsonLogicCore: ${logicArr.toSeq}")
 
     val jsonLogicComposition = logicArr(0)
+    val initAccum = reduceLogic.evaluate(logicArr(1), logicOperatorToValue)
 
-    values.reduce[Any]{case (value1, value2) => {
+    values.foldLeft[Any](initAccum){case (value1, value2) => {
       val newLogicOperatorToValue = logicOperatorToValue ++ Map(conditionCaller -> Map("accumulator" -> value1, "current" -> value2))
       reduceLogic.evaluate(jsonLogicComposition, newLogicOperatorToValue)
     }}
