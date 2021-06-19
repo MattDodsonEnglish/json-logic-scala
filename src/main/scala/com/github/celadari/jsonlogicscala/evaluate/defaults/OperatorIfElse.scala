@@ -14,7 +14,9 @@ object OperatorIfElse extends Operator {
     }
 
     val (boolValues, returnValues) = values.zipWithIndex.partitionMap{
-      case (boolVal, idx) if (idx / 2 == 0 && idx < n - 1) => Left(boolVal.asInstanceOf[java.lang.Boolean])
+      case (boolVal, idx) if (idx % 2 == 0 && idx < n - 1) => {
+        Left(boolVal.asInstanceOf[java.lang.Boolean])
+      }
       case (returnVal, _) => Right(returnVal)
     }
 

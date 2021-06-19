@@ -19,7 +19,7 @@ object OperatorMap extends CompositionOperator {
 
     values.map(value => {
       val newLogicOperatorToValue = logicOperatorToValue ++ Map(conditionCaller -> Map("" -> value))
-      reduceLogic.reduce(jsonLogicComposition, newLogicOperatorToValue)
+      reduceLogic.evaluate(jsonLogicComposition, newLogicOperatorToValue)
     })
   }
 }

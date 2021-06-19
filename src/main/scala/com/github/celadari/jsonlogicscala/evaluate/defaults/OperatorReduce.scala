@@ -19,7 +19,7 @@ object OperatorReduce extends CompositionOperator {
 
     values.reduce[Any]{case (value1, value2) => {
       val newLogicOperatorToValue = logicOperatorToValue ++ Map(conditionCaller -> Map("accumulator" -> value1, "current" -> value2))
-      reduceLogic.reduce(jsonLogicComposition, newLogicOperatorToValue)
+      reduceLogic.evaluate(jsonLogicComposition, newLogicOperatorToValue)
     }}
   }
 }

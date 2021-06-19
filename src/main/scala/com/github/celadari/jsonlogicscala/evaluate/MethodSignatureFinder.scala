@@ -34,13 +34,55 @@ object MethodSignatureFinder {
 
     closests.toSet
   }
+
+  def maxs(classObjs: Set[Class[_]]): Set[Class[_]] = {
+    val visitedClasses = mutable.Set[Class[_]]()
+    val toVisitClasses = mutable.Stack[Class[_]]() ++ classObjs
+
+    while(toVisitClasses.nonEmpty) {
+      val toVisitClass = toVisitClasses.pop()
+      if (!(visitedClasses ++ toVisitClasses).exists(classEl => toVisitClass.isAssignableFrom(classEl))) visitedClasses += toVisitClass
+    }
+    visitedClasses.toSet
+  }
+
+  def maxMinsAndCastedValues(values: Array[Any], classesToScan: Set[Class[_]]): (Set[Class[_]], Array[Any]) = {
+    // check different types of arrClassObj
+    val arrClassObj = values.map(_.getClass)
+    val parentClasses = maxs(arrClassObj.toSet)
+    val parentClass = if (parentClasses.size >= 2) classOf[java.lang.Object] else parentClasses.head
+
+    // retrieve assignable classes of values
+    val parentArr = java.lang.reflect.Array.newInstance(parentClass, values.length)
+    val parentArrClass = parentArr.getClass
+    for (idx <- values.indices) java.lang.reflect.Array.set(parentArr, idx, values(idx))
+
+    (maxMins(parentArrClass, classesToScan), parentArr.asInstanceOf[Array[Any]])
+  }
+
+  def squeezeGeneralTypes(methods: Set[(Method, Boolean)]): Set[(Method, Boolean)] = {
+    val methodsToExplore = mutable.Set[(Method, Boolean)]() ++ methods
+
+    val mostSpecificMethods = mutable.Set[(Method, Boolean)]()
+    while (methodsToExplore.nonEmpty) {
+      val (methodToExplore, isMethodOwnedByReducedValue) = methodsToExplore.head
+      methodsToExplore -= ((methodToExplore, isMethodOwnedByReducedValue))
+
+      val isSuperClassOfAnotherClass = (methodsToExplore ++ mostSpecificMethods).exists{case (method, _) => {
+        methodToExplore.getParameterTypes.apply(0).isAssignableFrom(method.getParameterTypes.apply(0)) &&
+          methodToExplore.getParameterTypes.apply(1).isAssignableFrom(method.getParameterTypes.apply(1))
+      }}
+      if (!isSuperClassOfAnotherClass) mostSpecificMethods += ((methodToExplore, isMethodOwnedByReducedValue))
+    }
+
+    mostSpecificMethods.toSet
+  }
 }
 
 class MethodSignatureFinder(
                              val conditionsValues: Array[Any],
                              val confMethod: EvaluatorLogicConf.MethodConf
                            ) {
-
   private[this] val conditionsValuesEval = mutable.Stack[Any]() ++ conditionsValues
   private[this] var isEvaluated = false
   private[this] var paths: Set[Array[(Method, Boolean)]] = Set()
@@ -79,7 +121,7 @@ class MethodSignatureFinder(
       .filter(method => {
         val class1 = method.getParameterTypes.apply(0)
         val class2 = method.getParameterTypes.apply(1)
-        class1.isAssignableFrom(valueClass) && class2.isAssignableFrom(path.last._1.getReturnType)
+        class1.isAssignableFrom(path.last._1.getReturnType) && class2.isAssignableFrom(valueClass)
       })
   }
 
@@ -100,24 +142,6 @@ class MethodSignatureFinder(
     }
 
     isEvaluated = true
-  }
-
-  def squeezeGeneralTypes(methods: Set[(Method, Boolean)]): Set[(Method, Boolean)] = {
-    val methodsToExplore = mutable.Set[(Method, Boolean)]() ++ methods
-
-    val mostSpecificMethods = mutable.Set[(Method, Boolean)]()
-    while (methodsToExplore.nonEmpty) {
-      val (methodToExplore, isMethodOwnedByReducedValue) = methodsToExplore.head
-      methodsToExplore -= ((methodToExplore, isMethodOwnedByReducedValue))
-
-      val isSuperClassOfAnotherClass = (methodsToExplore ++ mostSpecificMethods).exists{case (method, _) => {
-        methodToExplore.getParameterTypes.apply(0).isAssignableFrom(method.getParameterTypes.apply(0)) &&
-          methodToExplore.getParameterTypes.apply(1).isAssignableFrom(method.getParameterTypes.apply(1))
-      }}
-      if (!isSuperClassOfAnotherClass) mostSpecificMethods += ((methodToExplore, isMethodOwnedByReducedValue))
-    }
-
-    mostSpecificMethods.toSet
   }
 
   def optimizePaths(): Unit = {

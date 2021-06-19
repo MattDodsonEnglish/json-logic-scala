@@ -21,6 +21,7 @@ object EvaluatorLogicConf {
     "+" -> ("$plus", OperatorPlus),
     "-" -> ("$minus", OperatorMinus),
     "*" -> ("$times", OperatorTimes),
+    "**" -> ("$times$times", OperatorPow),
     "/" -> ("$div", OperatorDiv),
     "%" -> ("$percent", OperatorModulo),
     "^" -> ("$up", OperatorXor),
@@ -50,7 +51,8 @@ object EvaluatorLogicConf {
     "in" -> ("in", OperatorIn),
     "merge" -> ("merge", OperatorMerge),
     "cat" -> ("cat", OperatorCat),
-    "substr" -> ("substr", OperatorSubstr)
+    "substr" -> ("substr", OperatorSubstr),
+    "at" -> ("at", OperatorAt)
   )
   val DEFAULT_NONREDUCEOPERATORS_CONFS: Map[String, MethodConf] = DEFAULT_NONREDUCEOPERATORS_TO_METHODNAME
     .map{case (operator, (methodName, objOperator)) => {
@@ -70,13 +72,14 @@ object EvaluatorLogicConf {
     "none" -> OperatorNone,
     "some" -> OperatorSome
   )
-  val DEFAULT_COMPOSITIONOPERATORS_CONFS: Map[String, MethodConf] = DEFAULT_NONREDUCEOPERATORS_TO_METHODNAME
-    .map{case (operator, (methodName, objOperator)) => {
+  val DEFAULT_COMPOSITIONOPERATORS_CONFS: Map[String, MethodConf] = DEFAULT_COMPOSITIONOPERATORS_TO_METHODNAME
+    .map{case (operator, objOperator) => {
       operator -> MethodConf(
         operator,
-        methodName,
+        null,
         Some(objOperator),
-        isReduceType = false
+        isReduceType = false,
+        isCompositionOperator = true
       )
     }}
 

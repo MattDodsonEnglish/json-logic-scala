@@ -19,7 +19,7 @@ object OperatorSome extends CompositionOperator {
 
     values.exists(value => {
       val newLogicOperatorToValue = logicOperatorToValue ++ Map(conditionCaller -> Map("" -> value))
-      reduceLogic.reduce(jsonLogicComposition, newLogicOperatorToValue).asInstanceOf[java.lang.Boolean]
+      reduceLogic.evaluate(jsonLogicComposition, newLogicOperatorToValue).asInstanceOf[java.lang.Boolean]
     })
   }
 }
