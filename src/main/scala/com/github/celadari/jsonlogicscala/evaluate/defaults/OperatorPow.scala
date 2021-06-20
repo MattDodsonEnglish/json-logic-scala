@@ -4,12 +4,12 @@ import com.github.celadari.jsonlogicscala.evaluate.Operator
 
 object OperatorPow extends Operator {
 
-  private[this] def pow(num1: java.lang.Integer, num2: java.lang.Integer): java.lang.Integer = {
+  private[defaults] def pow(num1: java.lang.Integer, num2: java.lang.Integer): java.lang.Integer = {
     var num = 1
     for (_ <- 0 until num2.toInt) num *= num1
     num
   }
-  private[this] def pow(num1: java.lang.Long, num2: java.lang.Long): java.lang.Long = {
+  private[defaults] def pow(num1: java.lang.Long, num2: java.lang.Long): java.lang.Long = {
     var num = 1L
     for (_ <- 0 until num2.toInt) num *= num1
     num

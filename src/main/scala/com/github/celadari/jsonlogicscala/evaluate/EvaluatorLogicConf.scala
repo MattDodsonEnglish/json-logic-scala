@@ -24,7 +24,7 @@ object EvaluatorLogicConf {
     "**" -> ("$times$times", OperatorPow),
     "/" -> ("$div", OperatorDiv),
     "%" -> ("$percent", OperatorModulo),
-    "^" -> ("$up", OperatorXor),
+    "^" -> ("$up", OperatorXorBitwise),
     "|" -> ("$bar", OperatorOrBitwise),
     "or" -> ("$bar$bar", OperatorOr),
     "&" -> ("$amp", OperatorAndBitwise),

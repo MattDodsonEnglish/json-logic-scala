@@ -5,7 +5,7 @@ import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
 import com.github.celadari.jsonlogicscala.tree.types.SimpleTypeValue
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic}
 
-class TestOperatorIf extends TestNumeric with TestBoolean {
+class TestOperatorIfElse extends TestNumeric with TestBoolean {
 
 
   "Operator If xBool xByte else yByte" should "return value" in {
