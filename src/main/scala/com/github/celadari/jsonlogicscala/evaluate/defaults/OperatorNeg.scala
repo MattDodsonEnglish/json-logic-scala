@@ -1,8 +1,14 @@
 package com.github.celadari.jsonlogicscala.evaluate.defaults
 
-import com.github.celadari.jsonlogicscala.evaluate.Operator
+import com.github.celadari.jsonlogicscala.evaluate.{Operator, UnaryOperator}
 
-object OperatorNeg extends Operator {
+object OperatorNeg extends UnaryOperator {
 
-  def unary_$bang(bool1: java.lang.Boolean): java.lang.Boolean = !bool1
+  def unaryOperator(value: Any): Any = {
+    value match {
+      case bool: Boolean => !bool
+      case bool: java.lang.Boolean => !bool
+      case _ => throw new IllegalArgumentException(s"OperatorNeg can only be applied to boolean values: $value")
+    }
+  }
 }

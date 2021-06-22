@@ -29,7 +29,6 @@ object EvaluatorLogicConf {
     "or" -> ("$bar$bar", OperatorOr),
     "&" -> ("$amp", OperatorAndBitwise),
     "and" -> ("$amp$amp", OperatorAnd),
-    "!" -> ("unary_$bang", OperatorNeg),
     "==" -> ("$eq$eq", OperatorEqWithTypeCoercion),
     "===" -> ("$eq$eq$eq", OperatorEqStrict),
     "!=" -> ("$bang$eq", OperatorNEqWithTypeCoercion),
@@ -60,7 +59,7 @@ object EvaluatorLogicConf {
         operator,
         methodName,
         Some(objOperator),
-        isReduceType = false
+        isReduceTypeOperator = false
       )
     }}
 
@@ -78,19 +77,33 @@ object EvaluatorLogicConf {
         operator,
         null,
         Some(objOperator),
-        isReduceType = false,
+        isReduceTypeOperator = false,
         isCompositionOperator = true
       )
     }}
+  val DEFAULT_UNARYOPERATORS_TO_METHODNAME: Map[String, Operator] = Map(
+    "!" -> OperatorNeg
+  )
+  val DEFAULT_UNARYOPERATORS_CONFS: Map[String, MethodConf] = DEFAULT_UNARYOPERATORS_TO_METHODNAME
+    .map{case (operator, objOperator) => {
+      operator -> MethodConf(
+        operator,
+        null,
+        Some(objOperator),
+        isReduceTypeOperator = false,
+        isUnaryOperator = true
+      )
+    }}
 
-  val DEFAULT_METHOD_CONFS: Map[String, MethodConf] = DEFAULT_REDUCEMETHOD_CONFS ++ DEFAULT_NONREDUCEOPERATORS_CONFS ++ DEFAULT_COMPOSITIONOPERATORS_CONFS
+  val DEFAULT_METHOD_CONFS: Map[String, MethodConf] = DEFAULT_REDUCEMETHOD_CONFS ++ DEFAULT_NONREDUCEOPERATORS_CONFS ++ DEFAULT_COMPOSITIONOPERATORS_CONFS ++ DEFAULT_UNARYOPERATORS_CONFS
 
   case class MethodConf(
                          operator: String,
                          methodName: String,
                          ownerMethodOpt: Option[Operator],
-                         isReduceType: Boolean = true,
-                         isCompositionOperator: Boolean = false
+                         isReduceTypeOperator: Boolean = true,
+                         isCompositionOperator: Boolean = false,
+                         isUnaryOperator: Boolean = false
                        ) {
     def isExternalMethod: Boolean = ownerMethodOpt.isDefined
   }

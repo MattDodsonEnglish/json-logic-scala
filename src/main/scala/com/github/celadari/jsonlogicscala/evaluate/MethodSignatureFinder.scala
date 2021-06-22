@@ -90,23 +90,27 @@ class MethodSignatureFinder(
 
   private[this] def initializePaths(): Unit = {
     val condValueEval1 = conditionsValuesEval.pop()
-    val condValueEval2 = conditionsValuesEval.pop()
+    val condValueEval2Opt = if (conditionsValuesEval.headOption.nonEmpty) Some(conditionsValuesEval.pop()) else None
 
-    val valueClassMethods = findFirstMethods(condValueEval1, condValueEval1, condValueEval2)
-    val classMethods = if (valueClassMethods.nonEmpty) valueClassMethods else findFirstMethods(confMethod.ownerMethodOpt.get, condValueEval1, condValueEval2)
+    val valueClassMethods = findFirstMethods(condValueEval1, condValueEval1, condValueEval2Opt)
+    val classMethods = if (valueClassMethods.nonEmpty) valueClassMethods else findFirstMethods(confMethod.ownerMethodOpt.get, condValueEval1, condValueEval2Opt)
 
     paths ++= classMethods.map(method => Array((method, valueClassMethods.nonEmpty)))
   }
 
-  private[this] def findFirstMethods(ownerMethod: Any, value1: Any, value2: Any): Set[Method] = {
+  private[this] def findFirstMethods(ownerMethod: Any, value1: Any, value2Opt: Option[Any]): Set[Method] = {
     ownerMethod
       .getClass
       .getMethods
       .filter(_.getName == confMethod.methodName)
       .filter(method => {
         val class1 = method.getParameterTypes.apply(0)
-        val class2 = method.getParameterTypes.apply(1)
-        class1.isInstance(value1) && class2.isInstance(value2)
+        val class2Opt = method.getParameterTypes.lift(1)
+        val isParam2Compatible = value2Opt
+          .map(value2 => class2Opt.exists(_.isInstance(value2)))
+          .getOrElse(class2Opt.isEmpty)
+
+        class1.isInstance(value1) && isParam2Compatible
       })
       .toSet
   }

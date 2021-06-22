@@ -15,6 +15,12 @@ class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
     val operator = condition.operator
     val confMethod = conf.operatorToMethodConf(operator)
 
+    // unary operators
+    if (confMethod.isUnaryOperator) {
+      val value = evaluate(condition.conditions(0), logicToValue)
+      return confMethod.ownerMethodOpt.get.asInstanceOf[UnaryOperator].unaryOperator(value)
+    }
+
     // Composition operators: map, filter, reduce
     if (confMethod.isCompositionOperator) {
       val arrValues = evaluate(condition.conditions(0), logicToValue).asInstanceOf[Array[Any]]
@@ -25,7 +31,7 @@ class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
     val conditionsEval = condition.conditions.map(cond => evaluate(cond, logicToValue))
 
     // Global operators: ifElse, merge, in
-    if (!confMethod.isReduceType) {
+    if (!confMethod.isReduceTypeOperator) {
       val methods = confMethod.ownerMethodOpt.get.getClass.getMethods.filter(_.getName == confMethod.methodName).toSet
       val (paramTypes, conditionsEvalCasted) = MethodSignatureFinder.maxMinsAndCastedValues(conditionsEval, methods.map(_.getParameterTypes.apply(0)))
       if (paramTypes.isEmpty) throw new Error(s"Method ${confMethod.methodName} doesn't accept parameter of type: ${conditionsEval.getClass}")

@@ -11,12 +11,12 @@ object OperatorSubstr extends Operator {
     if (n > 3) throw new IllegalArgumentException(s"Subst operator: length of array values must not be greater than 3")
 
     val string = values(0).asInstanceOf[java.lang.String]
-    val idx = values(1).asInstanceOf[java.lang.Number].intValue()
-    val len = values(2).asInstanceOf[java.lang.Number].intValue()
     val length = string.length
+    val idx = values(1).asInstanceOf[java.lang.Number].intValue()
+    val len = values.lift(2).map(_.asInstanceOf[java.lang.Number].intValue()).getOrElse(length - idx)
 
     val startIdx = if (idx < 0) (idx + length) % length else idx
-    val endIdx = if (len < 0) (length - len) else (idx + len)
+    val endIdx = if (len < 0) (length + len) else (startIdx + len)
 
     string.slice(startIdx, endIdx)
   }
