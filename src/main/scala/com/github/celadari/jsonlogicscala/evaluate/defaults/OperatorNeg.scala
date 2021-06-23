@@ -1,6 +1,7 @@
 package com.github.celadari.jsonlogicscala.evaluate.defaults
 
-import com.github.celadari.jsonlogicscala.evaluate.{Operator, UnaryOperator}
+import com.github.celadari.jsonlogicscala.evaluate.UnaryOperator
+import com.github.celadari.jsonlogicscala.exceptions.WrongInputCondition
 
 object OperatorNeg extends UnaryOperator {
 
@@ -8,7 +9,8 @@ object OperatorNeg extends UnaryOperator {
     value match {
       case bool: Boolean => !bool
       case bool: java.lang.Boolean => !bool
-      case _ => throw new IllegalArgumentException(s"OperatorNeg can only be applied to boolean values: $value")
+      case other => throw new WrongInputCondition(s"Operator Neg can only be " +
+        s"applied to boolean values. Input conditon: ${other.toString}")
     }
   }
 }

@@ -1,14 +1,15 @@
 package com.github.celadari.jsonlogicscala.evaluate.defaults
 
 import com.github.celadari.jsonlogicscala.evaluate.Operator
+import com.github.celadari.jsonlogicscala.exceptions.WrongNumberOfConditionsException
 
 object OperatorSubstr extends Operator {
 
   def substr(values: Array[java.lang.Object]): java.lang.String = {
-    val n = values.length
 
-    if (n < 2) throw new IllegalArgumentException(s"Subst operator: length of array values must not be less than 2")
-    if (n > 3) throw new IllegalArgumentException(s"Subst operator: length of array values must not be greater than 3")
+    if (values.length < 2 && values.length > 3) throw new WrongNumberOfConditionsException(s"Subst operator " +
+      s"requires length of conditions input to be at least 2 and not greater than 3. \nArray of " +
+      s"conditions: ${values.mkString("[", ", ", "]")}")
 
     val string = values(0).asInstanceOf[java.lang.String]
     val length = string.length

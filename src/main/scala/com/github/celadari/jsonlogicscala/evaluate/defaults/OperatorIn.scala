@@ -1,6 +1,7 @@
 package com.github.celadari.jsonlogicscala.evaluate.defaults
 
 import com.github.celadari.jsonlogicscala.evaluate.Operator
+import com.github.celadari.jsonlogicscala.exceptions.WrongNumberOfConditionsException
 
 object OperatorIn extends Operator {
 
@@ -19,9 +20,10 @@ object OperatorIn extends Operator {
   }
 
   def in(values: Array[java.lang.Object]): java.lang.Boolean = {
-    val n = values.length
 
-    if (n != 2) throw new IllegalArgumentException(s"In operator: length of array values must be 2")
+    if (values.length != 2) throw new WrongNumberOfConditionsException(s"In operator array " +
+      s"requires length of conditions input to be exactly 2. \nArray of " +
+      s"conditions: ${values.mkString("[", ", ", "]")}")
 
     val value = values(0).transformArrayToList
     val list = values(1).transformArrayToList.asInstanceOf[List[Any]]
@@ -29,9 +31,10 @@ object OperatorIn extends Operator {
   }
 
   def in(values: Array[java.lang.String]): java.lang.Boolean = {
-    val n = values.length
 
-    if (n != 2) throw new IllegalArgumentException(s"In operator: length of array values must be 2")
+    if (values.length != 2) throw new WrongNumberOfConditionsException(s"In operator string " +
+      s"requires length of conditions input to be exactly 2. \nArray of " +
+      s"conditions: ${values.mkString("[", ", ", "]")}")
 
     val subString = values(0)
     val string = values(1)

@@ -63,11 +63,16 @@ class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
   }
 
   def evaluate(condition: JsonLogicCore, logicOperatorToValue: Map[ComposeLogic, Map[String, Any]]): Any = {
-    condition match {
-      case composeLogic: ComposeLogic => reduceComposeLogic(composeLogic, logicOperatorToValue)
-      case valueLogic: ValueLogic[_] => evaluateValueLogic(valueLogic)
-      case VariableLogic(variableName, composeOperator) => logicOperatorToValue(composeOperator)(variableName)
-      case other => throw new IllegalArgumentException(s"Invalid argument: $other")
+    try {
+      condition match {
+        case composeLogic: ComposeLogic => reduceComposeLogic(composeLogic, logicOperatorToValue)
+        case valueLogic: ValueLogic[_] => evaluateValueLogic(valueLogic)
+        case VariableLogic(variableName, composeOperator) => logicOperatorToValue(composeOperator)(variableName)
+        case other => throw new IllegalArgumentException(s"Invalid argument: $other")
+      }
+    }
+    catch {
+      case throwable: Throwable => throwable
     }
   }
 

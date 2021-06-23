@@ -1,6 +1,7 @@
 package com.github.celadari.jsonlogicscala.evaluate.defaults
 
 import com.github.celadari.jsonlogicscala.evaluate.{CompositionOperator, EvaluatorLogic}
+import com.github.celadari.jsonlogicscala.exceptions.WrongNumberOfConditionsException
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore}
 
 object OperatorSome extends CompositionOperator {
@@ -12,8 +13,9 @@ object OperatorSome extends CompositionOperator {
                                 reduceLogic: EvaluatorLogic,
                                 logicOperatorToValue: Map[ComposeLogic, Map[String, Any]]
                               ): Any = {
-    if (logicArr.length != 1) throw new IllegalArgumentException(s"Some operator " +
-      s"requires exactly 1 jsonLogicCore: ${logicArr.toSeq}")
+    if (logicArr.length != 1) throw new WrongNumberOfConditionsException(s"Some operator " +
+      s"requires length of conditions input to be exactly 1. \nArray of " +
+      s"conditions: ${logicArr.mkString("[", ", ", "]")}")
 
     val jsonLogicComposition = logicArr(0)
 
