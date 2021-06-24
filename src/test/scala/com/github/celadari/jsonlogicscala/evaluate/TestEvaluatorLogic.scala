@@ -43,7 +43,7 @@ class TestEvaluatorLogic extends TestPrivateMethods {
       ValueLogic(Some(4), Some(SimpleTypeValue(INT_CODENAME)))
     ))
 
-    val result = evaluator invokePrivate evaluateComposeLogic(composeLogic)
+    val result = evaluator invokePrivate evaluateComposeLogic(composeLogic, Map[ComposeLogic, Map[String, Any]]())
     result shouldBe 8
   }
 
