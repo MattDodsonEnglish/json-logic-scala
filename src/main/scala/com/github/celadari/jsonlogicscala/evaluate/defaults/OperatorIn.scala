@@ -32,9 +32,11 @@ object OperatorIn extends Operator {
 
   def in(values: Array[java.lang.String]): java.lang.Boolean = {
 
-    if (values.length != 2) throw new WrongNumberOfConditionsException(s"In operator string " +
-      s"requires length of conditions input to be exactly 2. \nArray of " +
-      s"conditions: ${values.mkString("[", ", ", "]")}")
+    if (values.length != 2) {
+      throw new WrongNumberOfConditionsException(s"In operator string " +
+        s"requires length of conditions input to be exactly 2. \nArray of " +
+        s"conditions: ${values.mkString("[", ", ", "]")}")
+    }
 
     val subString = values(0)
     val string = values(1)

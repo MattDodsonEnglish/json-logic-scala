@@ -1,7 +1,7 @@
 package com.github.celadari.jsonlogicscala.evaluate.defaults
 
 import com.github.celadari.jsonlogicscala.evaluate.Operator
-import com.github.celadari.jsonlogicscala.exceptions.WrongNumberOfConditionsException
+import com.github.celadari.jsonlogicscala.exceptions.{IllegalInputException, WrongNumberOfConditionsException}
 
 object OperatorAt extends Operator {
 
@@ -17,8 +17,8 @@ object OperatorAt extends Operator {
       case arr: Array[Any] => arr.apply(index.toString.toDouble.toInt)
       case map: Map[Any, Any] => map.apply(index)
       case ite: Iterable[Any] => ite.toArray.apply(index.toString.toDouble.toInt)
-      case other => throw new WrongNumberOfConditionsException(s"At operator input must be either:" +
-        s"Array, Map, Iterable. Current input: ${other.toString}")
+      case other => throw new IllegalInputException(s"At operator second input must be either:" +
+        s"Array, Map, Iterable. Current second input: ${other.toString}")
     }
   }
 }

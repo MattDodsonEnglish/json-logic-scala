@@ -60,23 +60,6 @@ object MethodSignatureFinder {
     (maxMins(parentArrClass, classesToScan), parentArr.asInstanceOf[Array[Any]])
   }
 
-  def squeezeGeneralTypes(methods: Set[(Method, Boolean)]): Set[(Method, Boolean)] = {
-    val methodsToExplore = mutable.Set[(Method, Boolean)]() ++ methods
-
-    val mostSpecificMethods = mutable.Set[(Method, Boolean)]()
-    while (methodsToExplore.nonEmpty) {
-      val (methodToExplore, isMethodOwnedByReducedValue) = methodsToExplore.head
-      methodsToExplore -= ((methodToExplore, isMethodOwnedByReducedValue))
-
-      val isSuperClassOfAnotherClass = (methodsToExplore ++ mostSpecificMethods).exists{case (method, _) => {
-        methodToExplore.getParameterTypes.apply(0).isAssignableFrom(method.getParameterTypes.apply(0)) &&
-          methodToExplore.getParameterTypes.apply(1).isAssignableFrom(method.getParameterTypes.apply(1))
-      }}
-      if (!isSuperClassOfAnotherClass) mostSpecificMethods += ((methodToExplore, isMethodOwnedByReducedValue))
-    }
-
-    mostSpecificMethods.toSet
-  }
 }
 
 class MethodSignatureFinder(

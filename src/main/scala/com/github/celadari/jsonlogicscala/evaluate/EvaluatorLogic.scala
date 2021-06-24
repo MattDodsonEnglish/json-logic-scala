@@ -1,19 +1,23 @@
 package com.github.celadari.jsonlogicscala.evaluate
 
 import com.github.celadari.jsonlogicscala.evaluate.CompositionOperator.ComposeJsonLogicCore
+import com.github.celadari.jsonlogicscala.exceptions.{EvaluationException, IllegalInputException, IncompatibleMethodsException, JsonLogicScalaException}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic, VariableLogic}
+
+import java.lang.reflect.InvocationTargetException
 
 
 object EvaluatorLogic {
   implicit val reduceLogic: EvaluatorLogic = new EvaluatorLogic
-
 }
 
 class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
 
-  protected[this] def reduceComposeLogic(condition: ComposeLogic, logicToValue: Map[ComposeLogic, Map[String, Any]]): Any = {
+  protected[this] def evaluateComposeLogic(condition: ComposeLogic, logicToValue: Map[ComposeLogic, Map[String, Any]]): Any = {
     val operator = condition.operator
-    val confMethod = conf.operatorToMethodConf(operator)
+    val confMethod = conf.operatorToMethodConf.getOrElse(operator, {
+      throw new IllegalInputException(s"No configuration for operator: $operator")
+    })
 
     // unary operators
     if (confMethod.isUnaryOperator) {
@@ -23,9 +27,8 @@ class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
 
     // Composition operators: map, filter, reduce
     if (confMethod.isCompositionOperator) {
-      val arrValues = evaluate(condition.conditions(0), logicToValue).asInstanceOf[Array[Any]]
-      val logicArr = condition.conditions.slice(1, condition.conditions.length)
-      return confMethod.ownerMethodOpt.get.asInstanceOf[CompositionOperator].composeOperator(arrValues, logicArr, condition, this, logicToValue)
+      return confMethod.ownerMethodOpt.get.asInstanceOf[CompositionOperator]
+        .evalOperator(condition.conditions, condition, this, logicToValue)
     }
 
     val conditionsEval = condition.conditions.map(cond => evaluate(cond, logicToValue))
@@ -34,14 +37,21 @@ class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
     if (!confMethod.isReduceTypeOperator) {
       val methods = confMethod.ownerMethodOpt.get.getClass.getMethods.filter(_.getName == confMethod.methodName).toSet
       val (paramTypes, conditionsEvalCasted) = MethodSignatureFinder.maxMinsAndCastedValues(conditionsEval, methods.map(_.getParameterTypes.apply(0)))
-      if (paramTypes.isEmpty) throw new Error(s"Method ${confMethod.methodName} doesn't accept parameter of type: ${conditionsEval.getClass}")
+
+      if (paramTypes.isEmpty) {
+        throw new IncompatibleMethodsException(s"Method ${confMethod.methodName} doesn't accept parameter of type: ${conditionsEval.getClass}")
+      }
 
       val method = methods.find(_.getParameterTypes.apply(0) == paramTypes.head).get
 
       return method.invoke(confMethod.ownerMethodOpt.get, conditionsEvalCasted)
     }
 
-    val methodsAndIsOwned = new MethodSignatureFinder(conditionsEval, confMethod).findPaths().head
+    val paths = new MethodSignatureFinder(conditionsEval, confMethod).findPaths()
+    if (paths.isEmpty) {
+      throw new IncompatibleMethodsException(s"Method ${confMethod.methodName} doesn't accept parameter of type: ${conditionsEval.getClass}")
+    }
+    val methodsAndIsOwned = paths.head
 
     methodsAndIsOwned
       .zip(conditionsEval.tail)
@@ -65,14 +75,20 @@ class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
   def evaluate(condition: JsonLogicCore, logicOperatorToValue: Map[ComposeLogic, Map[String, Any]]): Any = {
     try {
       condition match {
-        case composeLogic: ComposeLogic => reduceComposeLogic(composeLogic, logicOperatorToValue)
+        case composeLogic: ComposeLogic => evaluateComposeLogic(composeLogic, logicOperatorToValue)
         case valueLogic: ValueLogic[_] => evaluateValueLogic(valueLogic)
         case VariableLogic(variableName, composeOperator) => logicOperatorToValue(composeOperator)(variableName)
-        case other => throw new IllegalArgumentException(s"Invalid argument: $other")
       }
     }
     catch {
-      case throwable: Throwable => throwable
+      case invTargetException: InvocationTargetException => {
+        invTargetException.getTargetException match {
+          case evaluationException: EvaluationException => throw evaluationException
+          case throwable: Throwable => throw new EvaluationException(throwable.getMessage, condition, throwable)
+        }
+      }
+      case evaluationException: EvaluationException => throw evaluationException
+      case throwable: Throwable => throw new EvaluationException(throwable.getMessage, condition, throwable)
     }
   }
 

@@ -1,6 +1,7 @@
 package com.github.celadari.jsonlogicscala.evaluate.defaults
 
 import com.github.celadari.jsonlogicscala.evaluate.EvaluatorLogic
+import com.github.celadari.jsonlogicscala.exceptions.{EvaluationException, IllegalInputException, WrongNumberOfConditionsException}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
 import com.github.celadari.jsonlogicscala.tree.types.{MapTypeValue, SimpleTypeValue}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic}
@@ -41,6 +42,16 @@ class TestOperatorAt extends TestMap with TestNumeric with TestArray {
     evaluator.eval(tree) shouldBe mapInt("plane")
   }
 
+  "Operator At Iterable[Int] Index" should "return value" in {
+    val tree = new ComposeLogic("at", Array(
+      ValueLogic(Some(0), Some(SimpleTypeValue(INT_CODENAME))),
+      ValueLogic(Some(Seq(4, 5)), Some(arrIntType))
+    ))
+
+    val evaluator = new EvaluatorLogic
+    evaluator.eval(tree) shouldBe 4
+  }
+
   "Operator At At mapMapLong" should "return value" in {
     val tree = new ComposeLogic("at", Array(
       ValueLogic(Some("boat"), Some(SimpleTypeValue(STRING_CODENAME))),
@@ -65,6 +76,42 @@ class TestOperatorAt extends TestMap with TestNumeric with TestArray {
 
     val evaluator = new EvaluatorLogic
     evaluator.eval(tree) shouldBe mapArrDouble("plane")(1)
+  }
+
+  "Operator At more than 2 input conditions" should "throw an exception" in {
+    val tree = new ComposeLogic("at", Array(
+      ValueLogic(Some(1), Some(SimpleTypeValue(INT_CODENAME))),
+      new ComposeLogic("at", Array(
+        ValueLogic(Some("plane"), Some(SimpleTypeValue(STRING_CODENAME))),
+        ValueLogic(Some(mapArrDouble), Some(mapMapLongType)),
+        ValueLogic(Some("plane"), Some(SimpleTypeValue(STRING_CODENAME)))
+      ))
+    ))
+
+    val evaluator = new EvaluatorLogic
+    val thrown = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    an[WrongNumberOfConditionsException] should be thrownBy {throw thrown.origException}
+  }
+
+  "Operator At less than 2 input conditions" should "throw an exception" in {
+    val tree = new ComposeLogic("at", Array(
+      ValueLogic(Some(arrString), Some(arrStringType)),
+    ))
+
+    val evaluator = new EvaluatorLogic
+    val thrown = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    an[WrongNumberOfConditionsException] should be thrownBy {throw thrown.origException}
+  }
+
+  "Operator At Index Index" should "throw an exception" in {
+    val tree = new ComposeLogic("at", Array(
+      ValueLogic(Some(xInt), Some(SimpleTypeValue(INT_CODENAME))),
+      ValueLogic(Some(xInt), Some(SimpleTypeValue(INT_CODENAME)))
+    ))
+
+    val evaluator = new EvaluatorLogic
+    val thrown = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    an[IllegalInputException] should be thrownBy {throw thrown.origException}
   }
 
 }

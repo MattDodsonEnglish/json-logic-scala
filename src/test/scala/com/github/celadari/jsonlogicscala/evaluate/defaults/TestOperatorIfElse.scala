@@ -1,11 +1,12 @@
 package com.github.celadari.jsonlogicscala.evaluate.defaults
 
 import com.github.celadari.jsonlogicscala.evaluate.EvaluatorLogic
+import com.github.celadari.jsonlogicscala.exceptions.{EvaluationException, WrongNumberOfConditionsException}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
 import com.github.celadari.jsonlogicscala.tree.types.SimpleTypeValue
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic}
 
-class TestOperatorIfElse extends TestNumeric with TestBoolean {
+class TestOperatorIfElse extends TestNumeric with TestBoolean with TestArray {
 
 
   "Operator If xBool xByte else yByte" should "return value" in {
@@ -69,6 +70,31 @@ class TestOperatorIfElse extends TestNumeric with TestBoolean {
 
     val evaluator = new EvaluatorLogic
     evaluator.eval(tree) shouldBe (xDouble)
+  }
+
+  "Operator IfElse less than 3 input conditions" should "throw an exception" in {
+    val string0 = "You love New York"
+    val tree = new ComposeLogic("if", Array(
+      ValueLogic(Some(xBool), Some(SimpleTypeValue(BOOL_CODENAME))),
+      ValueLogic(Some(arrInt), Some(arrIntType))
+    ))
+
+    val evaluator = new EvaluatorLogic
+    val thrown = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    an[WrongNumberOfConditionsException] should be thrownBy {throw thrown.origException}
+  }
+
+  "Operator IfElse even number of input conditions" should "throw an exception" in {
+    val tree = new ComposeLogic("if", Array(
+      ValueLogic(Some(xBool), Some(SimpleTypeValue(BOOL_CODENAME))),
+      ValueLogic(Some(arrString), Some(arrStringType)),
+      ValueLogic(Some(yBool), Some(SimpleTypeValue(BOOL_CODENAME))),
+      ValueLogic(Some(arrInt), Some(arrIntType))
+    ))
+
+    val evaluator = new EvaluatorLogic
+    val thrown = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    an[WrongNumberOfConditionsException] should be thrownBy {throw thrown.origException}
   }
 
   "Operator If uBool xFloat else if vBool yShort else if yBool yDouble else yInt" should "return value" in {

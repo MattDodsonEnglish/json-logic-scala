@@ -1,6 +1,7 @@
 package com.github.celadari.jsonlogicscala.evaluate.defaults
 
 import com.github.celadari.jsonlogicscala.evaluate.EvaluatorLogic
+import com.github.celadari.jsonlogicscala.exceptions.{EvaluationException, WrongNumberOfConditionsException}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
 import com.github.celadari.jsonlogicscala.tree.types.SimpleTypeValue
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic}
@@ -66,6 +67,50 @@ class TestOperatorIn extends TestMap with TestNumeric with TestArray with TestSt
 
     val evaluator = new EvaluatorLogic
     evaluator.eval(tree) shouldBe zString.contains(yString)
+  }
+
+  "Operator In more than 2 input conditions" should "throw an exception" in {
+    val tree = new ComposeLogic("in", Array(
+      ValueLogic(Some(1), Some(SimpleTypeValue(INT_CODENAME))),
+      ValueLogic(Some(arrInt), Some(arrIntType)),
+      ValueLogic(Some(arrInt), Some(arrIntType))
+    ))
+
+    val evaluator = new EvaluatorLogic
+    val thrown = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    an[WrongNumberOfConditionsException] should be thrownBy {throw thrown.origException}
+  }
+
+  "Operator In less than 2 input conditions" should "throw an exception" in {
+    val tree = new ComposeLogic("in", Array(
+      ValueLogic(Some(arrInt), Some(arrIntType)),
+    ))
+
+    val evaluator = new EvaluatorLogic
+    val thrown = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    an[WrongNumberOfConditionsException] should be thrownBy {throw thrown.origException}
+  }
+
+  "Operator String In more than 2 input conditions" should "throw an exception" in {
+    val tree = new ComposeLogic("in", Array(
+      ValueLogic(Some(xString), Some(SimpleTypeValue(STRING_CODENAME))),
+      ValueLogic(Some(yString), Some(SimpleTypeValue(STRING_CODENAME))),
+      ValueLogic(Some(zString), Some(SimpleTypeValue(STRING_CODENAME)))
+    ))
+
+    val evaluator = new EvaluatorLogic
+    val thrown = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    an[WrongNumberOfConditionsException] should be thrownBy {throw thrown.origException}
+  }
+
+  "Operator String In less than 2 input conditions" should "throw an exception" in {
+    val tree = new ComposeLogic("in", Array(
+      ValueLogic(Some(xString), Some(SimpleTypeValue(STRING_CODENAME))),
+    ))
+
+    val evaluator = new EvaluatorLogic
+    val thrown = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    an[WrongNumberOfConditionsException] should be thrownBy {throw thrown.origException}
   }
 
 }

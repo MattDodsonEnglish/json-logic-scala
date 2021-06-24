@@ -6,17 +6,19 @@ import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore}
 
 object OperatorAll extends CompositionOperator {
 
-  override def composeOperator(
+  def checkInputs(conditions: Array[JsonLogicCore]): Unit = {
+    if (conditions.length != 2) throw new WrongNumberOfConditionsException(s"All operator " +
+      s"requires length of condition inputs array to be exactly 2.\nArray of " +
+      s"conditions: ${conditions.mkString("[", ", ", "]")}")
+  }
+
+  def composeOperator(
                                 values: Array[Any],
                                 logicArr: Array[JsonLogicCore],
                                 conditionCaller: ComposeLogic,
                                 reduceLogic: EvaluatorLogic,
                                 logicOperatorToValue: Map[ComposeLogic, Map[String, Any]]
                               ): Any = {
-    if (logicArr.length != 1) throw new WrongNumberOfConditionsException(s"All operator " +
-      s"requires length of conditions input to be exactly 1. \nArray of " +
-      s"conditions: ${logicArr.mkString("[", ", ", "]")}")
-
     val jsonLogicComposition = logicArr(0)
 
     values.forall(value => {

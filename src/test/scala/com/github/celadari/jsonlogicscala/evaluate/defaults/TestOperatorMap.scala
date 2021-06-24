@@ -1,6 +1,7 @@
 package com.github.celadari.jsonlogicscala.evaluate.defaults
 
 import com.github.celadari.jsonlogicscala.evaluate.EvaluatorLogic
+import com.github.celadari.jsonlogicscala.exceptions.{EvaluationException, WrongNumberOfConditionsException}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
 import com.github.celadari.jsonlogicscala.tree.types.{MapTypeValue, SimpleTypeValue}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic, VariableLogic}
@@ -48,6 +49,32 @@ class TestOperatorMap extends TestNumeric with TestArray {
 
     val evaluator = new EvaluatorLogic
     evaluator.eval(tree) shouldBe arrString.map(map0.apply)
+  }
+
+  "Operator Map more than 2 input conditions" should "throw an exception" in {
+    val string0 = "You love New York"
+    val tree = new ComposeLogic("map", Array(
+      ValueLogic(Some(arrString), Some(arrStringType)),
+      new ComposeLogic("in", Array(
+        ValueLogic(None, None, Some("")),
+        ValueLogic(Some(string0), Some(SimpleTypeValue(STRING_CODENAME))),
+      )),
+      ValueLogic(Some(arrInt), Some(arrIntType))
+    ))
+
+    val evaluator = new EvaluatorLogic
+    val thrown = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    an[WrongNumberOfConditionsException] should be thrownBy {throw thrown.origException}
+  }
+
+  "Operator Map less than 2 input conditions" should "throw an exception" in {
+    val tree = new ComposeLogic("map", Array(
+      ValueLogic(Some(arrString), Some(arrStringType)),
+    ))
+
+    val evaluator = new EvaluatorLogic
+    val thrown = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    an[WrongNumberOfConditionsException] should be thrownBy {throw thrown.origException}
   }
 
   "Operator Map f(el: Float => el**2 + el + 3)" should "return value" in {

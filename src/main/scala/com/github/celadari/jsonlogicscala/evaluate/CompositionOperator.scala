@@ -45,4 +45,19 @@ trait CompositionOperator extends Operator {
                        reduceLogic: EvaluatorLogic,
                        logicOperatorToValue: Map[ComposeLogic, Map[String, Any]]
                      ): Any
+
+  def evalOperator(
+                     conditions: Array[JsonLogicCore],
+                     conditionCaller: ComposeLogic,
+                     reduceLogic: EvaluatorLogic,
+                     logicOperatorToValue: Map[ComposeLogic, Map[String, Any]]
+                  ): Any = {
+    checkInputs(conditions)
+    val arrValues = reduceLogic.evaluate(conditions(0), logicOperatorToValue).asInstanceOf[Array[Any]]
+    val logicArr = conditions.slice(1, conditions.length)
+    composeOperator(arrValues, logicArr, conditionCaller, reduceLogic, logicOperatorToValue)
+  }
+
+  def checkInputs(conditions: Array[JsonLogicCore]): Unit
+
 }

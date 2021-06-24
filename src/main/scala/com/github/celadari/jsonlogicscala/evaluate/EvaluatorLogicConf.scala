@@ -1,12 +1,10 @@
 package com.github.celadari.jsonlogicscala.evaluate
 
-import scala.collection.mutable
+import scala.jdk.CollectionConverters.MapHasAsScala
 import com.github.celadari.jsonlogicscala.evaluate.defaults._
 import com.github.celadari.jsonlogicscala.tree.types.TypeValue
 import org.apache.xbean.finder.ResourceFinder
 import org.apache.xbean.recipe.ObjectRecipe
-
-import scala.jdk.CollectionConverters.MapHasAsScala
 
 object EvaluatorLogicConf {
 

@@ -1,6 +1,7 @@
 package com.github.celadari.jsonlogicscala.evaluate.defaults
 
 import com.github.celadari.jsonlogicscala.evaluate.EvaluatorLogic
+import com.github.celadari.jsonlogicscala.exceptions.{EvaluationException, WrongNumberOfConditionsException}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
 import com.github.celadari.jsonlogicscala.tree.types.{MapTypeValue, SimpleTypeValue}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic}
@@ -53,6 +54,34 @@ class TestOperatorReduce extends TestNumeric with TestArray {
 
     val evaluator = new EvaluatorLogic
     evaluator.eval(tree) shouldBe arrInt.foldLeft[Int](0){case (acc, el) => if (el <= 0) 2 * acc + el else 5 * acc + 3}
+  }
+
+  "Operator Reduce more than 3 input conditions" should "throw an exception" in {
+    val string0 = "You love New York"
+    val tree = new ComposeLogic("reduce", Array(
+      ValueLogic(Some(arrString), Some(arrStringType)),
+      new ComposeLogic("cat", Array(
+        ValueLogic(None, None, Some("accumulator")),
+        ValueLogic(Some(" "), Some(SimpleTypeValue(STRING_CODENAME))),
+        ValueLogic(None, None, Some("current"))
+      )),
+      ValueLogic(Some(""), Some(SimpleTypeValue(STRING_CODENAME))),
+      ValueLogic(Some(""), Some(SimpleTypeValue(STRING_CODENAME)))
+    ))
+
+    val evaluator = new EvaluatorLogic
+    val thrown = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    an[WrongNumberOfConditionsException] should be thrownBy {throw thrown.origException}
+  }
+
+  "Operator Reduce less than 3 input conditions" should "throw an exception" in {
+    val tree = new ComposeLogic("reduce", Array(
+      ValueLogic(Some(arrString), Some(arrStringType))
+    ))
+
+    val evaluator = new EvaluatorLogic
+    val thrown = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    an[WrongNumberOfConditionsException] should be thrownBy {throw thrown.origException}
   }
 
   "Operator Reduce String (acc, el) => acc + el" should "return value" in {
