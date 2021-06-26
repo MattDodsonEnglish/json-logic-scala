@@ -49,7 +49,7 @@ class TestOperatorAnd extends TestBoolean with TestNumeric with TestArray {
       new ComposeLogic("some", Array(
         ValueLogic(Some(arrDouble), Some(arrDoubleType)),
         new ComposeLogic("==", Array(
-          ValueLogic(None, None, Some("")),
+          ValueLogic(None, None, Some(""), None),
           ValueLogic(Some(23), Some(SimpleTypeValue(INT_CODENAME)))
         ))
       )),
@@ -65,7 +65,7 @@ class TestOperatorAnd extends TestBoolean with TestNumeric with TestArray {
       new ComposeLogic("all", Array(
         ValueLogic(Some(arrDouble), Some(arrDoubleType)),
         new ComposeLogic("==", Array(
-          ValueLogic(None, None, Some("")),
+          ValueLogic(None, None, Some(""), None),
           ValueLogic(Some(23), Some(SimpleTypeValue(INT_CODENAME)))
         ))
       )),

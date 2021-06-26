@@ -14,10 +14,10 @@ class TestOperatorReduce extends TestNumeric with TestArray {
       ValueLogic(Some(arrInt), Some(arrIntType)),
       new ComposeLogic("+", Array(
         new ComposeLogic("*", Array(
-          ValueLogic(None, None, Some("accumulator")),
+          ValueLogic(None, None, Some("accumulator"), None),
           ValueLogic(Some(5), Some(SimpleTypeValue(INT_CODENAME)))
         )),
-        ValueLogic(None, None, Some("current"))
+        ValueLogic(None, None, Some("current"), None)
       )),
       ValueLogic(Some(0), Some(SimpleTypeValue(INT_CODENAME)))
     ))
@@ -31,20 +31,20 @@ class TestOperatorReduce extends TestNumeric with TestArray {
       ValueLogic(Some(arrInt), Some(arrIntType)),
       new ComposeLogic("if", Array(
         new ComposeLogic("<=", Array(
-          ValueLogic(None, None, Some("current")),
+          ValueLogic(None, None, Some("current"), None),
           ValueLogic(Some(0), Some(SimpleTypeValue(INT_CODENAME)), None)
         )),
         new ComposeLogic("+", Array(
           new ComposeLogic("*", Array(
             ValueLogic(Some(2), Some(SimpleTypeValue(INT_CODENAME))),
-            ValueLogic(None, None, Some("accumulator"))
+            ValueLogic(None, None, Some("accumulator"), None)
           )),
-          ValueLogic(None, None, Some("current")),
+          ValueLogic(None, None, Some("current"), None),
         )),
         new ComposeLogic("+", Array(
           new ComposeLogic("*", Array(
             ValueLogic(Some(5), Some(SimpleTypeValue(INT_CODENAME))),
-            ValueLogic(None, None, Some("accumulator"))
+            ValueLogic(None, None, Some("accumulator"), None)
           )),
           ValueLogic(Some(3), Some(SimpleTypeValue(INT_CODENAME))),
         ))
@@ -61,9 +61,9 @@ class TestOperatorReduce extends TestNumeric with TestArray {
     val tree = new ComposeLogic("reduce", Array(
       ValueLogic(Some(arrString), Some(arrStringType)),
       new ComposeLogic("cat", Array(
-        ValueLogic(None, None, Some("accumulator")),
+        ValueLogic(None, None, Some("accumulator"), None),
         ValueLogic(Some(" "), Some(SimpleTypeValue(STRING_CODENAME))),
-        ValueLogic(None, None, Some("current"))
+        ValueLogic(None, None, Some("current"), None)
       )),
       ValueLogic(Some(""), Some(SimpleTypeValue(STRING_CODENAME))),
       ValueLogic(Some(""), Some(SimpleTypeValue(STRING_CODENAME)))
@@ -88,9 +88,9 @@ class TestOperatorReduce extends TestNumeric with TestArray {
     val tree = new ComposeLogic("reduce", Array(
       ValueLogic(Some(arrString), Some(arrStringType)),
       new ComposeLogic("cat", Array(
-        ValueLogic(None, None, Some("accumulator")),
+        ValueLogic(None, None, Some("accumulator"), None),
         ValueLogic(Some(" "), Some(SimpleTypeValue(STRING_CODENAME))),
-        ValueLogic(None, None, Some("current"))
+        ValueLogic(None, None, Some("current"), None)
       )),
       ValueLogic(Some(""), Some(SimpleTypeValue(STRING_CODENAME)))
     ))

@@ -102,9 +102,7 @@ object EvaluatorLogicConf {
                          isReduceTypeOperator: Boolean = true,
                          isCompositionOperator: Boolean = false,
                          isUnaryOperator: Boolean = false
-                       ) {
-    def isExternalMethod: Boolean = ownerMethodOpt.isDefined
-  }
+                       )
 
   def createConf(
                   path: String = "META-INF/services/",

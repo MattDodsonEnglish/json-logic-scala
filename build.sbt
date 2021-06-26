@@ -23,7 +23,11 @@ libraryDependencies ++= {
     "com.typesafe.play" %% "play-json" % resolveVersion(scalaVersion.value, typeSafeVersions),
     "org.apache.xbean" % "xbean-finder" % "4.20",
     "org.apache.xbean" % "xbean-reflect" % "4.20",
-    "org.scalatest" %% "scalatest" % "3.2.9" % Test
+    "org.scalatest" %% "scalatest" % "3.2.9" % Test,
+    "org.mockito" % "mockito-inline" % "3.8.0" % Test,
+    "org.scalatestplus" %% "mockito-3-4" % "3.2.9.0" % Test,
+    //"org.powermock" % "powermock-api-mockito" % "2.0.0" % Test,
+    //"org.powermock" % "powermock-module-junit4" % "2.0.0" % Test
   )
 }
 

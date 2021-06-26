@@ -11,7 +11,7 @@ class TestOperatorNone extends TestNumeric with TestArray {
   "Operator None f(el: Boolean => el)" should "return value" in {
     val tree = new ComposeLogic("none", Array(
       ValueLogic(Some(arrBool), Some(arrBoolType)),
-      ValueLogic(None, None, Some(""))
+      ValueLogic(None, None, Some(""), None)
     ))
 
     val evaluator = new EvaluatorLogic
@@ -23,7 +23,7 @@ class TestOperatorNone extends TestNumeric with TestArray {
       ValueLogic(Some(arrInt), Some(arrIntType)),
       new ComposeLogic("<=", Array(
         new ComposeLogic("+", Array(
-          ValueLogic(None, None, Some("")),
+          ValueLogic(None, None, Some(""), None),
           ValueLogic(Some(1), Some(SimpleTypeValue(INT_CODENAME)))
         )),
         ValueLogic(Some(0), Some(SimpleTypeValue(INT_CODENAME)))
@@ -40,7 +40,7 @@ class TestOperatorNone extends TestNumeric with TestArray {
     val tree = new ComposeLogic("none", Array(
       ValueLogic(Some(arrString), Some(arrStringType)),
       new ComposeLogic("in", Array(
-        ValueLogic(None, None, Some("")),
+        ValueLogic(None, None, Some(""), None),
         ValueLogic(Some(string0), Some(SimpleTypeValue(STRING_CODENAME))),
       ))
     ))
@@ -54,7 +54,7 @@ class TestOperatorNone extends TestNumeric with TestArray {
     val tree = new ComposeLogic("none", Array(
       ValueLogic(Some(arrString), Some(arrStringType)),
       new ComposeLogic("in", Array(
-        ValueLogic(None, None, Some("")),
+        ValueLogic(None, None, Some(""), None),
         ValueLogic(Some(string0), Some(SimpleTypeValue(STRING_CODENAME))),
       )),
       ValueLogic(Some(arrInt), Some(arrIntType))
@@ -81,10 +81,10 @@ class TestOperatorNone extends TestNumeric with TestArray {
       new ComposeLogic("==", Array(
         new ComposeLogic("+", Array(
           new ComposeLogic("**", Array(
-            ValueLogic(None, None, Some("")),
+            ValueLogic(None, None, Some(""), None),
             ValueLogic(Some(2), Some(SimpleTypeValue(INT_CODENAME)))
           )),
-          ValueLogic(None, None, Some("")),
+          ValueLogic(None, None, Some(""), None),
           ValueLogic(Some(3), Some(SimpleTypeValue(INT_CODENAME)))
         )),
         ValueLogic(Some(4), Some(SimpleTypeValue(INT_CODENAME)))

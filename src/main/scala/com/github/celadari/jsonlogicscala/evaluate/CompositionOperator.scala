@@ -20,8 +20,8 @@ object CompositionOperator {
           composeLogic.conditions = conditionsTraversed
           composeLogic
         }
-        case ValueLogic(_, _, variableNameOpt) if (variableNameOpt.isDefined) => VariableLogic(variableNameOpt.get, parentComposeLogicOperatorOpt.get)
-        case ValueLogic(_, _, variableNameOpt) if (variableNameOpt.isEmpty) => jsonLogicCore
+        case ValueLogic(_, _, variableNameOpt, _) if (variableNameOpt.isDefined) => VariableLogic(variableNameOpt.get, parentComposeLogicOperatorOpt.get)
+        case ValueLogic(_, _, variableNameOpt, _) if (variableNameOpt.isEmpty) => jsonLogicCore
       }
     }
 

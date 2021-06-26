@@ -35,8 +35,9 @@ class Deserializer(implicit val conf: DeserializerConf) {
 
     val valueOpt = typeValueOpt.map(typeValue => getUnmarshaller(typeValue).unmarshal(jsValue))
     val variableNameOpt = if ((jsonLogicData \ pathData).isDefined) None else Some(pathData)
+    val pathDataOpt = if ((jsonLogicData \ pathData).isDefined) Some(pathData) else None
 
-    ValueLogic(valueOpt, typeValueOpt, variableNameOpt)
+    ValueLogic(valueOpt, typeValueOpt, variableNameOpt, pathDataOpt)
   }
 
   private[this] def deserializeComposeLogic(jsonLogic: JsObject, jsonLogicData: JsObject): ComposeLogic = {
