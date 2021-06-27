@@ -1,12 +1,12 @@
 package com.github.celadari.jsonlogicscala.deserialize
 
-import com.github.celadari.jsonlogicscala.JsonLogicCoreMatcher.BeEqualJsonLogicCore
-import com.github.celadari.jsonlogicscala.TestPrivateMethods
-import com.github.celadari.jsonlogicscala.exceptions.{InvalidJsonParsingException, InvalidValueLogicException}
+import play.api.libs.json.{JsObject, Json}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes.{DOUBLE_CODENAME, FLOAT_CODENAME, INT_CODENAME, LONG_CODENAME, NULL_CODENAME, STRING_CODENAME}
-import com.github.celadari.jsonlogicscala.tree.types.{ArrayTypeValue, MapTypeValue, SimpleTypeValue}
-import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic, VariableLogic}
-import play.api.libs.json.{JsObject, JsValue, Json}
+import com.github.celadari.jsonlogicscala.tree.types.{AnyTypeValue, ArrayTypeValue, MapTypeValue, SimpleTypeValue}
+import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic}
+import com.github.celadari.jsonlogicscala.exceptions.InvalidJsonParsingException
+import com.github.celadari.jsonlogicscala.TestPrivateMethods
+import com.github.celadari.jsonlogicscala.JsonLogicCoreMatcher.BeEqualJsonLogicCore
 
 
 class TestDeserializer extends TestPrivateMethods {
@@ -14,6 +14,7 @@ class TestDeserializer extends TestPrivateMethods {
   private[this] val deserializeValueLogic = PrivateMethod[ValueLogic[_]](toSymbol("deserializeValueLogic"))
   private[this] val deserializeArrayOfConditions = PrivateMethod[Array[JsonLogicCore]](toSymbol("deserializeArrayOfConditions"))
   private[this] val deserializeComposeLogic = PrivateMethod[ComposeLogic](toSymbol("deserializeComposeLogic"))
+  private[this] val getUnmarshaller = PrivateMethod[Unmarshaller](toSymbol("getUnmarshaller"))
 
   "Private method deserializeValueLogic" should "return deserialized ValueLogic" in {
     val (jsLogic, jsData) = (Json.parse("""{"var":"data1","type":{"codename":"int"}}"""), Json.parse("""{"data1":45}"""))
@@ -116,6 +117,12 @@ class TestDeserializer extends TestPrivateMethods {
 
     val result = deserializer.deserialize(jsLogic.asInstanceOf[JsObject], jsData.asInstanceOf[JsObject])
     result should BeEqualJsonLogicCore (resultExpected)
+  }
+
+  "Private method getUnmarshaller AnyTypeValue" should "throw an exception" in {
+    val deserializer = new Deserializer
+    val thrown = the[IllegalArgumentException] thrownBy {deserializer invokePrivate getUnmarshaller(AnyTypeValue)}
+    thrown.getMessage shouldBe "Cannot serialize JsonLogicCore object of type AnyTypeValue. \nAnyTypeValue is used at evaluation for composition operators"
   }
 
 }

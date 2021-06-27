@@ -36,7 +36,7 @@ class Deserializer(implicit val conf: DeserializerConf) {
         override def unmarshal(jsValue: JsValue): Any = jsValue.as[JsObject].value.view.mapValues(jsValue => getUnmarshaller(paramType).unmarshal(jsValue)).toMap
       }
       case AnyTypeValue => throw new IllegalArgumentException("Cannot serialize JsonLogicCore object " +
-        "with type AnyTypeValue. \nAnyTypeValue is used at evaluation for composition operators")
+        "of type AnyTypeValue. \nAnyTypeValue is used at evaluation for composition operators")
     }
   }
 
