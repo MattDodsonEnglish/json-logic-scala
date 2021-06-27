@@ -1,28 +1,35 @@
 package com.github.celadari.jsonlogicscala
 
-import scala.util.control.Breaks
-import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.{MatchResult, Matcher}
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.flatspec.AnyFlatSpec
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic, VariableLogic}
-/*
+
+
 trait JsonLogicCoreMatcher extends AnyFlatSpec with Matchers {
 
-  def findFirstNonMatchingLine(rightValues: Array[Seq[Any]], leftValues: Array[Seq[Any]]): Option[String] = {
-    var firstLine: Option[String] = None
-    val zipped = leftValues.zip(rightValues).zipWithIndex
-    val loop = new Breaks
-    loop.breakable {
-      for (((seq1, seq2), idx) <- zipped) {
-        if (seq1 != seq2) {
-          val str1 = seq1.mkString("[", ", ", "]")
-          val str2 = seq2.mkString("[", ", ", "]")
-          firstLine = Some(s"DataFrames are not equals. Line $idx:\nActual   $str1\nExpected $str2\n")
-          loop.break
+  def compareObject(value1: Any, value2: Any): Boolean = {
+    value1 match {
+      case arr1: Array[_] => {
+        value2 match {
+          case arr2: Array[_] => (arr1.length == arr2.length) && arr1.zip(arr2).forall{case (el1, el2) => compareObject(el1, el2)}
+          case _ => false
         }
       }
+      case opt1: Option[_] => {
+        value2 match {
+          case opt2: Option[_] => (opt1.isEmpty && opt2.isEmpty) || (opt1.isDefined && opt2.isDefined && compareObject(opt1.get, opt2.get))
+          case _ => false
+        }
+      }
+      case map1: Map[Any, _] => {
+        value2 match {
+          case map2: Map[Any, _] => (map1.size == map2.size) && (map1.keySet == map2.keySet) && map1.forall{case (key1, value1) => map2(key1) == value1}
+          case _ => false
+        }
+      }
+      case other => other == value2
     }
-    firstLine
   }
 
   class BeEqualJsonLogicCore(right: JsonLogicCore) extends Matcher[JsonLogicCore] {
@@ -31,56 +38,52 @@ trait JsonLogicCoreMatcher extends AnyFlatSpec with Matchers {
       right match {
         case _: ComposeLogic => false
         case _: VariableLogic => false
-        case valueLogic: ValueLogic[_]
+        case valueLogic: ValueLogic[_] => {
+          compareObject(left.valueOpt, valueLogic.valueOpt) &&
+          left.operator == valueLogic.operator &&
+          left.pathNameOpt == valueLogic.pathNameOpt &&
+          left.variableNameOpt == valueLogic.variableNameOpt &&
+          left.typeCodenameOpt == valueLogic.typeCodenameOpt
+        }
+      }
+    }
+
+    def compare(left: VariableLogic, right: JsonLogicCore): Boolean = {
+      right match {
+        case _: ComposeLogic => false
+        case variableLogic: VariableLogic => left == variableLogic
+        case _: ValueLogic[_] => false
+      }
+    }
+
+    def compare(left: ComposeLogic, right: JsonLogicCore): Boolean = {
+      right match {
+        case composeLogic: ComposeLogic => {
+          (left.operator == composeLogic.operator) &&
+          (left.conditions.length == composeLogic.conditions.length) &&
+          left.conditions.zip(composeLogic.conditions).forall{case (condition1, condition2) => compare(condition1, condition2)}
+        }
+        case _: VariableLogic => false
+        case _: ValueLogic[_] => false
+      }
+    }
+
+    def compare(left: JsonLogicCore, right: JsonLogicCore): Boolean = {
+      left match {
+        case composeLogic: ComposeLogic => compare(composeLogic, right)
+        case variableLogic: VariableLogic => compare(variableLogic, right)
+        case valueLogic: ValueLogic[_] => compare(valueLogic, right)
       }
     }
 
     override def apply(left: JsonLogicCore): MatchResult = {
-      left match {
-        case valueLogic: ValueLogic[_] =>
-      }
-
-      // first compare schemas
-      val leftSchema = left.schema.map(field => (field.name, field.dataType))
-      val rightSchema = right.schema.map(field => (field.name, field.dataType))
-      if (leftSchema != rightSchema) {
-        MatchResult(matches = false, s"DataFrames are not equals. Schemas are not the same:" +
-          s"$leftSchema != $rightSchema", "DataFrames are equals.")
-      } else {
-        // sort rows into right order
-        val cols = left.columns.map(colName => s"`$colName`")
-        val numCols = (1 to cols.length).map(_.toString).toArray
-        // change header to allow .na.fill
-        val replaceNaNAndNull =  right.toDF(numCols:_*).schema.fields
-          .filter(field => field.dataType != NullType && field.dataType != StringType)
-          .map(_.name)
-          .map((_, "null"))
-          .toMap
-        var rightOrderedDF = right.toDF(numCols:_*).na.fill(replaceNaNAndNull).toDF(left.columns:_*)
-        var leftOrderedDF = left.toDF(numCols:_*).na.fill(replaceNaNAndNull).toDF(left.columns:_*)
-        if (sort) rightOrderedDF = rightOrderedDF.sort(cols.map(col): _*)
-        if (sort) leftOrderedDF = leftOrderedDF.sort(cols.map(col): _*)
-        val rightValues = (if (nbLinesOpt.isDefined) rightOrderedDF.take(nbLinesOpt.get) else rightOrderedDF.collect).map(_.toSeq)
-        val leftValues = (if (nbLinesOpt.isDefined) leftOrderedDF.take(nbLinesOpt.get) else leftOrderedDF.collect).map(_.toSeq)
-        val diff = findFirstNonMatchingLine(rightValues, leftValues)
-        if (diff.isEmpty)
-          MatchResult(leftValues.length == rightValues.length, s"Result DataFrame and Expected DataFrame have not" +
-            s"same count: ${leftValues.length} != ${rightValues.length}", "DataFrames are equals.")
-        else
-          MatchResult(
-            diff.isEmpty,
-            diff.getOrElse("DataFrames are not equals"),
-            "DataFrames are equals.")
-      }
+      val isSuccess = compare(left, right)
+      MatchResult(matches = isSuccess, "JsonLogicCore objects are not the same", "JsonLogicCore objects are equal")
     }
   }
 
-  def BeEqualToDF(right: DataFrame): BeEqualDF = new BeEqualDF(right, None, true)
-  def BeEqualToDF(nbLines: Int)(right: DataFrame): BeEqualDF = new BeEqualDF(right, Some(nbLines), true)
-  def BeEqualToDF(sort: Boolean)(right: DataFrame): BeEqualDF = new BeEqualDF(right, None, sort)
-  def BeEqualToDF(nbLines: Int, sort: Boolean)(right: DataFrame): BeEqualDF = new BeEqualDF(right, Some(nbLines), sort)
+  def BeEqualJsonLogicCore(right: JsonLogicCore): BeEqualJsonLogicCore = new BeEqualJsonLogicCore(right)
 
 }
 
 object JsonLogicCoreMatcher extends JsonLogicCoreMatcher
-*/

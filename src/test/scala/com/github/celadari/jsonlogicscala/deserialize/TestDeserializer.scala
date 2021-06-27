@@ -1,9 +1,10 @@
 package com.github.celadari.jsonlogicscala.deserialize
 
+import com.github.celadari.jsonlogicscala.JsonLogicCoreMatcher.BeEqualJsonLogicCore
 import com.github.celadari.jsonlogicscala.TestPrivateMethods
 import com.github.celadari.jsonlogicscala.exceptions.{InvalidJsonParsingException, InvalidValueLogicException}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes.{DOUBLE_CODENAME, FLOAT_CODENAME, INT_CODENAME, LONG_CODENAME, NULL_CODENAME, STRING_CODENAME}
-import com.github.celadari.jsonlogicscala.tree.types.{ArrayTypeValue, SimpleTypeValue}
+import com.github.celadari.jsonlogicscala.tree.types.{ArrayTypeValue, MapTypeValue, SimpleTypeValue}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic, VariableLogic}
 import play.api.libs.json.{JsObject, JsValue, Json}
 
@@ -80,7 +81,11 @@ class TestDeserializer extends TestPrivateMethods {
   }
 
   "Deserialize ComposeLogic map operator" should "return value" in {
-    val (jsLogic, jsData) = (Json.parse("""{"map":[{"var":"data1","type":{"codename":"array","paramType":{"codename":"int"}}},{"+":[{"+":[{"var":"data3","type":{"codename":"long"}},{"var":"data5","type":{"codename":"double"}},{"var":"data4","type":{"codename":"float"}}]},{"var":"data2","type":{"codename":"int"}},{"var":""}]}]}"""), Json.parse("""{"data1":[4,5,6,9],"data3":54,"data5":53,"data4":74,"data2":65}"""))
+    val (jsLogic, jsData) = (Json.parse(
+      """{"map":[{"var":"data1","type":{"codename":"array",
+        |"paramType":{"codename":"int"}}},{"+":[{"+":[{"var":"data3","type":{"codename":"long"}},
+        |{"var":"data5","type":{"codename":"double"}},{"var":"data4","type":{"codename":"float"}}]},
+        |{"var":"data2","type":{"codename":"int"}},{"var":""}]}]}""".stripMargin), Json.parse("""{"data1":[4,5,6,9],"data3":54,"data5":53,"data4":74,"data2":65}"""))
     val deserializer = new Deserializer
     val resultExpected = new ComposeLogic("map", Array(
       ValueLogic(Some(Array(4, 5, 6, 9)), Some(ArrayTypeValue(SimpleTypeValue(INT_CODENAME))), pathNameOpt = Some("data1")),
@@ -96,11 +101,21 @@ class TestDeserializer extends TestPrivateMethods {
     )).asInstanceOf[JsonLogicCore]
 
     val result = deserializer.deserialize(jsLogic.asInstanceOf[JsObject], jsData.asInstanceOf[JsObject])
-    println(result.operator)
-    println(result.asInstanceOf[ComposeLogic].conditions.toSeq)
-    println(resultExpected.operator)
-    println(resultExpected.asInstanceOf[ComposeLogic].conditions.toSeq)
-    result shouldBe resultExpected
+    result should BeEqualJsonLogicCore (resultExpected)
+  }
+
+  "Deserialize ComposeLogic valueLogic value Map(String -> Int)" should "return value" in {
+    val (jsLogic, jsData) = (Json.parse(
+      """{"in":[{"var":"data2","type":{"codename":"string"}},{"var":"data1",
+        |"type":{"codename":"map","paramType":{"codename":"int"}}}]}""".stripMargin), Json.parse("""{"data2":"car","data1":{"car":4,"truck":67}}"""))
+    val deserializer = new Deserializer
+    val resultExpected = new ComposeLogic("in", Array(
+      ValueLogic(Some("car"), Some(SimpleTypeValue(STRING_CODENAME)), pathNameOpt = Some("data2")),
+      ValueLogic(Some(Map("car" -> 4, "truck" -> 67)), Some(MapTypeValue(SimpleTypeValue(INT_CODENAME))), pathNameOpt = Some("data1")),
+    )).asInstanceOf[JsonLogicCore]
+
+    val result = deserializer.deserialize(jsLogic.asInstanceOf[JsObject], jsData.asInstanceOf[JsObject])
+    result should BeEqualJsonLogicCore (resultExpected)
   }
 
 }
