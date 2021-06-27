@@ -7,16 +7,6 @@ import play.api.libs.json._
 
 object JsonLogicCore {
 
-  /**
-   * Returns an empty condition.
-   * @since 1.1.0
-   * @return [[JsonLogicCore]] instance.
-   * @note Be careful with this method: returned instance is neither of type [[ComposeLogic]] or type [[ValueLogic]].
-   */
-  def empty: JsonLogicCore = new JsonLogicCore("") {
-    override def isEmpty: Boolean = true
-  }
-
   implicit def jsonLogicCoreReads(implicit deserializer: Deserializer): Reads[JsonLogicCore] = new Reads[JsonLogicCore] {
 
     override def reads(json: JsValue): JsResult[JsonLogicCore] = {
