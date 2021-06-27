@@ -1,6 +1,6 @@
 package com.github.celadari.jsonlogicscala.serialize
 
-import com.github.celadari.jsonlogicscala.exceptions.InvalidValueLogicException
+import com.github.celadari.jsonlogicscala.exceptions.{IllegalInputException, InvalidValueLogicException}
 
 import scala.collection.mutable
 import play.api.libs.json._
@@ -9,14 +9,13 @@ import com.github.celadari.jsonlogicscala.tree.types.{AnyTypeValue, ArrayTypeVal
 
 
 object Serializer {
-
   implicit val defaultSerializer: Serializer = new Serializer()
 }
 
 class Serializer(implicit val conf: SerializerConf) {
-  private[this] val marshallers: mutable.Map[String, Marshaller] = mutable.Map[String, Marshaller]() ++ conf.marshallersManualAdd
+  protected[this] val marshallers: mutable.Map[String, Marshaller] = mutable.Map[String, Marshaller]() ++ conf.marshallersManualAdd
 
-  private[this] def getMarshaller(typeValue: TypeValue): Marshaller = {
+  protected[this] def getMarshaller(typeValue: TypeValue): Marshaller = {
     typeValue match {
       case SimpleTypeValue(codename) => marshallers.getOrElseUpdate(codename, conf.marshallerRecipesToBeAdded(codename).create().asInstanceOf[Marshaller])
       case ArrayTypeValue(paramType) => new Marshaller {
@@ -27,16 +26,17 @@ class Serializer(implicit val conf: SerializerConf) {
       case MapTypeValue(paramType) => new Marshaller {
         override val typeCodename: String = null
         override val typeClassName: String = null
-
-        override def marshal(value: Any): JsValue = JsObject(value.asInstanceOf[Map[String, _]].view.mapValues(el => getMarshaller(paramType).marshal(el)).toMap)
+        override def marshal(value: Any): JsValue = {
+          JsObject(value.asInstanceOf[Map[String, _]].view.mapValues(el => getMarshaller(paramType).marshal(el)).toMap)
+        }
       }
-      case AnyTypeValue => throw new IllegalArgumentException("Cannot serialize JsonLogicCore object " +
-        "with type AnyTypeValue. \nAnyTypeValue is used at evaluation for composition operators")
-      case _ => throw new IllegalArgumentException("Wrong argument type value")
+      case AnyTypeValue => throw new IllegalInputException("Cannot serialize JsonLogicCore object " +
+        "with type AnyTypeValue. \nAnyTypeValue is used at evaluation only for composition operators")
+      case _ => throw new IllegalInputException("Illegal argument type value")
     }
   }
 
-  private[this] def serializeValueLogic(valueLogic: ValueLogic[_]): (JsValue, JsValue) = {
+  protected[this] def serializeValueLogic(valueLogic: ValueLogic[_]): (JsValue, JsValue) = {
 
     if (valueLogic.variableNameOpt.isDefined) return (JsObject(Map("var" -> JsString(valueLogic.variableNameOpt.get))), JsObject(Map[String, JsString]()))
 
@@ -54,7 +54,7 @@ class Serializer(implicit val conf: SerializerConf) {
     (JsObject(Map("var" -> JsString(varPath), "type" -> jsType)), JsObject(Map(varPath -> jsonLogicDatum)))
   }
 
-  private[this] def serializeComposeLogic(composeLogic: ComposeLogic): (JsValue, JsObject) = {
+  protected[this] def serializeComposeLogic(composeLogic: ComposeLogic): (JsValue, JsObject) = {
     // retrieve compose logic attributes
     val operator = composeLogic.operator
     val conditions = composeLogic.conditions
@@ -64,7 +64,7 @@ class Serializer(implicit val conf: SerializerConf) {
     (JsObject(Map(operator -> jsonLogic)), jsonLogicData)
   }
 
-  private[this] def serializeArrayOfConditions(conditions: Array[JsonLogicCore]): (JsValue, JsObject) = {
+  protected[this] def serializeArrayOfConditions(conditions: Array[JsonLogicCore]): (JsValue, JsObject) = {
     val (jsonLogics, jsonLogicData) = conditions.map(jsonLogic => serialize(jsonLogic)).unzip
     (JsArray(jsonLogics), jsonLogicData.map(_.as[JsObject]).reduce(_ ++ _))
   }

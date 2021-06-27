@@ -1,18 +1,19 @@
 package com.github.celadari.jsonlogicscala.serialize
 
-import com.github.celadari.jsonlogicscala.TestPrivateMethods
-import com.github.celadari.jsonlogicscala.exceptions.InvalidValueLogicException
 import play.api.libs.json.{JsObject, JsValue, Json}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic, VariableLogic}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes.{INT_CODENAME, STRING_CODENAME}
-import com.github.celadari.jsonlogicscala.tree.types.{ArrayTypeValue, SimpleTypeValue}
+import com.github.celadari.jsonlogicscala.tree.types.{AnyTypeValue, ArrayTypeValue, MapTypeValue, SimpleTypeValue, TypeValue}
+import com.github.celadari.jsonlogicscala.exceptions.{IllegalInputException, InvalidValueLogicException}
+import com.github.celadari.jsonlogicscala.TestPrivateMethods
 
 
 class TestSerializer extends TestPrivateMethods {
 
-  private[this] val serializeValueLogic = PrivateMethod[(JsValue, JsValue)](toSymbole("serializeValueLogic"))
-  private[this] val serializeArrayOfConditions = PrivateMethod[(JsValue, JsObject)](toSymbole("serializeArrayOfConditions"))
-  private[this] val serializeComposeLogic = PrivateMethod[(JsValue, JsObject)](toSymbole("serializeComposeLogic"))
+  private[this] val serializeValueLogic = PrivateMethod[(JsValue, JsValue)](toSymbol("serializeValueLogic"))
+  private[this] val serializeArrayOfConditions = PrivateMethod[(JsValue, JsObject)](toSymbol("serializeArrayOfConditions"))
+  private[this] val serializeComposeLogic = PrivateMethod[(JsValue, JsObject)](toSymbol("serializeComposeLogic"))
+  private[this] val getMarshaller = PrivateMethod[Marshaller](toSymbol("getMarshaller"))
 
   "Private method serializeValueLogic" should "return serialized ValueLogic" in {
     val valueLogic = ValueLogic(Some(45), Some(SimpleTypeValue(INT_CODENAME)), pathNameOpt = Some("data1"))
@@ -80,6 +81,37 @@ class TestSerializer extends TestPrivateMethods {
     )).asInstanceOf[JsonLogicCore]
 
     Json.stringify(Json.toJson(tree)) shouldBe """[{"+":[{"var":"data1","type":{"codename":"int"}},{"var":"data2","type":{"codename":"int"}}]},{"data1":45,"data2":65}]"""
+  }
+
+  "Serialize ComposeLogic with map type" should "return value" in {
+    val tree = new ComposeLogic("merge", Array(
+      ValueLogic(Some(Map("car" -> Map("5p" -> 45),"bicycle" -> Map("4p" -> 89))), Some(MapTypeValue(MapTypeValue(SimpleTypeValue(INT_CODENAME)))), pathNameOpt = Some("data1")),
+      ValueLogic(Some(Map("truck" -> Map("8p" -> 53), "bike" -> Map("4p" -> 89))), Some(MapTypeValue(MapTypeValue(SimpleTypeValue(INT_CODENAME)))), pathNameOpt = Some("data1"))
+    )).asInstanceOf[JsonLogicCore]
+
+    val expectedResult = """[{"merge":[{"var":"data1","type":{"codename":"map","paramType":{"codename":"map","paramType":{"codename":"int"}}}},{"var":"data1","type":{"codename":"map","paramType":{"codename":"map","paramType":{"codename":"int"}}}}]},{"data1":{"truck":{"8p":53},"bike":{"4p":89}}}]"""
+    Json.stringify(Json.toJson(tree)) shouldBe expectedResult
+  }
+
+  "Serialize with anytype type" should "throw an exception" in {
+    val tree = new ComposeLogic("merge", Array(
+      ValueLogic(Some(Map("car" -> Map("5p" -> 45),"bicycle" -> Map("4p" -> 89))), Some(AnyTypeValue), pathNameOpt = Some("data1")),
+      ValueLogic(Some(Map("truck" -> Map("8p" -> 53), "bike" -> Map("4p" -> 89))), Some(MapTypeValue(MapTypeValue(SimpleTypeValue(INT_CODENAME)))), pathNameOpt = Some("data1"))
+    )).asInstanceOf[JsonLogicCore]
+    val thrown = the[IllegalInputException] thrownBy {Json.toJson(tree)}
+    thrown.getMessage shouldBe "Cannot serialize JsonLogicCore object with type AnyTypeValue. \nAnyTypeValue is used at evaluation only for composition operators"
+  }
+
+  "Get marshaller type anytype" should "throw an exception" in {
+    val serializer = new Serializer
+    val thrown = the[IllegalInputException] thrownBy {serializer invokePrivate getMarshaller(AnyTypeValue)}
+    thrown.getMessage shouldBe "Cannot serialize JsonLogicCore object with type AnyTypeValue. \nAnyTypeValue is used at evaluation only for composition operators"
+  }
+
+  "Get marshaller type any" should "throw an exception" in {
+    val serializer = new Serializer
+    val thrown = the[IllegalInputException] thrownBy {serializer invokePrivate getMarshaller(null: TypeValue)}
+    thrown.getMessage shouldBe "Illegal argument type value"
   }
 
 }

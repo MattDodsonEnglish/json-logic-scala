@@ -9,8 +9,8 @@ import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic}
 
 class TestEvaluatorLogic extends TestPrivateMethods {
 
-  private[this] val evaluateValueLogic = PrivateMethod[Any](toSymbole("evaluateValueLogic"))
-  private[this] val evaluateComposeLogic = PrivateMethod[Any](toSymbole("evaluateComposeLogic"))
+  private[this] val evaluateValueLogic = PrivateMethod[Any](toSymbol("evaluateValueLogic"))
+  private[this] val evaluateComposeLogic = PrivateMethod[Any](toSymbol("evaluateComposeLogic"))
 
   "Evaluate Value Logic with default ValueLogicReducer" should "return value" in {
     val evaluator = new EvaluatorLogic

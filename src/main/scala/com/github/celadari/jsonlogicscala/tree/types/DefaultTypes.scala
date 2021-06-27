@@ -10,5 +10,6 @@ object DefaultTypes {
   val INT_CODENAME: String = "int"
   val STRING_CODENAME: String = "string"
   val LONG_CODENAME: String = "long"
+  val NULL_CODENAME: String = "null"
 
 }

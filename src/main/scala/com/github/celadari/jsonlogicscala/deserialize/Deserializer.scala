@@ -1,20 +1,32 @@
 package com.github.celadari.jsonlogicscala.deserialize
 
 import scala.collection.mutable
-import play.api.libs.json.{JsArray, JsNull, JsObject, JsValue}
+import play.api.libs.json.{JsArray, JsLookupResult, JsNull, JsObject, JsValue}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic}
 import com.github.celadari.jsonlogicscala.tree.types.{AnyTypeValue, ArrayTypeValue, MapTypeValue, SimpleTypeValue, TypeValue}
-
+import com.github.celadari.jsonlogicscala.exceptions.InvalidJsonParsingException
 
 object Deserializer {
+
+  def unmarshType(jsLookupResult: JsLookupResult): Option[TypeValue] = {
+    if (jsLookupResult.isDefined) {
+      try {
+        Some(jsLookupResult.get.as[TypeValue])
+      }
+      catch {
+        case _: Throwable => throw new InvalidJsonParsingException(s"Invalid typevalue json format: ${jsLookupResult.get.toString}")
+      }
+    }
+    else None
+  }
   implicit val defaultDeserializer: Deserializer = new Deserializer()
 }
 
 class Deserializer(implicit val conf: DeserializerConf) {
 
-  private[this] val unmarshallers = mutable.Map[String, Unmarshaller]() ++ conf.unmarshallersManualAdd
+  protected[this] val unmarshallers: mutable.Map[String, Unmarshaller] = mutable.Map[String, Unmarshaller]() ++ conf.unmarshallersManualAdd
 
-  private[this] def getUnmarshaller(typeValue: TypeValue): Unmarshaller = {
+  protected[this] def getUnmarshaller(typeValue: TypeValue): Unmarshaller = {
     typeValue match {
       case SimpleTypeValue(codename) => unmarshallers.getOrElseUpdate(codename, conf.unmarshallerClassesToBeAdded(codename).newInstance())
       case ArrayTypeValue(paramType) => new Unmarshaller {
@@ -28,31 +40,41 @@ class Deserializer(implicit val conf: DeserializerConf) {
     }
   }
 
-  private[this] def deserializeValueLogic(jsonLogic: JsObject, jsonLogicData: JsObject): ValueLogic[_] = {
-    val typeValueOpt = (jsonLogic \ "type").asOpt[TypeValue]
+  protected[this] def deserializeValueLogic(jsonLogic: JsObject, jsonLogicData: JsObject): ValueLogic[_] = {
+    val isTypeDefined = (jsonLogic \ "type").isDefined
+    val typeValueOpt = Deserializer.unmarshType((jsonLogic \ "type"))
     val pathData = (jsonLogic \ "var").as[String]
-    val jsValue = (jsonLogicData \ pathData).getOrElse(JsNull)
+    val lookUpPathData = (jsonLogicData \ pathData)
+    val jsValue = lookUpPathData.getOrElse(JsNull)
 
-    val valueOpt = typeValueOpt.map(typeValue => getUnmarshaller(typeValue).unmarshal(jsValue))
-    val variableNameOpt = if ((jsonLogicData \ pathData).isDefined) None else Some(pathData)
-    val pathDataOpt = if ((jsonLogicData \ pathData).isDefined) Some(pathData) else None
+    if (isTypeDefined && lookUpPathData.isEmpty) throw new InvalidJsonParsingException("Error while parsing ValueLogic of type value: \"var\" path is undefined")
+    if (!isTypeDefined && lookUpPathData.isDefined) throw new InvalidJsonParsingException("Error while parsing ValueLogic of type variable: \"var\" must not be a key on data dictionary")
+
+    val valueOpt = typeValueOpt.flatMap(typeValue => Option(getUnmarshaller(typeValue).unmarshal(jsValue)))
+    val variableNameOpt = if (lookUpPathData.isDefined) None else Some(pathData)
+    val pathDataOpt = if (lookUpPathData.isDefined) Some(pathData) else None
 
     ValueLogic(valueOpt, typeValueOpt, variableNameOpt, pathDataOpt)
   }
 
-  private[this] def deserializeComposeLogic(jsonLogic: JsObject, jsonLogicData: JsObject): ComposeLogic = {
+  protected[this] def deserializeComposeLogic(jsonLogic: JsObject, jsonLogicData: JsObject): ComposeLogic = {
     // check for operator field
     val fields = jsonLogic.fields
 
     // check for compose logic operator field
-    if (fields.length > 1) throw new Error("JSON object is supposed to have only one operator field.")
+    if (fields.length > 1) {
+      throw new InvalidJsonParsingException(s"ComposeLogic cannot have more than one operator field." +
+        s"\nCurrent operators: ${fields.map(_._1).mkString("[", ", ", "]")}" +
+        s"\nInvalid ComposeLogic json: ${jsonLogic.toString}")
+    }
+    if (fields.isEmpty) throw new InvalidJsonParsingException("ComposeLogic cannot be empty")
     val operator = fields.head._1
 
     // if operator is compose logic
     new ComposeLogic(operator, deserializeArrayOfConditions((jsonLogic \ operator).get, jsonLogicData))
   }
 
-  private[this] def deserializeArrayOfConditions(json: JsValue, jsonLogicData: JsObject): Array[JsonLogicCore] = {
+  protected[this] def deserializeArrayOfConditions(json: JsValue, jsonLogicData: JsObject): Array[JsonLogicCore] = {
     val jsArray = json.asInstanceOf[JsArray]
     jsArray
       .value
@@ -68,9 +90,6 @@ class Deserializer(implicit val conf: DeserializerConf) {
 
     // if operator is data access
     if (fields.map(_._1).contains("var")) return deserializeValueLogic(jsonLogic, jsonLogicData)
-
-    // check for compose logic operator field
-    if (fields.length > 1) throw new Error("JSON object is supposed to have only one operator field.")
 
     // if operator is compose logic
     deserializeComposeLogic(jsonLogic, jsonLogicData)

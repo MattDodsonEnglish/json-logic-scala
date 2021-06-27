@@ -66,12 +66,12 @@ class MethodSignatureFinder(
                              val conditionsValues: Array[Any],
                              val confMethod: EvaluatorLogicConf.MethodConf
                            ) {
-  private[this] val conditionsValuesEval = mutable.Stack[Any]() ++ conditionsValues
-  private[this] var isEvaluated = false
-  private[this] var paths: Set[Array[(Method, Boolean)]] = Set()
+  protected[this] val conditionsValuesEval = mutable.Stack[Any]() ++ conditionsValues
+  protected[this] var isEvaluated = false
+  protected[this] var paths: Set[Array[(Method, Boolean)]] = Set()
   initializePaths()
 
-  private[this] def initializePaths(): Unit = {
+  protected[this] def initializePaths(): Unit = {
     val condValueEval1 = conditionsValuesEval.pop()
     val condValueEval2Opt = if (conditionsValuesEval.headOption.nonEmpty) Some(conditionsValuesEval.pop()) else None
 
@@ -81,7 +81,7 @@ class MethodSignatureFinder(
     paths ++= classMethods.map(method => Array((method, valueClassMethods.nonEmpty)))
   }
 
-  private[this] def findFirstMethods(ownerMethod: Any, value1: Any, value2Opt: Option[Any]): Set[Method] = {
+  protected[this] def findFirstMethods(ownerMethod: Any, value1: Any, value2Opt: Option[Any]): Set[Method] = {
     ownerMethod
       .getClass
       .getMethods
@@ -98,7 +98,7 @@ class MethodSignatureFinder(
       .toSet
   }
 
-  private[this] def filterExplorable(objClass: Class[_], value: Any, path: Array[(Method, Boolean)]): Set[Method] = {
+  protected[this] def filterExplorable(objClass: Class[_], value: Any, path: Array[(Method, Boolean)]): Set[Method] = {
     val valueClass = value.getClass
 
     objClass
@@ -112,7 +112,7 @@ class MethodSignatureFinder(
       })
   }
 
-  private[this] def explorePath(
+  protected[this] def explorePath(
                                  value: Any,
                                  ownerMethodOpt: Option[Class[_]],
                                  path: Array[(Method, Boolean)]

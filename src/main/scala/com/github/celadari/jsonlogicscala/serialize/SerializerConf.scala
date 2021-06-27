@@ -15,7 +15,8 @@ object SerializerConf {
     STRING_CODENAME -> MarshallerString,
     LONG_CODENAME -> MarshallerLong,
     BYTE_CODENAME -> MarshallerByte,
-    SHORT_CODENAME -> MarshallerShort
+    SHORT_CODENAME -> MarshallerShort,
+    NULL_CODENAME -> MarshallerNull
   )
 
   def createConf(

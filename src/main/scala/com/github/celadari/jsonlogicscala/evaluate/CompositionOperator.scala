@@ -4,11 +4,11 @@ import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, Val
 
 object CompositionOperator {
 
-  class ComposeJsonLogicCore(private[this] val jsonLogicVariable: JsonLogicCore) (implicit val conf: EvaluatorLogicConf) {
+  class ComposeJsonLogicCore(protected[this] val jsonLogicVariable: JsonLogicCore) (implicit val conf: EvaluatorLogicConf) {
     private[this] var jsonLogicTraversed: JsonLogicCore = _
     private[this] var isEvaluated: Boolean = false
 
-    private[this] def traverse(jsonLogicCore: JsonLogicCore, parentComposeLogicOperatorOpt: Option[ComposeLogic]): JsonLogicCore = {
+    protected[this] def traverse(jsonLogicCore: JsonLogicCore, parentComposeLogicOperatorOpt: Option[ComposeLogic]): JsonLogicCore = {
 
       jsonLogicCore match {
         case ComposeLogic(operator, conditions) => {

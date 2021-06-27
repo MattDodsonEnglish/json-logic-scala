@@ -14,7 +14,8 @@ object DeserializerConf {
     STRING_CODENAME -> UnmarshallerString,
     LONG_CODENAME -> UnmarshallerLong,
     BYTE_CODENAME -> UnmarshallerByte,
-    SHORT_CODENAME -> UnmarshallerShort
+    SHORT_CODENAME -> UnmarshallerShort,
+    NULL_CODENAME -> UnmarshallerNull
   )
 
   def createConf(

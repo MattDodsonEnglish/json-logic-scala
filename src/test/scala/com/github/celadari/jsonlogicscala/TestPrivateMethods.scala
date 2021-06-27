@@ -5,5 +5,5 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 trait TestPrivateMethods extends AnyFlatSpec with PrivateMethodTester with Matchers {
-  def toSymbole(string: String): Symbol = Symbol(string)
+  def toSymbol(string: String): Symbol = Symbol(string)
 }
