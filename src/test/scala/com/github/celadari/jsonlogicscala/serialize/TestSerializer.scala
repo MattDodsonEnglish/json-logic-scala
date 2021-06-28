@@ -3,7 +3,7 @@ package com.github.celadari.jsonlogicscala.serialize
 import play.api.libs.json.{JsObject, JsValue, Json}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic, VariableLogic}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes.{INT_CODENAME, STRING_CODENAME}
-import com.github.celadari.jsonlogicscala.tree.types.{AnyTypeValue, ArrayTypeValue, MapTypeValue, SimpleTypeValue, TypeValue}
+import com.github.celadari.jsonlogicscala.tree.types.{AnyTypeValue, ArrayTypeValue, MapTypeValue, OptionTypeValue, SimpleTypeValue, TypeValue}
 import com.github.celadari.jsonlogicscala.exceptions.{IllegalInputException, InvalidValueLogicException}
 import com.github.celadari.jsonlogicscala.TestPrivateMethods
 
@@ -93,6 +93,16 @@ class TestSerializer extends TestPrivateMethods {
     Json.stringify(Json.toJson(tree)) shouldBe expectedResult
   }
 
+  "Serialize ComposeLogic with option type" should "return value" in {
+    val tree = new ComposeLogic("merge", Array(
+      ValueLogic(Some(Map("car" -> Map("5p" -> Some(45)),"bicycle" -> Map("4p" -> Some(89)))), Some(MapTypeValue(MapTypeValue(OptionTypeValue(SimpleTypeValue(INT_CODENAME))))), pathNameOpt = Some("data1")),
+      ValueLogic(Some(Map("truck" -> Map("8p" -> Some(53)), "bike" -> Map("4p" -> Some(89)))), Some(MapTypeValue(MapTypeValue(OptionTypeValue(SimpleTypeValue(INT_CODENAME))))), pathNameOpt = Some("data1"))
+    )).asInstanceOf[JsonLogicCore]
+
+    val expectedResult = """[{"merge":[{"var":"data1","type":{"codename":"map","paramType":{"codename":"map","paramType":{"codename":"option","paramType":{"codename":"int"}}}}},{"var":"data1","type":{"codename":"map","paramType":{"codename":"map","paramType":{"codename":"option","paramType":{"codename":"int"}}}}}]},{"data1":{"truck":{"8p":53},"bike":{"4p":89}}}]"""
+    Json.stringify(Json.toJson(tree)) shouldBe expectedResult
+  }
+
   "Serialize with anytype type" should "throw an exception" in {
     val tree = new ComposeLogic("merge", Array(
       ValueLogic(Some(Map("car" -> Map("5p" -> 45),"bicycle" -> Map("4p" -> 89))), Some(AnyTypeValue), pathNameOpt = Some("data1")),
@@ -112,6 +122,30 @@ class TestSerializer extends TestPrivateMethods {
     val serializer = new Serializer
     val thrown = the[IllegalInputException] thrownBy {serializer invokePrivate getMarshaller(null: TypeValue)}
     thrown.getMessage shouldBe "Illegal argument type value"
+  }
+
+  "Serialize non map type value with MapTypeValue" should "throw an exception" in {
+    val tree = new ComposeLogic("merge", Array(
+      ValueLogic(Some(45), Some(MapTypeValue(SimpleTypeValue(INT_CODENAME))), pathNameOpt = Some("data1")),
+    )).asInstanceOf[JsonLogicCore]
+    val thrown = the[IllegalInputException] thrownBy {Json.toJson(tree)}
+    thrown.getMessage shouldBe "Illegal input argument to MapType Marshaller: 45.\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct."
+  }
+
+  "Serialize non array type value with ArrayTypeValue" should "throw an exception" in {
+    val tree = new ComposeLogic("merge", Array(
+      ValueLogic(Some(45), Some(ArrayTypeValue(SimpleTypeValue(INT_CODENAME))), pathNameOpt = Some("data1")),
+    )).asInstanceOf[JsonLogicCore]
+    val thrown = the[IllegalInputException] thrownBy {Json.toJson(tree)}
+    thrown.getMessage shouldBe "Illegal input argument to ArrayType Marshaller: 45.\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct."
+  }
+
+  "Serialize non option type value with OptionTypeValue" should "throw an exception" in {
+    val tree = new ComposeLogic("merge", Array(
+      ValueLogic(Some(45), Some(OptionTypeValue(SimpleTypeValue(INT_CODENAME))), pathNameOpt = Some("data1")),
+    )).asInstanceOf[JsonLogicCore]
+    val thrown = the[IllegalInputException] thrownBy {Json.toJson(tree)}
+    thrown.getMessage shouldBe "Illegal input argument to OptionType Marshaller: 45.\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct."
   }
 
 }

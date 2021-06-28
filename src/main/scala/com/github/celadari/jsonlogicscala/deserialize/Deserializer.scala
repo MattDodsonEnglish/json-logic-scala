@@ -3,7 +3,7 @@ package com.github.celadari.jsonlogicscala.deserialize
 import scala.collection.mutable
 import play.api.libs.json.{JsArray, JsLookupResult, JsNull, JsObject, JsValue}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic}
-import com.github.celadari.jsonlogicscala.tree.types.{AnyTypeValue, ArrayTypeValue, MapTypeValue, SimpleTypeValue, TypeValue}
+import com.github.celadari.jsonlogicscala.tree.types.{AnyTypeValue, ArrayTypeValue, MapTypeValue, OptionTypeValue, SimpleTypeValue, TypeValue}
 import com.github.celadari.jsonlogicscala.exceptions.InvalidJsonParsingException
 
 object Deserializer {
@@ -34,6 +34,12 @@ class Deserializer(implicit val conf: DeserializerConf) {
       }
       case MapTypeValue(paramType) => new Unmarshaller {
         override def unmarshal(jsValue: JsValue): Any = jsValue.as[JsObject].value.view.mapValues(jsValue => getUnmarshaller(paramType).unmarshal(jsValue)).toMap
+      }
+      case OptionTypeValue(paramType) => new Unmarshaller {
+        override def unmarshal(jsValue: JsValue): Any = {
+          if (jsValue == JsNull) None
+          else Some(getUnmarshaller(paramType).unmarshal(jsValue))
+        }
       }
       case AnyTypeValue => throw new IllegalArgumentException("Cannot serialize JsonLogicCore object " +
         "of type AnyTypeValue. \nAnyTypeValue is used at evaluation for composition operators")

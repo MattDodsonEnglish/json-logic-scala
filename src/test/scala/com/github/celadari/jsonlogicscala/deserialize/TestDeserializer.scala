@@ -1,8 +1,8 @@
 package com.github.celadari.jsonlogicscala.deserialize
 
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes.{DOUBLE_CODENAME, FLOAT_CODENAME, INT_CODENAME, LONG_CODENAME, NULL_CODENAME, STRING_CODENAME}
-import com.github.celadari.jsonlogicscala.tree.types.{AnyTypeValue, ArrayTypeValue, MapTypeValue, SimpleTypeValue}
+import com.github.celadari.jsonlogicscala.tree.types.{AnyTypeValue, ArrayTypeValue, MapTypeValue, OptionTypeValue, SimpleTypeValue}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic}
 import com.github.celadari.jsonlogicscala.exceptions.InvalidJsonParsingException
 import com.github.celadari.jsonlogicscala.TestPrivateMethods
@@ -123,6 +123,28 @@ class TestDeserializer extends TestPrivateMethods {
     val deserializer = new Deserializer
     val thrown = the[IllegalArgumentException] thrownBy {deserializer invokePrivate getUnmarshaller(AnyTypeValue)}
     thrown.getMessage shouldBe "Cannot serialize JsonLogicCore object of type AnyTypeValue. \nAnyTypeValue is used at evaluation for composition operators"
+  }
+
+  "Deserialize ComposeLogic valueLogic value Option(Int)" should "return value" in {
+    val (jsLogic, jsData) = (Json.parse("""{"get_or_default_boolean":[{"var":"data2","type":{"codename":"option","paramType":{"codename":"string"}}}]}"""), Json.parse("""{"data2":null}"""))
+    val deserializer = new Deserializer
+    val resultExpected = new ComposeLogic("get_or_default_boolean", Array(
+      ValueLogic(Some(None.asInstanceOf[Option[String]]), Some(OptionTypeValue(SimpleTypeValue(STRING_CODENAME))), pathNameOpt = Some("data2"))
+    )).asInstanceOf[JsonLogicCore]
+
+    val result = deserializer.deserialize(jsLogic.asInstanceOf[JsObject], jsData.asInstanceOf[JsObject])
+    result should BeEqualJsonLogicCore (resultExpected)
+  }
+
+  "Deserialize ComposeLogic valueLogic value Option(Map(String -> Option(Int))" should "return value" in {
+    val (jsLogic, jsData) = (Json.parse("""{"get_or_default_boolean":[{"var":"data2","type":{"codename":"option","paramType":{"codename":"map","paramType":{"codename":"option","paramType":{"codename":"int"}}}}}]}"""), Json.parse("""{"data2":{"car":null,"truck":45}}"""))
+    val deserializer = new Deserializer
+    val resultExpected = new ComposeLogic("get_or_default_boolean", Array(
+      ValueLogic(Some(Some(Map("car" -> None, "truck" -> Some(45)))), Some(OptionTypeValue(MapTypeValue(OptionTypeValue(SimpleTypeValue(INT_CODENAME))))), pathNameOpt = Some("data2"))
+    )).asInstanceOf[JsonLogicCore]
+
+    val result = deserializer.deserialize(jsLogic.asInstanceOf[JsObject], jsData.asInstanceOf[JsObject])
+    result should BeEqualJsonLogicCore (resultExpected)
   }
 
 }

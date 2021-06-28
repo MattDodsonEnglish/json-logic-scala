@@ -1,11 +1,11 @@
 package com.github.celadari.jsonlogicscala.serialize
 
-import com.github.celadari.jsonlogicscala.exceptions.{IllegalInputException, InvalidValueLogicException}
+import com.github.celadari.jsonlogicscala.exceptions.{IllegalInputException, InvalidJsonParsingException, InvalidValueLogicException}
 
 import scala.collection.mutable
 import play.api.libs.json._
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic, VariableLogic}
-import com.github.celadari.jsonlogicscala.tree.types.{AnyTypeValue, ArrayTypeValue, MapTypeValue, SimpleTypeValue, TypeValue}
+import com.github.celadari.jsonlogicscala.tree.types.{AnyTypeValue, ArrayTypeValue, MapTypeValue, OptionTypeValue, SimpleTypeValue, TypeValue}
 
 
 object Serializer {
@@ -21,13 +21,36 @@ class Serializer(implicit val conf: SerializerConf) {
       case ArrayTypeValue(paramType) => new Marshaller {
         override val typeCodename: String = null
         override val typeClassName: String = null
-        override def marshal(value: Any): JsValue = JsArray(value.asInstanceOf[Array[_]].map(el => getMarshaller(paramType).marshal(el)))
+        override def marshal(value: Any): JsValue = {
+          value match {
+            case arr: Array[_] => JsArray(arr.map(el => getMarshaller(paramType).marshal(el)))
+            case other => throw new IllegalInputException(s"Illegal input argument to ArrayType Marshaller: ${other}." +
+              "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
+          }
+        }
       }
       case MapTypeValue(paramType) => new Marshaller {
         override val typeCodename: String = null
         override val typeClassName: String = null
         override def marshal(value: Any): JsValue = {
-          JsObject(value.asInstanceOf[Map[String, _]].view.mapValues(el => getMarshaller(paramType).marshal(el)).toMap)
+          value match {
+            case map: Map[String, _] => JsObject(map.view.mapValues(el => getMarshaller(paramType).marshal(el)).toMap)
+            case other => throw new IllegalInputException(s"Illegal input argument to MapType Marshaller: ${other}." +
+              "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
+          }
+
+        }
+      }
+      case OptionTypeValue(paramType) => new Marshaller {
+        override val typeCodename: String = null
+        override val typeClassName: String = null
+
+        override def marshal(value: Any): JsValue = {
+          value match {
+            case opt: Option[_] => opt.map(el => getMarshaller(paramType).marshal(el)).getOrElse(JsNull)
+            case other => throw new IllegalInputException(s"Illegal input argument to OptionType Marshaller: ${other}." +
+              "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
+          }
         }
       }
       case AnyTypeValue => throw new IllegalInputException("Cannot serialize JsonLogicCore object " +

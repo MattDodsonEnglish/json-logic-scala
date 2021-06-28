@@ -80,7 +80,18 @@ object EvaluatorLogicConf {
       )
     }}
   val DEFAULT_UNARYOPERATORS_TO_METHODNAME: Map[String, Operator] = Map(
-    "!" -> OperatorNeg
+    "!" -> OperatorNeg,
+    "get_or_default_array" -> OperatorOptionGetOrDefaultArray,
+    "get_or_default_boolean" -> OperatorOptionGetOrDefaultBoolean,
+    "get_or_default_byte" -> OperatorOptionGetOrDefaultByte,
+    "get_or_default_short" -> OperatorOptionGetOrDefaultShort,
+    "get_or_default_int" -> OperatorOptionGetOrDefaultInt,
+    "get_or_default_long" -> OperatorOptionGetOrDefaultLong,
+    "get_or_default_float" -> OperatorOptionGetOrDefaultFloat,
+    "get_or_default_double" -> OperatorOptionGetOrDefaultDouble,
+    "get_or_default_string" -> OperatorOptionGetOrDefaultString,
+    "get_or_default_map" -> OperatorOptionGetOrDefaultMap,
+    "get_value_or_null" -> OperatorOptionGetValueOrNull
   )
   val DEFAULT_UNARYOPERATORS_CONFS: Map[String, MethodConf] = DEFAULT_UNARYOPERATORS_TO_METHODNAME
     .map{case (operator, objOperator) => {

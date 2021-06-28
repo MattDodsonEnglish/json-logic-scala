@@ -6,6 +6,7 @@ import com.github.celadari.jsonlogicscala.exceptions.{EvaluationException, Illeg
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes.{INT_CODENAME, STRING_CODENAME}
 import com.github.celadari.jsonlogicscala.tree.types.SimpleTypeValue
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic}
+import play.api.libs.json.Json
 
 class TestEvaluatorLogic extends TestPrivateMethods {
 
