@@ -1,11 +1,9 @@
 package com.github.celadari.jsonlogicscala.serialize
 
-import com.github.celadari.jsonlogicscala.exceptions.{IllegalInputException, InvalidJsonParsingException, InvalidValueLogicException}
-
-import scala.collection.mutable
 import play.api.libs.json._
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic, VariableLogic}
 import com.github.celadari.jsonlogicscala.tree.types.{AnyTypeValue, ArrayTypeValue, MapTypeValue, OptionTypeValue, SimpleTypeValue, TypeValue}
+import com.github.celadari.jsonlogicscala.exceptions.{IllegalInputException, InvalidValueLogicException}
 
 
 object Serializer {
@@ -13,14 +11,12 @@ object Serializer {
 }
 
 class Serializer(implicit val conf: SerializerConf) {
-  protected[this] val marshallers: mutable.Map[String, Marshaller] = mutable.Map[String, Marshaller]() ++ conf.marshallersManualAdd
+  protected[this] val marshallers: Map[String, Marshaller] = conf.marshallerMetaInfAdd ++ conf.marshallersManualAdd
 
   protected[this] def getMarshaller(typeValue: TypeValue): Marshaller = {
     typeValue match {
-      case SimpleTypeValue(codename) => marshallers.getOrElseUpdate(codename, conf.marshallerRecipesToBeAdded(codename).create().asInstanceOf[Marshaller])
+      case SimpleTypeValue(codename) => marshallers.getOrElse(codename, throw new IllegalInputException(s"No marshaller defined for $codename"))
       case ArrayTypeValue(paramType) => new Marshaller {
-        override val typeCodename: String = null
-        override val typeClassName: String = null
         override def marshal(value: Any): JsValue = {
           value match {
             case arr: Array[_] => JsArray(arr.map(el => getMarshaller(paramType).marshal(el)))
@@ -30,8 +26,6 @@ class Serializer(implicit val conf: SerializerConf) {
         }
       }
       case MapTypeValue(paramType) => new Marshaller {
-        override val typeCodename: String = null
-        override val typeClassName: String = null
         override def marshal(value: Any): JsValue = {
           value match {
             case map: Map[String, _] => JsObject(map.view.mapValues(el => getMarshaller(paramType).marshal(el)).toMap)
@@ -42,9 +36,6 @@ class Serializer(implicit val conf: SerializerConf) {
         }
       }
       case OptionTypeValue(paramType) => new Marshaller {
-        override val typeCodename: String = null
-        override val typeClassName: String = null
-
         override def marshal(value: Any): JsValue = {
           value match {
             case opt: Option[_] => opt.map(el => getMarshaller(paramType).marshal(el)).getOrElse(JsNull)
