@@ -6,6 +6,8 @@ import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes.{INT_CODENAME,
 import com.github.celadari.jsonlogicscala.tree.types.{AnyTypeValue, ArrayTypeValue, MapTypeValue, OptionTypeValue, SimpleTypeValue, TypeValue}
 import com.github.celadari.jsonlogicscala.exceptions.{IllegalInputException, InvalidValueLogicException}
 import com.github.celadari.jsonlogicscala.TestPrivateMethods
+import com.github.celadari.jsonlogicscala.serialize.SerializerConf.DEFAULT_MARSHALLERS
+import com.github.celadari.jsonlogicscala.serialize.impl.{MarshallerBooleanImpl2, MarshallerStringImpl2}
 
 
 class TestSerializer extends TestPrivateMethods {
@@ -146,6 +148,19 @@ class TestSerializer extends TestPrivateMethods {
     )).asInstanceOf[JsonLogicCore]
     val thrown = the[IllegalInputException] thrownBy {Json.toJson(tree)}
     thrown.getMessage shouldBe "Illegal input argument to OptionType Marshaller: 45.\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct."
+  }
+
+  "createConf other path with meta-inf add priority" should "return serialize with boolean and string marshaller from impl" in {
+    val conf = SerializerConf.createConf(
+      "META-INF/services/json-logic-scala/tests/serializer/normal/meta-inf-priority/",
+      marshallersClassesManualAdd = DEFAULT_MARSHALLERS,
+      isPriorityToManualAdd = false
+    )
+    val serializer = new Serializer()(conf)
+    val result = serializer invokePrivate PrivateMethod[Map[String, Marshaller]](toSymbol("marshallers"))()
+    val expectedResult = DEFAULT_MARSHALLERS ++ Map("boolean" -> MarshallerBooleanImpl2, "string" -> new MarshallerStringImpl2("before", "after"))
+
+    result shouldBe expectedResult
   }
 
 }

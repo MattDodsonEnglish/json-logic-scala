@@ -11,7 +11,7 @@ object Serializer {
 }
 
 class Serializer(implicit val conf: SerializerConf) {
-  protected[this] val marshallers: Map[String, Marshaller] = conf.marshallerMetaInfAdd ++ conf.marshallersManualAdd
+  protected[this] val marshallers: Map[String, Marshaller] = if (conf.isPriorityToManualAdd) conf.marshallerMetaInfAdd ++ conf.marshallersManualAdd else conf.marshallersManualAdd ++ conf.marshallerMetaInfAdd
 
   protected[this] def getMarshaller(typeValue: TypeValue): Marshaller = {
     typeValue match {

@@ -4,6 +4,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import com.github.celadari.jsonlogicscala.serialize.impl._
 import com.github.celadari.jsonlogicscala.exceptions.ConfigurationException
+import com.github.celadari.jsonlogicscala.serialize.SerializerConf.DEFAULT_MARSHALLERS
 
 
 class TestSerializerConf extends AnyFlatSpec with Matchers {
@@ -15,18 +16,35 @@ class TestSerializerConf extends AnyFlatSpec with Matchers {
       "string" -> new MarshallerStringImpl("before", "after"),
       "int" -> MarshallerIntImpl,
       "double" -> new MarshallerDoubleImpl(0)
-    ), SerializerConf.DEFAULTS_MARSHALLERS
+    ), SerializerConf.DEFAULT_MARSHALLERS
     )
 
     result shouldBe expectedResult
   }
 
-  "createConf other path" should "return conf" in {
-    val result = SerializerConf.createConf("META-INF/services/json-logic-scala/tests/serializer/normal/")
+  "createConf other path with manual add priority" should "return conf" in {
+    val result = SerializerConf.createConf("META-INF/services/json-logic-scala/tests/serializer/normal/manual-add-priority/")
     val expectedResult = SerializerConf(Map(
       "boolean" -> MarshallerBooleanImpl2,
       "string" -> new MarshallerStringImpl2("before", "after"),
-    ), SerializerConf.DEFAULTS_MARSHALLERS
+    ), SerializerConf.DEFAULT_MARSHALLERS
+    )
+
+    result shouldBe expectedResult
+  }
+
+  "createConf other path with meta-inf add priority" should "return conf" in {
+    val result = SerializerConf.createConf(
+      "META-INF/services/json-logic-scala/tests/serializer/normal/meta-inf-priority/",
+      marshallersClassesManualAdd = DEFAULT_MARSHALLERS,
+      isPriorityToManualAdd = false
+    )
+    val expectedResult = SerializerConf(Map(
+      "boolean" -> MarshallerBooleanImpl2,
+      "string" -> new MarshallerStringImpl2("before", "after"),
+    ),
+      SerializerConf.DEFAULT_MARSHALLERS,
+      isPriorityToManualAdd = false
     )
 
     result shouldBe expectedResult

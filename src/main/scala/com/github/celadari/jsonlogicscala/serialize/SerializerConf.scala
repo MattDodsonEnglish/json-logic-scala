@@ -11,7 +11,7 @@ import com.github.celadari.jsonlogicscala.exceptions.ConfigurationException
 import java.util.Properties
 
 object SerializerConf {
-  val DEFAULTS_MARSHALLERS = Map(
+  val DEFAULT_MARSHALLERS = Map(
     BOOL_CODENAME -> MarshallerBoolean,
     DOUBLE_CODENAME -> MarshallerDouble,
     FLOAT_CODENAME -> MarshallerFloat,
@@ -58,12 +58,13 @@ object SerializerConf {
 
   def createConf(
                   path: String = "META-INF/services/",
-                  marshallersClassesManualAdd: Map[String, Marshaller] = DEFAULTS_MARSHALLERS
+                  marshallersClassesManualAdd: Map[String, Marshaller] = DEFAULT_MARSHALLERS,
+                  isPriorityToManualAdd: Boolean = true
                 ): SerializerConf = {
     val finder = new ResourceFinder(path)
     val props = finder.mapAllProperties(classOf[Marshaller].getName).asScala
     val marshallersMetaInf = props.map{case (fileName, prop) => getOrCreateMarshaller(fileName, prop)}.toMap
-    SerializerConf(marshallersMetaInf, marshallersClassesManualAdd)
+    SerializerConf(marshallersMetaInf, marshallersClassesManualAdd, isPriorityToManualAdd)
   }
 
   implicit val serializerConf: SerializerConf = createConf()
@@ -71,5 +72,6 @@ object SerializerConf {
 
 case class SerializerConf(
                            marshallerMetaInfAdd: Map[String, Marshaller],
-                           marshallersManualAdd: Map[String, Marshaller]
+                           marshallersManualAdd: Map[String, Marshaller],
+                           isPriorityToManualAdd: Boolean = true
                          )
