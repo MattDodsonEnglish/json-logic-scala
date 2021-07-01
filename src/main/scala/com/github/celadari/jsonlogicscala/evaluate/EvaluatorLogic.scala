@@ -1,15 +1,10 @@
 package com.github.celadari.jsonlogicscala.evaluate
 
+import java.lang.reflect.InvocationTargetException
 import com.github.celadari.jsonlogicscala.evaluate.CompositionOperator.ComposeJsonLogicCore
 import com.github.celadari.jsonlogicscala.exceptions.{EvaluationException, IllegalInputException, IncompatibleMethodsException, JsonLogicScalaException}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic, VariableLogic}
 
-import java.lang.reflect.InvocationTargetException
-
-
-object EvaluatorLogic {
-  implicit val reduceLogic: EvaluatorLogic = new EvaluatorLogic
-}
 
 class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
 

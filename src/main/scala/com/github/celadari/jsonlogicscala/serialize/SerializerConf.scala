@@ -58,13 +58,13 @@ object SerializerConf {
 
   def createConf(
                   path: String = "META-INF/services/",
-                  marshallersClassesManualAdd: Map[String, Marshaller] = DEFAULT_MARSHALLERS,
+                  marshallersManualAdd: Map[String, Marshaller] = DEFAULT_MARSHALLERS,
                   isPriorityToManualAdd: Boolean = true
                 ): SerializerConf = {
     val finder = new ResourceFinder(path)
     val props = finder.mapAllProperties(classOf[Marshaller].getName).asScala
     val marshallersMetaInf = props.map{case (fileName, prop) => getOrCreateMarshaller(fileName, prop)}.toMap
-    SerializerConf(marshallersMetaInf, marshallersClassesManualAdd, isPriorityToManualAdd)
+    SerializerConf(marshallersMetaInf, marshallersManualAdd, isPriorityToManualAdd)
   }
 
   implicit val serializerConf: SerializerConf = createConf()

@@ -153,7 +153,7 @@ class TestSerializer extends TestPrivateMethods {
   "createConf other path with meta-inf add priority" should "return serialize with boolean and string marshaller from impl" in {
     val conf = SerializerConf.createConf(
       "META-INF/services/json-logic-scala/tests/serializer/normal/meta-inf-priority/",
-      marshallersClassesManualAdd = DEFAULT_MARSHALLERS,
+      marshallersManualAdd = DEFAULT_MARSHALLERS,
       isPriorityToManualAdd = false
     )
     val serializer = new Serializer()(conf)

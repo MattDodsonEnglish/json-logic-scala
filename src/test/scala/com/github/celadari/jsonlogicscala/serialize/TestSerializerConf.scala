@@ -36,7 +36,7 @@ class TestSerializerConf extends AnyFlatSpec with Matchers {
   "createConf other path with meta-inf add priority" should "return conf" in {
     val result = SerializerConf.createConf(
       "META-INF/services/json-logic-scala/tests/serializer/normal/meta-inf-priority/",
-      marshallersClassesManualAdd = DEFAULT_MARSHALLERS,
+      marshallersManualAdd = DEFAULT_MARSHALLERS,
       isPriorityToManualAdd = false
     )
     val expectedResult = SerializerConf(Map(

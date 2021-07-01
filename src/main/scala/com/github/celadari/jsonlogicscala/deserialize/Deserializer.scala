@@ -1,10 +1,10 @@
 package com.github.celadari.jsonlogicscala.deserialize
 
-import scala.collection.mutable
 import play.api.libs.json.{JsArray, JsLookupResult, JsNull, JsObject, JsValue}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic}
 import com.github.celadari.jsonlogicscala.tree.types.{AnyTypeValue, ArrayTypeValue, MapTypeValue, OptionTypeValue, SimpleTypeValue, TypeValue}
-import com.github.celadari.jsonlogicscala.exceptions.InvalidJsonParsingException
+import com.github.celadari.jsonlogicscala.exceptions.{IllegalInputException, InvalidJsonParsingException}
+
 
 object Deserializer {
 
@@ -23,12 +23,11 @@ object Deserializer {
 }
 
 class Deserializer(implicit val conf: DeserializerConf) {
-
-  protected[this] val unmarshallers: mutable.Map[String, Unmarshaller] = mutable.Map[String, Unmarshaller]() ++ conf.unmarshallersManualAdd
+  protected[this] val unmarshallers: Map[String, Unmarshaller] = if (conf.isPriorityToManualAdd) conf.unmarshallerMetaInfAdd ++ conf.unmarshallersManualAdd else conf.unmarshallersManualAdd ++ conf.unmarshallerMetaInfAdd
 
   protected[this] def getUnmarshaller(typeValue: TypeValue): Unmarshaller = {
     typeValue match {
-      case SimpleTypeValue(codename) => unmarshallers.getOrElseUpdate(codename, conf.unmarshallerClassesToBeAdded(codename).newInstance())
+      case SimpleTypeValue(codename) => unmarshallers.getOrElse(codename, throw new IllegalInputException(s"No unmarshaller defined for $codename"))
       case ArrayTypeValue(paramType) => new Unmarshaller {
         override def unmarshal(jsValue: JsValue): Any = jsValue.as[JsArray].value.toArray.map(jsValue => getUnmarshaller(paramType).unmarshal(jsValue))
       }

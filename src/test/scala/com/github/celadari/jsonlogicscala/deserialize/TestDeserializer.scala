@@ -1,12 +1,14 @@
 package com.github.celadari.jsonlogicscala.deserialize
 
-import play.api.libs.json.{JsObject, JsValue, Json}
-import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes.{DOUBLE_CODENAME, FLOAT_CODENAME, INT_CODENAME, LONG_CODENAME, NULL_CODENAME, STRING_CODENAME}
-import com.github.celadari.jsonlogicscala.tree.types.{AnyTypeValue, ArrayTypeValue, MapTypeValue, OptionTypeValue, SimpleTypeValue}
+import play.api.libs.json.{JsObject, Json}
+import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
+import com.github.celadari.jsonlogicscala.tree.types._
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic}
 import com.github.celadari.jsonlogicscala.exceptions.InvalidJsonParsingException
 import com.github.celadari.jsonlogicscala.TestPrivateMethods
 import com.github.celadari.jsonlogicscala.JsonLogicCoreMatcher.BeEqualJsonLogicCore
+import com.github.celadari.jsonlogicscala.deserialize.DeserializerConf.DEFAULT_UNMARSHALLERS
+import com.github.celadari.jsonlogicscala.deserialize.impl.{UnmarshallerBooleanImpl2, UnmarshallerStringImpl2}
 
 
 class TestDeserializer extends TestPrivateMethods {
@@ -147,4 +149,16 @@ class TestDeserializer extends TestPrivateMethods {
     result should BeEqualJsonLogicCore (resultExpected)
   }
 
+  "createConf other path with meta-inf add priority" should "return deserialize with boolean and string unmarshaller from impl" in {
+    val conf = DeserializerConf.createConf(
+      "META-INF/services/json-logic-scala/tests/deserializer/normal/meta-inf-priority/",
+      unmarshallersManualAdd = DEFAULT_UNMARSHALLERS,
+      isPriorityToManualAdd = false
+    )
+    val deserializer = new Deserializer()(conf)
+    val result = deserializer invokePrivate PrivateMethod[Map[String, Unmarshaller]](toSymbol("unmarshallers"))()
+    val expectedResult = DEFAULT_UNMARSHALLERS ++ Map("boolean" -> UnmarshallerBooleanImpl2, "string" -> new UnmarshallerStringImpl2("before", "after"))
+
+    result shouldBe expectedResult
+  }
 }
