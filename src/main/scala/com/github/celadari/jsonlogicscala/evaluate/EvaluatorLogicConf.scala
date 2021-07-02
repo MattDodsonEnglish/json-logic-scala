@@ -1,16 +1,11 @@
 package com.github.celadari.jsonlogicscala.evaluate
 
-import com.github.celadari.jsonlogicscala.conf.ConfFromPropertiesFile
-
-import java.util.Properties
 import scala.jdk.CollectionConverters.MapHasAsScala
-import scala.reflect.runtime.{universe => ru}
-import com.github.celadari.jsonlogicscala.evaluate.defaults._
-import com.github.celadari.jsonlogicscala.exceptions.ConfigurationException
-import com.github.celadari.jsonlogicscala.tree.types.TypeValue
-import org.apache.xbean.finder.ResourceFinder
-import org.apache.xbean.recipe.{MissingAccessorException, ObjectRecipe}
 import play.api.libs.json.Json
+import org.apache.xbean.finder.ResourceFinder
+import com.github.celadari.jsonlogicscala.evaluate.defaults._
+import com.github.celadari.jsonlogicscala.tree.types.TypeValue
+import com.github.celadari.jsonlogicscala.conf.ConfFromPropertiesFile
 
 
 object EvaluatorLogicConf extends ConfFromPropertiesFile {
@@ -121,72 +116,6 @@ object EvaluatorLogicConf extends ConfFromPropertiesFile {
                          isCompositionOperator: Boolean = false,
                          isUnaryOperator: Boolean = false
                        )
-/*
-  def getOrCreateEvaluatorValueLogic(fileName: String, prop: Properties): (String, EvaluatorValueLogic) = {
-    if (!prop.containsKey("className")) throw new ConfigurationException(s"Property file '$fileName' must define key 'className'")
-    if (!prop.containsKey("codename")) throw new ConfigurationException(s"Property file '$fileName' must define key 'codename'")
-    val className = prop.remove("className").toString
-    val typeCodename = prop.remove("codename").toString
-
-    val isObject = if (prop.containsKey("singleton")) prop.remove("singleton").toString.toBoolean else false
-    if (isObject) {
-      val m = ru.runtimeMirror(getClass.getClassLoader)
-      try {
-        (typeCodename, m.reflectModule(m.staticModule(className)).instance.asInstanceOf[EvaluatorValueLogic])
-      }
-      catch {
-        case castException: java.lang.ClassCastException => throw new ConfigurationException(s"Found object is not a Marshaller instance: \n${castException.getMessage}")
-        case _: Throwable => throw new ConfigurationException(s"No singleton object found for: $className\nCheck if 'className' '$className' is correct and if 'singleton' property in '$fileName' property file is correct")
-      }
-    }
-    else {
-      try {
-        val objectRecipe = new ObjectRecipe(className)
-        val sep = if (prop.containsKey("sep")) prop.remove("sep").toString else ";"
-        if (prop.containsKey("constructorArgNames")) objectRecipe.setConstructorArgNames(prop.remove("constructorArgNames").toString.split(sep))
-        objectRecipe.setAllProperties(prop)
-        (typeCodename, objectRecipe.create().asInstanceOf[EvaluatorValueLogic])
-      }
-      catch {
-        case castException: java.lang.ClassCastException => throw new ConfigurationException(s"Found class is not a Marshaller instance: \n${castException.getMessage}")
-        case _: MissingAccessorException => throw new ConfigurationException(s"Field error, check that no field in '$className' is missing in '$fileName' property file.\nCheck that no property in '$fileName' file is not undefined in '$className' class.\nCheck if '$className' class constructor requires arguments or if argument names defined in '$fileName' property file are correct")
-        case _: Throwable => throw new ConfigurationException(s"No class found for: $className\nCheck if 'className' '$className' is correct and if 'singleton' property in '$fileName' property file is correct")
-      }
-    }
-  }
-
-  def getOrCreateMethodConfs(fileName: String, prop: Properties): (String, MethodConf) = {
-    if (!prop.containsKey("className")) throw new ConfigurationException(s"Property file '$fileName' must define key 'className'")
-    if (!prop.containsKey("codename")) throw new ConfigurationException(s"Property file '$fileName' must define key 'codename'")
-    val className = prop.remove("className").toString
-    val typeCodename = prop.remove("codename").toString
-
-    val isObject = if (prop.containsKey("singleton")) prop.remove("singleton").toString.toBoolean else false
-    if (isObject) {
-      val m = ru.runtimeMirror(getClass.getClassLoader)
-      try {
-        (typeCodename, m.reflectModule(m.staticModule(className)).instance.asInstanceOf[MethodConf])
-      }
-      catch {
-        case castException: java.lang.ClassCastException => throw new ConfigurationException(s"Found object is not a ${MethodConf.getClass.getName} instance: \n${castException.getMessage}")
-        case _: Throwable => throw new ConfigurationException(s"No singleton object found for: $className\nCheck if 'className' '$className' is correct and if 'singleton' property in '$fileName' property file is correct")
-      }
-    }
-    else {
-      try {
-        val objectRecipe = new ObjectRecipe(className)
-        val sep = if (prop.containsKey("sep")) prop.remove("sep").toString else ";"
-        if (prop.containsKey("constructorArgNames")) objectRecipe.setConstructorArgNames(prop.remove("constructorArgNames").toString.split(sep))
-        objectRecipe.setAllProperties(prop)
-        (typeCodename, objectRecipe.create().asInstanceOf[MethodConf])
-      }
-      catch {
-        case castException: java.lang.ClassCastException => throw new ConfigurationException(s"Found class is not a Marshaller instance: \n${castException.getMessage}")
-        case _: MissingAccessorException => throw new ConfigurationException(s"Field error, check that no field in '$className' is missing in '$fileName' property file.\nCheck that no property in '$fileName' file is not undefined in '$className' class.\nCheck if '$className' class constructor requires arguments or if argument names defined in '$fileName' property file are correct")
-        case _: Throwable => throw new ConfigurationException(s"No class found for: $className\nCheck if 'className' '$className' is correct and if 'singleton' property in '$fileName' property file is correct")
-      }
-    }
-  }*/
 
   def createConf(
                   pathEvaluatorLogic: String = "META-INF/services/",
