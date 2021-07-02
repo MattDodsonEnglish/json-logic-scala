@@ -51,25 +51,26 @@ class TestDeserializerConf extends AnyFlatSpec with Matchers {
 
   "createConf non unmarshaller object" should "throw an exception" in {
     val thrown = the[ConfigurationException] thrownBy {DeserializerConf.createConf("META-INF/services/json-logic-scala/tests/deserializer/exceptions/cast-exception-singleton/")}
-    val expectedMessage = "Found object is not a Unmarshaller instance: \ncom.github.celadari.jsonlogicscala.serialize.impl.MarshallerIntImpl$ cannot be cast to com.github.celadari.jsonlogicscala.deserialize.Unmarshaller"
+    val expectedMessage = "Found object is not a 'com.github.celadari.jsonlogicscala.deserialize.Unmarshaller' instance: \n'com.github.celadari.jsonlogicscala.serialize.impl.MarshallerIntImpl$'"
+    println(thrown.getMessage)
     thrown.getMessage shouldBe expectedMessage
   }
 
   "createConf non singleton with singleton true in props file" should "throw an exception" in {
     val thrown = the[ConfigurationException] thrownBy {DeserializerConf.createConf("META-INF/services/json-logic-scala/tests/deserializer/exceptions/non-singleton-exception-singleton-set-to-true/")}
-    val expectedMessage = "No singleton object found for: com.github.celadari.jsonlogicscala.deserialize.impl.UnmarshallerStringImpl\nCheck if 'className' 'com.github.celadari.jsonlogicscala.deserialize.impl.UnmarshallerStringImpl' is correct and if 'singleton' property in 'string' property file is correct"
+    val expectedMessage = "No singleton object found for: 'com.github.celadari.jsonlogicscala.deserialize.impl.UnmarshallerStringImpl'\nCheck if 'className' 'com.github.celadari.jsonlogicscala.deserialize.impl.UnmarshallerStringImpl' is correct and if 'singleton' property in 'string' property file is correct"
     thrown.getMessage shouldBe expectedMessage
   }
 
   "createConf non unmarshaller class" should "throw an exception" in {
     val thrown = the[ConfigurationException] thrownBy {DeserializerConf.createConf("META-INF/services/json-logic-scala/tests/deserializer/exceptions/cast-exception-class/")}
-    val expectedMessage = "Found class is not a Unmarshaller instance: \ncom.github.celadari.jsonlogicscala.serialize.impl.MarshallerDoubleImpl cannot be cast to com.github.celadari.jsonlogicscala.deserialize.Unmarshaller"
+    val expectedMessage = "Found class is not a 'com.github.celadari.jsonlogicscala.deserialize.Unmarshaller' instance: \n'com.github.celadari.jsonlogicscala.serialize.impl.MarshallerDoubleImpl'"
     thrown.getMessage shouldBe expectedMessage
   }
 
   "createConf singleton with singleton false in props file" should "throw an exception" in {
     val thrown = the[ConfigurationException] thrownBy {DeserializerConf.createConf("META-INF/services/json-logic-scala/tests/deserializer/exceptions/singleton-exception-singleton-set-to-false/")}
-    val expectedMessage = "No class found for: com.github.celadari.jsonlogicscala.deserialize.impl.UnmarshallerIntImpl\nCheck if 'className' 'com.github.celadari.jsonlogicscala.deserialize.impl.UnmarshallerIntImpl' is correct and if 'singleton' property in 'int' property file is correct"
+    val expectedMessage = "No class found for: 'com.github.celadari.jsonlogicscala.deserialize.impl.UnmarshallerIntImpl'\nCheck if 'className' 'com.github.celadari.jsonlogicscala.deserialize.impl.UnmarshallerIntImpl' is correct and if 'singleton' property in 'int' property file is correct"
     thrown.getMessage shouldBe expectedMessage
   }
 

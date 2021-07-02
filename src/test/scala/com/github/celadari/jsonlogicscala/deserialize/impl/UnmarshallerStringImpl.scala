@@ -5,5 +5,6 @@ import com.github.celadari.jsonlogicscala.deserialize.Unmarshaller
 
 class UnmarshallerStringImpl(val prefix: String, val suffix: String) extends Unmarshaller {
 
+  override def toString: String = this.getClass.getName
   override def unmarshal(jsValue: JsValue): Any = s"$prefix${jsValue.as[String]}$suffix"
 }

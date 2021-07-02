@@ -5,5 +5,6 @@ import play.api.libs.json.{JsString, JsValue}
 
 class MarshallerStringImpl2(val prefix: String, val suffix: String) extends Marshaller {
 
+  override def toString: String = this.getClass.getName
   def marshal(value: Any): JsValue = JsString(s"$prefix$value$suffix")
 }

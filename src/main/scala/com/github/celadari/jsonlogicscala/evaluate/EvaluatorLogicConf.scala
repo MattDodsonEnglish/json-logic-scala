@@ -1,12 +1,19 @@
 package com.github.celadari.jsonlogicscala.evaluate
 
+import com.github.celadari.jsonlogicscala.conf.ConfFromPropertiesFile
+
+import java.util.Properties
 import scala.jdk.CollectionConverters.MapHasAsScala
+import scala.reflect.runtime.{universe => ru}
 import com.github.celadari.jsonlogicscala.evaluate.defaults._
+import com.github.celadari.jsonlogicscala.exceptions.ConfigurationException
 import com.github.celadari.jsonlogicscala.tree.types.TypeValue
 import org.apache.xbean.finder.ResourceFinder
-import org.apache.xbean.recipe.ObjectRecipe
+import org.apache.xbean.recipe.{MissingAccessorException, ObjectRecipe}
+import play.api.libs.json.Json
 
-object EvaluatorLogicConf {
+
+object EvaluatorLogicConf extends ConfFromPropertiesFile {
 
   val DEFAULT_REDUCEOPERATORS_TO_METHODNAME: Map[String, (String, Operator)] = Map(
     "<" -> ("$less", OperatorLess),
@@ -114,37 +121,104 @@ object EvaluatorLogicConf {
                          isCompositionOperator: Boolean = false,
                          isUnaryOperator: Boolean = false
                        )
+/*
+  def getOrCreateEvaluatorValueLogic(fileName: String, prop: Properties): (String, EvaluatorValueLogic) = {
+    if (!prop.containsKey("className")) throw new ConfigurationException(s"Property file '$fileName' must define key 'className'")
+    if (!prop.containsKey("codename")) throw new ConfigurationException(s"Property file '$fileName' must define key 'codename'")
+    val className = prop.remove("className").toString
+    val typeCodename = prop.remove("codename").toString
+
+    val isObject = if (prop.containsKey("singleton")) prop.remove("singleton").toString.toBoolean else false
+    if (isObject) {
+      val m = ru.runtimeMirror(getClass.getClassLoader)
+      try {
+        (typeCodename, m.reflectModule(m.staticModule(className)).instance.asInstanceOf[EvaluatorValueLogic])
+      }
+      catch {
+        case castException: java.lang.ClassCastException => throw new ConfigurationException(s"Found object is not a Marshaller instance: \n${castException.getMessage}")
+        case _: Throwable => throw new ConfigurationException(s"No singleton object found for: $className\nCheck if 'className' '$className' is correct and if 'singleton' property in '$fileName' property file is correct")
+      }
+    }
+    else {
+      try {
+        val objectRecipe = new ObjectRecipe(className)
+        val sep = if (prop.containsKey("sep")) prop.remove("sep").toString else ";"
+        if (prop.containsKey("constructorArgNames")) objectRecipe.setConstructorArgNames(prop.remove("constructorArgNames").toString.split(sep))
+        objectRecipe.setAllProperties(prop)
+        (typeCodename, objectRecipe.create().asInstanceOf[EvaluatorValueLogic])
+      }
+      catch {
+        case castException: java.lang.ClassCastException => throw new ConfigurationException(s"Found class is not a Marshaller instance: \n${castException.getMessage}")
+        case _: MissingAccessorException => throw new ConfigurationException(s"Field error, check that no field in '$className' is missing in '$fileName' property file.\nCheck that no property in '$fileName' file is not undefined in '$className' class.\nCheck if '$className' class constructor requires arguments or if argument names defined in '$fileName' property file are correct")
+        case _: Throwable => throw new ConfigurationException(s"No class found for: $className\nCheck if 'className' '$className' is correct and if 'singleton' property in '$fileName' property file is correct")
+      }
+    }
+  }
+
+  def getOrCreateMethodConfs(fileName: String, prop: Properties): (String, MethodConf) = {
+    if (!prop.containsKey("className")) throw new ConfigurationException(s"Property file '$fileName' must define key 'className'")
+    if (!prop.containsKey("codename")) throw new ConfigurationException(s"Property file '$fileName' must define key 'codename'")
+    val className = prop.remove("className").toString
+    val typeCodename = prop.remove("codename").toString
+
+    val isObject = if (prop.containsKey("singleton")) prop.remove("singleton").toString.toBoolean else false
+    if (isObject) {
+      val m = ru.runtimeMirror(getClass.getClassLoader)
+      try {
+        (typeCodename, m.reflectModule(m.staticModule(className)).instance.asInstanceOf[MethodConf])
+      }
+      catch {
+        case castException: java.lang.ClassCastException => throw new ConfigurationException(s"Found object is not a ${MethodConf.getClass.getName} instance: \n${castException.getMessage}")
+        case _: Throwable => throw new ConfigurationException(s"No singleton object found for: $className\nCheck if 'className' '$className' is correct and if 'singleton' property in '$fileName' property file is correct")
+      }
+    }
+    else {
+      try {
+        val objectRecipe = new ObjectRecipe(className)
+        val sep = if (prop.containsKey("sep")) prop.remove("sep").toString else ";"
+        if (prop.containsKey("constructorArgNames")) objectRecipe.setConstructorArgNames(prop.remove("constructorArgNames").toString.split(sep))
+        objectRecipe.setAllProperties(prop)
+        (typeCodename, objectRecipe.create().asInstanceOf[MethodConf])
+      }
+      catch {
+        case castException: java.lang.ClassCastException => throw new ConfigurationException(s"Found class is not a Marshaller instance: \n${castException.getMessage}")
+        case _: MissingAccessorException => throw new ConfigurationException(s"Field error, check that no field in '$className' is missing in '$fileName' property file.\nCheck that no property in '$fileName' file is not undefined in '$className' class.\nCheck if '$className' class constructor requires arguments or if argument names defined in '$fileName' property file are correct")
+        case _: Throwable => throw new ConfigurationException(s"No class found for: $className\nCheck if 'className' '$className' is correct and if 'singleton' property in '$fileName' property file is correct")
+      }
+    }
+  }*/
 
   def createConf(
-                  path: String = "META-INF/services/",
+                  pathEvaluatorLogic: String = "META-INF/services/",
+                  pathOperator: String = "META-INF/services/",
                   operatorsManualAdd: Map[String, MethodConf] = DEFAULT_METHOD_CONFS,
-                  evaluatorValueLogicManualAdd: Map[TypeValue, EvaluatorValueLogic] = Map()
+                  evaluatorValueLogicManualAdd: Map[TypeValue, EvaluatorValueLogic] = Map(),
+                  isPriorityToManualAdd: Boolean = true
                 ): EvaluatorLogicConf = {
-    val finder = new ResourceFinder(path)
-    val propsConf = finder.mapAllProperties(classOf[MethodConf].getName).asScala
-    val methodConfsLoaded = propsConf.view.mapValues(prop => {
-      val objectRecipe = new ObjectRecipe(propsConf.remove("className").toString)
-      objectRecipe.setAllProperties(prop)
-      objectRecipe.create().asInstanceOf[MethodConf]
-    }).toMap
 
-    val propsEvaluatorValueLogic = finder.mapAllProperties(classOf[EvaluatorValueLogic].getName).asScala
-    val evaluatorValueLogicLoaded = propsConf.view.mapValues(prop => {
-      val objectRecipe = new ObjectRecipe(propsEvaluatorValueLogic.remove("className").toString)
-      objectRecipe.setAllProperties(prop)
-      objectRecipe.create().asInstanceOf[EvaluatorValueLogic]
-      // TODO Parse and create create TypeValue
+    val finderEvaluatorValueLogic = new ResourceFinder(pathEvaluatorLogic)
+    val propsEvaluatorValueLogic = finderEvaluatorValueLogic.mapAllProperties(classOf[EvaluatorValueLogic].getName).asScala
+    val evaluatorValueLogicMetaInfTypeNonParsed = propsEvaluatorValueLogic.map{case (fileName, prop) => getOrCreateClassFromProperties[EvaluatorValueLogic](fileName, prop)}.toMap
+    val evaluatorValueLogicMetaInf = evaluatorValueLogicMetaInfTypeNonParsed.map{case (typeNonParsed, evaluator) => (Json.toJson(typeNonParsed).as[TypeValue], evaluator)}
 
-    }).toMap.asInstanceOf[Map[TypeValue, EvaluatorValueLogic]]
+    val finderMethodConf = new ResourceFinder(pathOperator)
+    val propsMethodConf = finderMethodConf.mapAllProperties(classOf[MethodConf].getName).asScala
+    val methodConfMetaInf = propsMethodConf.map{case (fileName, prop) => getOrCreateClassFromProperties[MethodConf](fileName, prop)}.toMap
 
-    EvaluatorLogicConf(methodConfsLoaded ++ operatorsManualAdd, evaluatorValueLogicLoaded ++ evaluatorValueLogicManualAdd)
+    EvaluatorLogicConf(methodConfMetaInf, operatorsManualAdd, evaluatorValueLogicMetaInf, evaluatorValueLogicManualAdd, isPriorityToManualAdd)
   }
 
   implicit val implReduceLogicConf: EvaluatorLogicConf = createConf()
-
 }
 
 case class EvaluatorLogicConf(
-                               operatorToMethodConf: Map[String, EvaluatorLogicConf.MethodConf],
-                               valueLogicTypeToReducer: Map[TypeValue, EvaluatorValueLogic]
-                             )
+                               operatorToMethodConfMetaInfAdd: Map[String, EvaluatorLogicConf.MethodConf],
+                               operatorToMethodConfManualAdd: Map[String, EvaluatorLogicConf.MethodConf],
+                               valueLogicTypeToReducerMetaInfAdd: Map[TypeValue, EvaluatorValueLogic],
+                               valueLogicTypeToReducerManualAdd: Map[TypeValue, EvaluatorValueLogic],
+                               isPriorityToManualAdd: Boolean = true
+                             ) {
+
+  val operatorToMethodConf: Map[String, EvaluatorLogicConf.MethodConf] = if (isPriorityToManualAdd) operatorToMethodConfMetaInfAdd ++ operatorToMethodConfManualAdd else operatorToMethodConfManualAdd ++ operatorToMethodConfMetaInfAdd
+  val valueLogicTypeToReducer: Map[TypeValue, EvaluatorValueLogic] = if (isPriorityToManualAdd) valueLogicTypeToReducerMetaInfAdd ++ valueLogicTypeToReducerManualAdd else valueLogicTypeToReducerManualAdd ++ valueLogicTypeToReducerMetaInfAdd
+}
