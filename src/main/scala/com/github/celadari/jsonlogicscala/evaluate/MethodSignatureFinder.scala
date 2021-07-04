@@ -64,7 +64,7 @@ object MethodSignatureFinder {
 
 class MethodSignatureFinder(
                              val conditionsValues: Array[Any],
-                             val confMethod: EvaluatorLogicConf.MethodConf
+                             val confMethod: MethodConf
                            ) {
   protected[this] val conditionsValuesEval = mutable.Stack[Any]() ++ conditionsValues
   protected[this] var isEvaluated = false

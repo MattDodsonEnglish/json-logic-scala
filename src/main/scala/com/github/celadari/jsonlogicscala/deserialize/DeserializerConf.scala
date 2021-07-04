@@ -3,11 +3,11 @@ package com.github.celadari.jsonlogicscala.deserialize
 import scala.jdk.CollectionConverters.MapHasAsScala
 import org.apache.xbean.finder.ResourceFinder
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
-import com.github.celadari.jsonlogicscala.conf.ConfFromPropertiesFile
+import com.github.celadari.jsonlogicscala.configuration.ConfigurationFetcher
 import com.github.celadari.jsonlogicscala.deserialize.defaults._
 
 
-object DeserializerConf extends ConfFromPropertiesFile {
+object DeserializerConf {
   val DEFAULT_UNMARSHALLERS: Map[String, Unmarshaller] = Map(
     BOOL_CODENAME -> UnmarshallerBoolean,
     DOUBLE_CODENAME -> UnmarshallerDouble,
@@ -27,7 +27,7 @@ object DeserializerConf extends ConfFromPropertiesFile {
                 ): DeserializerConf = {
     val finder = new ResourceFinder(path)
     val props = finder.mapAllProperties(classOf[Unmarshaller].getName).asScala
-    val unmarshallersMetaInf = props.map{case (fileName, prop) => getOrCreateClassFromProperties[Unmarshaller](fileName, prop)}.toMap
+    val unmarshallersMetaInf = props.map{case (fileName, prop) => ConfigurationFetcher.getOrCreateClassFromProperties[Unmarshaller](fileName, prop)}.toMap
     DeserializerConf(unmarshallersMetaInf, unmarshallersManualAdd, isPriorityToManualAdd)
   }
 

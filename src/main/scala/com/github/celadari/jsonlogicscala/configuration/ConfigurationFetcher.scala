@@ -1,4 +1,4 @@
-package com.github.celadari.jsonlogicscala.conf
+package com.github.celadari.jsonlogicscala.configuration
 
 import java.util.Properties
 import scala.reflect.runtime.{universe => ru}
@@ -6,7 +6,16 @@ import org.apache.xbean.recipe.{MissingAccessorException, ObjectRecipe}
 import com.github.celadari.jsonlogicscala.exceptions.ConfigurationException
 
 
-trait ConfFromPropertiesFile {
+object ConfigurationFetcher {
+
+  def getOptionalBooleanProperty(key: String, defaultValue: Boolean, prop: Properties, throwable: Throwable): Boolean = {
+    try {
+      if (prop.containsKey(key)) prop.remove(key).toString.toBoolean else defaultValue
+    }
+    catch {
+      case _: Throwable => throw throwable
+    }
+  }
 
   def getOrCreateClassFromProperties[T: ru.TypeTag](fileName: String, prop: Properties): (String, T) = {
     if (!prop.containsKey("className")) throw new ConfigurationException(s"Property file '$fileName' must define key 'className'")
@@ -14,7 +23,7 @@ trait ConfFromPropertiesFile {
     val className = prop.remove("className").toString
     val typeCodename = prop.remove("codename").toString
 
-    val isObject = if (prop.containsKey("singleton")) prop.remove("singleton").toString.toBoolean else false
+    val isObject = getOptionalBooleanProperty("singleton", defaultValue= false, prop, new ConfigurationException(s"Property 'singleton' in property file '$fileName' is not a valid boolean parameter"))
     val m = ru.runtimeMirror(getClass.getClassLoader)
     if (isObject) {
       try {

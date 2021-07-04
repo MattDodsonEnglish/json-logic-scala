@@ -4,10 +4,10 @@ import scala.jdk.CollectionConverters.MapHasAsScala
 import org.apache.xbean.finder.ResourceFinder
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
 import com.github.celadari.jsonlogicscala.serialize.defaults._
-import com.github.celadari.jsonlogicscala.conf.ConfFromPropertiesFile
+import com.github.celadari.jsonlogicscala.configuration.ConfigurationFetcher
 
 
-object SerializerConf extends ConfFromPropertiesFile {
+object SerializerConf {
   val DEFAULT_MARSHALLERS = Map(
     BOOL_CODENAME -> MarshallerBoolean,
     DOUBLE_CODENAME -> MarshallerDouble,
@@ -27,7 +27,7 @@ object SerializerConf extends ConfFromPropertiesFile {
                 ): SerializerConf = {
     val finder = new ResourceFinder(path)
     val props = finder.mapAllProperties(classOf[Marshaller].getName).asScala
-    val marshallersMetaInf = props.map{case (fileName, prop) => getOrCreateClassFromProperties[Marshaller](fileName, prop)}.toMap
+    val marshallersMetaInf = props.map{case (fileName, prop) => ConfigurationFetcher.getOrCreateClassFromProperties[Marshaller](fileName, prop)}.toMap
     SerializerConf(marshallersMetaInf, marshallersManualAdd, isPriorityToManualAdd)
   }
 

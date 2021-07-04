@@ -92,4 +92,9 @@ class TestDeserializerConf extends AnyFlatSpec with Matchers {
     thrown.getMessage shouldBe expectedMessage
   }
 
+  "createConf wrong property type in props file" should "throw an exception" in {
+    val thrown = the[ConfigurationException] thrownBy {DeserializerConf.createConf("META-INF/services/json-logic-scala/tests/deserializer/exceptions/wrong-property-type-exception-class/")}
+    val expectedMessage = "Property 'singleton' in property file 'string' is not a valid boolean parameter"
+    thrown.getMessage shouldBe expectedMessage
+  }
 }

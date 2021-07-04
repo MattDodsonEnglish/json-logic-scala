@@ -1,7 +1,7 @@
 package com.github.celadari.jsonlogicscala.evaluate
 
 import com.github.celadari.jsonlogicscala.TestPrivateMethods
-import com.github.celadari.jsonlogicscala.evaluate.EvaluatorLogicConf.MethodConf
+import com.github.celadari.jsonlogicscala.evaluate.MethodConf
 import com.github.celadari.jsonlogicscala.exceptions.{EvaluationException, IllegalInputException, IncompatibleMethodsException}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes.{INT_CODENAME, STRING_CODENAME}
 import com.github.celadari.jsonlogicscala.tree.types.SimpleTypeValue
