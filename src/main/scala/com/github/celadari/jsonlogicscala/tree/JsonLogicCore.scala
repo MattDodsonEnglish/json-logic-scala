@@ -33,13 +33,4 @@ object JsonLogicCore {
 }
 
 
-abstract class JsonLogicCore(val operator: String) {
-
-  /**
-   * Indicates if this represents an empty condition.
-   * @since 1.1.0
-   * @return boolean to indicate if empty.
-   * @since abstract method.
-   */
-  def isEmpty: Boolean
-}
+abstract class JsonLogicCore(val operator: String)

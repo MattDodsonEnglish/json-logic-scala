@@ -1,5 +1,6 @@
 package com.github.celadari.jsonlogicscala.tree.types
 
+import com.github.celadari.jsonlogicscala.exceptions.{IllegalInputException, InvalidJsonParsingException}
 import play.api.libs.json.{JsError, JsObject, JsResult, JsString, JsSuccess, JsValue, Reads, Writes}
 
 object TypeValue {
@@ -8,12 +9,16 @@ object TypeValue {
     val codename = (json \ "codename").as[String]
     val paramType = (json \ "paramType").asOpt[JsValue]
 
+    if (!json.as[JsObject].keys.forall(key => key == "codename" || key == "paramType")) {
+      throw new InvalidJsonParsingException(s"TypeValue cannot have other keys than 'codename' and 'paramType': $json")
+    }
+
     paramType
       .map(jsParamType => codename match {
         case ArrayTypeValue.CODENAME_TYPE => ArrayTypeValue(parseTypeValue(jsParamType))
         case MapTypeValue.CODENAME_TYPE => MapTypeValue(parseTypeValue(jsParamType))
         case OptionTypeValue.CODENAME_TYPE => OptionTypeValue(parseTypeValue(jsParamType))
-        case _ => throw new IllegalArgumentException("Wrong type")
+        case other => throw new InvalidJsonParsingException(s"Illegal 'codename': '$other' in parameter type. SimpleTypeValue cannot have 'paramType' key")
       })
       .getOrElse(SimpleTypeValue(codename))
   }
@@ -44,7 +49,7 @@ object TypeValue {
         "codename" -> JsString(OptionTypeValue.CODENAME_TYPE),
         "paramType" -> serializeTypeValue(paramType)
       ))
-      case _ => throw new IllegalArgumentException("Wrong type for type value")
+      case other => throw new IllegalInputException(s"'$other' type cannot be serialized")
     }
   }
 
