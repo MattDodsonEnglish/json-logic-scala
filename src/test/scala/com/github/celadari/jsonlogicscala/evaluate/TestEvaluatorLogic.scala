@@ -62,7 +62,7 @@ class TestEvaluatorLogic extends TestPrivateMethods {
   "Evaluate Compose Logic non-existing method of nonReduce type operator" should "throw exception" in {
     object FooOperator extends Operator
     implicit val conf: EvaluatorLogicConf = EvaluatorLogicConf.createConf(
-      operatorsManualAdd = Map("foo" -> MethodConf("foo", "nonexisting", Some(FooOperator), isReduceTypeOperator = false)) ++ EvaluatorLogicConf.DEFAULT_METHOD_CONFS
+      methodConfsManualAdd = Map("foo" -> MethodConf("foo", "nonexisting", Some(FooOperator), isReduceTypeOperator = false)) ++ EvaluatorLogicConf.DEFAULT_METHOD_CONFS
     )
     val evaluator = new EvaluatorLogic
 
@@ -77,7 +77,7 @@ class TestEvaluatorLogic extends TestPrivateMethods {
   "Evaluate Compose Logic non-existing method of reduce type operator" should "throw exception" in {
     object FooOperator extends Operator
     implicit val conf: EvaluatorLogicConf = EvaluatorLogicConf.createConf(
-      operatorsManualAdd = Map("foo" -> MethodConf("foo", "nonexisting", Some(FooOperator))) ++ EvaluatorLogicConf.DEFAULT_METHOD_CONFS
+      methodConfsManualAdd = Map("foo" -> MethodConf("foo", "nonexisting", Some(FooOperator))) ++ EvaluatorLogicConf.DEFAULT_METHOD_CONFS
     )
     val evaluator = new EvaluatorLogic
 

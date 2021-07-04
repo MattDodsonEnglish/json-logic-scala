@@ -2,7 +2,7 @@ package com.github.celadari.jsonlogicscala.evaluate
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.flatspec.AnyFlatSpec
-import com.github.celadari.jsonlogicscala.evaluate.impl.{EvaluatorValueLogicImplArrayInt, EvaluatorValueLogicImplDouble, EvaluatorValueLogicImplInt, EvaluatorValueLogicImplString, OperatorImplGreater, OperatorImplPrefix}
+import com.github.celadari.jsonlogicscala.evaluate.impl.{EvaluatorValueLogicImplArrayInt, EvaluatorValueLogicImplDouble, EvaluatorValueLogicImplInt, EvaluatorValueLogicImplString, OperatorImplArrayLength, OperatorImplGreater, OperatorImplPrefix, OperatorImplSurroundString}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes.{DOUBLE_CODENAME, INT_CODENAME, STRING_CODENAME}
 import com.github.celadari.jsonlogicscala.tree.types.{ArrayTypeValue, SimpleTypeValue}
 import com.github.celadari.jsonlogicscala.evaluate.EvaluatorLogicConf.DEFAULT_METHOD_CONFS
@@ -29,7 +29,7 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
     result shouldBe expectedResult
   }
 
-  "createConf other path with manual add priority" should "return conf" in {
+  "createConf EvaluateValueLogic other path with manual add priority" should "return conf" in {
     val result = EvaluatorLogicConf.createConf(
       pathEvaluatorLogic = "META-INF/services/json-logic-scala/tests/evaluator-value-logic/normal/manual-add-priority/",
       evaluatorValueLogicManualAdd = Map(SimpleTypeValue(DOUBLE_CODENAME) -> EvaluatorValueLogicImplDouble),
@@ -54,7 +54,7 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
     result shouldBe expectedResult
   }
 
-  "createConf other path with meta-inf-priority" should "return conf" in {
+  "createConf EvaluateValueLogic other path with meta-inf-priority" should "return conf" in {
     val result = EvaluatorLogicConf.createConf(
       pathEvaluatorLogic = "META-INF/services/json-logic-scala/tests/evaluator-value-logic/normal/meta-inf-priority/",
       evaluatorValueLogicManualAdd = Map(SimpleTypeValue(DOUBLE_CODENAME) -> EvaluatorValueLogicImplDouble),
@@ -144,73 +144,113 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
     thrown.getMessage shouldBe expectedMessage
   }
 
-  /*
-  "Evaluate Value Logic with custom ValueLogicReducer" should "return value" in {
-    val customIntValueLogicReducer = new EvaluatorValueLogic {
-      override def evaluateValueLogic(value: Any): Any = "Custom EvaluatorValueLogic"
-    }
-
-    implicit val conf: EvaluatorLogicConf = EvaluatorLogicConf.createConf(
-      evaluatorValueLogicManualAdd = Map(SimpleTypeValue("customInt") -> customIntValueLogicReducer)
+  "createConf MethodConf other path with manual add priority" should "return conf" in {
+    val operatorSurround = new OperatorImplSurroundString("before", "after")
+    val result = EvaluatorLogicConf.createConf(
+      pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/normal/manual-add-priority/",
+      operatorToOwnerManualAdd = Map("surround" -> operatorSurround),
+      methodConfsManualAdd = Map("length" -> MethodConf("length", "length", Some(OperatorImplArrayLength), false, false, false)),
+      isPriorityToManualAdd = true
     )
-    val evaluator = new EvaluatorLogic
-    val result1 = evaluator invokePrivate evaluateValueLogic(ValueLogic(Some(4), Some(SimpleTypeValue("customInt"))))
-    val result2 = evaluator invokePrivate evaluateValueLogic(ValueLogic(Some(2), None))
-    result1 shouldBe "Custom EvaluatorValueLogic"
-    result2 shouldBe (null: Any)
-  }
-
-  "Evaluate Compose Logic reduceType default operators" should "return value" in {
-    val evaluator = new EvaluatorLogic
-
-    val composeLogic = new ComposeLogic("+", Array(
-      ValueLogic(Some(4), Some(SimpleTypeValue(INT_CODENAME))),
-      ValueLogic(Some(4), Some(SimpleTypeValue(INT_CODENAME)))
-    ))
-
-    val result = evaluator invokePrivate evaluateComposeLogic(composeLogic, Map[ComposeLogic, Map[String, Any]]())
-    result shouldBe 8
-  }
-
-  "Evaluate Compose Logic non-defined operator" should "throw exception" in {
-    val evaluator = new EvaluatorLogic
-
-    val composeLogic = new ComposeLogic("non-defined", Array(
-      ValueLogic(Some(4), Some(SimpleTypeValue(INT_CODENAME))),
-      ValueLogic(Some(4), Some(SimpleTypeValue(INT_CODENAME)))
-    ))
-
-    an[IllegalInputException] shouldBe thrownBy {evaluator invokePrivate evaluateComposeLogic(composeLogic, Map[ComposeLogic, Map[String, Any]]())}
-  }
-
-  "Evaluate Compose Logic non-existing method of nonReduce type operator" should "throw exception" in {
-    object FooOperator extends Operator
-    implicit val conf: EvaluatorLogicConf = EvaluatorLogicConf.createConf(
-      operatorsManualAdd = Map("foo" -> MethodConf("foo", "nonexisting", Some(FooOperator), isReduceTypeOperator = false)) ++ EvaluatorLogicConf.DEFAULT_METHOD_CONFS
+    val expectedResult = EvaluatorLogicConf(
+      Map(
+        "gt" -> MethodConf("gt", "greater", Some(OperatorImplGreater), true, false, false),
+        "prefix" -> MethodConf("prefix", "prefix", Some(new OperatorImplPrefix("before")), false, false, false),
+        "surround" -> MethodConf("surround", "surroundString", Some(operatorSurround), false, false, false),
+      ),
+      Map("length" -> MethodConf("length", "length", Some(OperatorImplArrayLength), false, false, false)),
+      Map(
+        SimpleTypeValue(INT_CODENAME) -> new EvaluatorValueLogicImplInt(0),
+        SimpleTypeValue(STRING_CODENAME) -> EvaluatorValueLogicImplString,
+        ArrayTypeValue(SimpleTypeValue(INT_CODENAME)) -> EvaluatorValueLogicImplArrayInt
+      ),
+      Map(),
+      isPriorityToManualAdd = true
     )
-    val evaluator = new EvaluatorLogic
 
-    val composeLogic = new ComposeLogic("foo", Array(
-      ValueLogic(Some(4), Some(SimpleTypeValue(INT_CODENAME))),
-      ValueLogic(Some(4), Some(SimpleTypeValue(INT_CODENAME)))
-    ))
-
-    an[IncompatibleMethodsException] shouldBe thrownBy {evaluator invokePrivate evaluateComposeLogic(composeLogic, Map[ComposeLogic, Map[String, Any]]())}
+    result shouldBe expectedResult
   }
 
-  "Evaluate Compose Logic non-existing method of reduce type operator" should "throw exception" in {
-    object FooOperator extends Operator
-    implicit val conf: EvaluatorLogicConf = EvaluatorLogicConf.createConf(
-      operatorsManualAdd = Map("foo" -> MethodConf("foo", "nonexisting", Some(FooOperator))) ++ EvaluatorLogicConf.DEFAULT_METHOD_CONFS
+  "createConf MethodConf other path with meta inf add priority" should "return conf" in {
+    val operatorSurround = new OperatorImplSurroundString("before", "after")
+    val result = EvaluatorLogicConf.createConf(
+      pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/normal/meta-inf-priority/",
+      operatorToOwnerManualAdd = Map(),
+      methodConfsManualAdd = Map("length" -> MethodConf("length", "length", Some(OperatorImplArrayLength), false, false, false)),
+      isPriorityToManualAdd = false
     )
-    val evaluator = new EvaluatorLogic
+    val expectedResult = EvaluatorLogicConf(
+      Map(
+        "gt" -> MethodConf("gt", "greater", Some(OperatorImplGreater), true, false, false),
+        "prefix" -> MethodConf("prefix", "prefix", Some(new OperatorImplPrefix("before")), false, false, false)
+      ),
+      Map("length" -> MethodConf("length", "length", Some(OperatorImplArrayLength), false, false, false)),
+      Map(
+        SimpleTypeValue(INT_CODENAME) -> new EvaluatorValueLogicImplInt(0),
+        SimpleTypeValue(STRING_CODENAME) -> EvaluatorValueLogicImplString,
+        ArrayTypeValue(SimpleTypeValue(INT_CODENAME)) -> EvaluatorValueLogicImplArrayInt
+      ),
+      Map(),
+      isPriorityToManualAdd = false
+    )
 
-    val composeLogic = new ComposeLogic("foo", Array(
-      ValueLogic(Some(4), Some(SimpleTypeValue(INT_CODENAME))),
-      ValueLogic(Some(4), Some(SimpleTypeValue(INT_CODENAME)))
-    ))
-
-    an[IncompatibleMethodsException] shouldBe thrownBy {evaluator invokePrivate evaluateComposeLogic(composeLogic, Map[ComposeLogic, Map[String, Any]]())}
+    result shouldBe expectedResult
   }
-*/
+
+  "createConf MethodConf non EvaluateValueLogic object" should "throw an exception" in {
+    val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
+      pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/exceptions/cast-exception-singleton/"
+    )}
+    val expectedMessage = "Found object is not a 'com.github.celadari.jsonlogicscala.evaluate.Operator' instance: \ncom.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplString$ cannot be cast to com.github.celadari.jsonlogicscala.evaluate.Operator"
+    thrown.getMessage shouldBe expectedMessage
+  }
+
+  "createConf MethodConf non singleton with singleton true in props file" should "throw an exception" in {
+    val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
+      pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/exceptions/non-singleton-exception-singleton-set-to-true/"
+    )}
+    val expectedMessage = "No singleton object found for: 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplPrefix'\nCheck if 'ownerMethod' 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplPrefix' is correct and if 'singleton' property in 'prefix' property file is correct"
+    thrown.getMessage shouldBe expectedMessage
+  }
+
+  "createConf MethodConf non marshaller class" should "throw an exception" in {
+    val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
+      pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/exceptions/cast-exception-class/"
+    )}
+    val expectedMessage = "Found class is not a 'com.github.celadari.jsonlogicscala.evaluate.Operator' instance: \ncom.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplInt cannot be cast to com.github.celadari.jsonlogicscala.evaluate.Operator"
+    thrown.getMessage shouldBe expectedMessage
+  }
+
+  "createConf MethodConf singleton with singleton false in props file" should "throw an exception" in {
+    val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
+      pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/exceptions/singleton-exception-singleton-set-to-false/"
+    )}
+    val expectedMessage = "No class found for: 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplGreater'\nCheck if 'ownerMethod' 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplGreater' is correct and if 'singleton' property in 'gt' property file is correct"
+    thrown.getMessage shouldBe expectedMessage
+  }
+
+  "createConf MethodConf operator not defined in props file" should "throw an exception" in {
+    val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
+      pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/exceptions/operator-not-defined-exception-class/"
+    )}
+    val expectedMessage = "Property file 'prefix' must define key 'operator'"
+    thrown.getMessage shouldBe expectedMessage
+  }
+
+  "createConf MethodConf wrong constructor argument names in props file" should "throw an exception" in {
+    val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
+      pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/exceptions/wrong-constructor-argument-names-definition-exception-class/"
+    )}
+    val expectedMessage = "Field error, check that no field in 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplSurroundString' is missing in 'surround' property file.\nCheck that no property in 'surround' file is not undefined in 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplSurroundString' class.\nCheck if 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplSurroundString' class constructor requires arguments or if argument names defined in 'surround' property file are correct"
+    thrown.getMessage shouldBe expectedMessage
+  }
+
+  "createConf MethodConf wrong property type in props file" should "throw an exception" in {
+    val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
+      pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/exceptions/wrong-property-type-exception-class/"
+    )}
+    val expectedMessage = "Property 'singleton' in property file 'gt' is not a valid boolean parameter"
+    thrown.getMessage shouldBe expectedMessage
+  }
+
 }

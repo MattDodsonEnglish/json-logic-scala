@@ -115,7 +115,7 @@ object EvaluatorLogicConf {
   def createConfMethod(
                         fileName: String,
                         prop: Properties,
-                        operatorToOwnerManualAdd: Map[String, Operator] = Map()
+                        operatorToOwnerManualAdd: Map[String, Operator]
                       ): (String, MethodConf) = {
     if (!prop.containsKey("operator")) throw new ConfigurationException(s"Property file '$fileName' must define key 'operator'")
     if (!prop.containsKey("methodName")) throw new ConfigurationException(s"Property file '$fileName' must define key 'methodName'")
@@ -144,9 +144,8 @@ object EvaluatorLogicConf {
           (operator, MethodConf(operator, methodName, Some(instance), isReduceTypeOperator, isCompositionOperator, isUnaryOperator))
         }
         catch {
-          case configException: ConfigurationException => throw configException
-          case castException: java.lang.ClassCastException => throw new ConfigurationException(s"Found object is not a 'Operator' instance: \n${castException.getMessage}")
-          case _: Throwable => throw new ConfigurationException(s"No singleton object found for: '$className'\nCheck if 'className' '$className' is correct and if 'singleton' property in '$fileName' property file is correct")
+          case castException: java.lang.ClassCastException => throw new ConfigurationException(s"Found object is not a 'com.github.celadari.jsonlogicscala.evaluate.Operator' instance: \n${castException.getMessage}")
+          case _: Throwable => throw new ConfigurationException(s"No singleton object found for: '$className'\nCheck if 'ownerMethod' '$className' is correct and if 'singleton' property in '$fileName' property file is correct")
         }
       }
       else {
@@ -159,10 +158,9 @@ object EvaluatorLogicConf {
           (operator, MethodConf(operator, methodName, Some(instance), isReduceTypeOperator, isCompositionOperator, isUnaryOperator))
         }
         catch {
-          case confException: ConfigurationException => throw confException
-          case castException: java.lang.ClassCastException => throw new ConfigurationException(s"Found class is not a 'Operator' instance: \n${castException.getMessage}")
+          case castException: java.lang.ClassCastException => throw new ConfigurationException(s"Found class is not a 'com.github.celadari.jsonlogicscala.evaluate.Operator' instance: \n${castException.getMessage}")
           case _: MissingAccessorException => throw new ConfigurationException(s"Field error, check that no field in '$className' is missing in '$fileName' property file.\nCheck that no property in '$fileName' file is not undefined in '$className' class.\nCheck if '$className' class constructor requires arguments or if argument names defined in '$fileName' property file are correct")
-          case _: Throwable => throw new ConfigurationException(s"No class found for: '$className'\nCheck if 'className' '$className' is correct and if 'singleton' property in '$fileName' property file is correct")
+          case _: Throwable => throw new ConfigurationException(s"No class found for: '$className'\nCheck if 'ownerMethod' '$className' is correct and if 'singleton' property in '$fileName' property file is correct")
         }
 
       }
@@ -173,7 +171,7 @@ object EvaluatorLogicConf {
   def createConf(
                   pathEvaluatorLogic: String = "META-INF/services/",
                   pathOperator: String = "META-INF/services/",
-                  operatorsManualAdd: Map[String, MethodConf] = DEFAULT_METHOD_CONFS,
+                  methodConfsManualAdd: Map[String, MethodConf] = DEFAULT_METHOD_CONFS,
                   evaluatorValueLogicManualAdd: Map[TypeValue, EvaluatorValueLogic] = Map(),
                   operatorToOwnerManualAdd: Map[String, Operator] = Map(),
                   isPriorityToManualAdd: Boolean = true
@@ -190,7 +188,7 @@ object EvaluatorLogicConf {
     val propsMethodConf = finderMethodConf.mapAllProperties(classOf[MethodConf].getName).asScala
     val methodConfMetaInf = propsMethodConf.map{case (fileName, prop) => createConfMethod(fileName, prop, operatorToOwnerManualAdd)}.toMap
 
-    EvaluatorLogicConf(methodConfMetaInf, operatorsManualAdd, evaluatorValueLogicMetaInf, evaluatorValueLogicManualAdd, isPriorityToManualAdd)
+    EvaluatorLogicConf(methodConfMetaInf, methodConfsManualAdd, evaluatorValueLogicMetaInf, evaluatorValueLogicManualAdd, isPriorityToManualAdd)
   }
 
   implicit val implReduceLogicConf: EvaluatorLogicConf = createConf()
