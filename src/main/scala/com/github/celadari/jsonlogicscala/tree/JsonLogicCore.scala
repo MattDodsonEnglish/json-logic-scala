@@ -1,9 +1,8 @@
 package com.github.celadari.jsonlogicscala.tree
 
-import com.github.celadari.jsonlogicscala.deserialize.Deserializer
-import com.github.celadari.jsonlogicscala.evaluate.EvaluatorLogic
-import com.github.celadari.jsonlogicscala.serialize.Serializer
 import play.api.libs.json._
+import com.github.celadari.jsonlogicscala.deserialize.Deserializer
+import com.github.celadari.jsonlogicscala.serialize.Serializer
 
 object JsonLogicCore {
 
