@@ -66,8 +66,8 @@ class MethodSignatureFinder(
                              val conditionsValues: Array[Any],
                              val confMethod: MethodConf
                            ) {
-  protected[this] val conditionsValuesEval = mutable.Stack[Any]() ++ conditionsValues
-  protected[this] var isEvaluated = false
+  protected[this] val conditionsValuesEval: mutable.Stack[Any] = mutable.Stack[Any]() ++ conditionsValues
+  protected[this] var isEvaluated: Boolean = false
   protected[this] var paths: Set[Array[(Method, Boolean)]] = Set()
   initializePaths()
 
