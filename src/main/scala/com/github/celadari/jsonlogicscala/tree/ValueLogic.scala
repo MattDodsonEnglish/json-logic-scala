@@ -1,12 +1,20 @@
 package com.github.celadari.jsonlogicscala.tree
 
 import java.util.UUID
-import com.github.celadari.jsonlogicscala.exceptions.TreeException
+import play.api.libs.json.{JsResult, JsValue, Reads}
 import com.github.celadari.jsonlogicscala.tree.types.TypeValue
+import com.github.celadari.jsonlogicscala.deserialize.Deserializer
+import com.github.celadari.jsonlogicscala.exceptions.TreeException
 
 
 object ValueLogic {
   val OPERATOR_CODENAME: String = "var"
+
+  implicit def valueLogicReads(implicit deserializer: Deserializer): Reads[ValueLogic[_]] = new Reads[ValueLogic[_]] {
+    override def reads(json: JsValue): JsResult[ValueLogic[_]] = {
+      JsonLogicCore.jsonLogicCoreReads.reads(json).map(_.asInstanceOf[ValueLogic[_]])
+    }
+  }
 }
 
 case class ValueLogic[T](

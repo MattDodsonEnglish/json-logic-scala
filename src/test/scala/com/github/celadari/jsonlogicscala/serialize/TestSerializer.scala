@@ -69,6 +69,12 @@ class TestSerializer extends TestPrivateMethods {
       Json.parse("""{"dataArr":[43,78,2,0],"data1":45}"""))
   }
 
+  "Serialize ValueLogic" should "return value" in {
+    val valueLogic = ValueLogic(Some(45), Some(SimpleTypeValue(INT_CODENAME)), None, Some("data1"))
+    val result = Json.stringify(Json.toJson(valueLogic.asInstanceOf[JsonLogicCore]))
+    result shouldBe """[{"var":"data1","type":{"codename":"int"}},{"data1":45}]"""
+  }
+
   "Serialize method VariableLogic" should "throw an exception" in {
     val valueLogic = VariableLogic("acc", new ComposeLogic("+", Array()))
     val serializer = new Serializer
@@ -89,20 +95,22 @@ class TestSerializer extends TestPrivateMethods {
     val tree = new ComposeLogic("merge", Array(
       ValueLogic(Some(Map("car" -> Map("5p" -> 45),"bicycle" -> Map("4p" -> 89))), Some(MapTypeValue(MapTypeValue(SimpleTypeValue(INT_CODENAME)))), pathNameOpt = Some("data1")),
       ValueLogic(Some(Map("truck" -> Map("8p" -> 53), "bike" -> Map("4p" -> 89))), Some(MapTypeValue(MapTypeValue(SimpleTypeValue(INT_CODENAME)))), pathNameOpt = Some("data1"))
-    )).asInstanceOf[JsonLogicCore]
+    ))
 
     val expectedResult = """[{"merge":[{"var":"data1","type":{"codename":"map","paramType":{"codename":"map","paramType":{"codename":"int"}}}},{"var":"data1","type":{"codename":"map","paramType":{"codename":"map","paramType":{"codename":"int"}}}}]},{"data1":{"truck":{"8p":53},"bike":{"4p":89}}}]"""
     Json.stringify(Json.toJson(tree)) shouldBe expectedResult
+    Json.stringify(Json.toJson(tree.asInstanceOf[JsonLogicCore])) shouldBe expectedResult
   }
 
   "Serialize ComposeLogic with option type" should "return value" in {
     val tree = new ComposeLogic("merge", Array(
       ValueLogic(Some(Map("car" -> Map("5p" -> Some(45)),"bicycle" -> Map("4p" -> Some(89)))), Some(MapTypeValue(MapTypeValue(OptionTypeValue(SimpleTypeValue(INT_CODENAME))))), pathNameOpt = Some("data1")),
       ValueLogic(Some(Map("truck" -> Map("8p" -> Some(53)), "bike" -> Map("4p" -> Some(89)))), Some(MapTypeValue(MapTypeValue(OptionTypeValue(SimpleTypeValue(INT_CODENAME))))), pathNameOpt = Some("data1"))
-    )).asInstanceOf[JsonLogicCore]
+    ))
 
     val expectedResult = """[{"merge":[{"var":"data1","type":{"codename":"map","paramType":{"codename":"map","paramType":{"codename":"option","paramType":{"codename":"int"}}}}},{"var":"data1","type":{"codename":"map","paramType":{"codename":"map","paramType":{"codename":"option","paramType":{"codename":"int"}}}}}]},{"data1":{"truck":{"8p":53},"bike":{"4p":89}}}]"""
     Json.stringify(Json.toJson(tree)) shouldBe expectedResult
+    Json.stringify(Json.toJson(tree.asInstanceOf[JsonLogicCore])) shouldBe expectedResult
   }
 
   "Serialize with anytype type" should "throw an exception" in {

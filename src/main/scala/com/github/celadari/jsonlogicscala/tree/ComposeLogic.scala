@@ -1,7 +1,22 @@
 package com.github.celadari.jsonlogicscala.tree
 
+import play.api.libs.json.{JsResult, JsValue, Reads, Writes}
+import com.github.celadari.jsonlogicscala.deserialize.Deserializer
+import com.github.celadari.jsonlogicscala.serialize.Serializer
+
 object ComposeLogic {
 
+  implicit def composeLogicReads(implicit deserializer: Deserializer): Reads[ComposeLogic] = new Reads[ComposeLogic] {
+    override def reads(json: JsValue): JsResult[ComposeLogic] = {
+      JsonLogicCore.jsonLogicCoreReads.reads(json).map(_.asInstanceOf[ComposeLogic])
+    }
+  }
+
+  implicit def composeLogicReadsWrites(implicit serializer: Serializer): Writes[ComposeLogic] = new Writes[ComposeLogic] {
+    override def writes(composeLogic: ComposeLogic): JsValue = {
+      JsonLogicCore.jsonLogicCoreWrites(serializer).writes(composeLogic)
+    }
+  }
   def unapply(composeLogic: ComposeLogic): Some[(String, Array[JsonLogicCore])] = Some((composeLogic.operator, composeLogic.conditions))
 }
 

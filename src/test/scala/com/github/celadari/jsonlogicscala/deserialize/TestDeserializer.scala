@@ -161,4 +161,42 @@ class TestDeserializer extends TestPrivateMethods {
 
     result shouldBe expectedResult
   }
+
+  "Deserialize conventional play api ComposeLogic map operator" should "return value" in {
+    val jsComposeLogic = Json.parse(
+      """[{"map":[{"var":"data1","type":{"codename":"array",
+        |"paramType":{"codename":"int"}}},{"+":[{"+":[{"var":"data3","type":{"codename":"long"}},
+        |{"var":"data5","type":{"codename":"double"}},{"var":"data4","type":{"codename":"float"}}]},
+        |{"var":"data2","type":{"codename":"int"}},{"var":""}]}]},
+        |{"data1":[4,5,6,9],"data3":54,"data5":53,"data4":74,"data2":65}]""".stripMargin)
+    val resultExpected = new ComposeLogic("map", Array(
+      ValueLogic(Some(Array(4, 5, 6, 9)), Some(ArrayTypeValue(SimpleTypeValue(INT_CODENAME))), pathNameOpt = Some("data1")),
+      new ComposeLogic("+", Array(
+        new ComposeLogic("+", Array(
+          ValueLogic(Some(54L), Some(SimpleTypeValue(LONG_CODENAME)), pathNameOpt = Some("data3")),
+          ValueLogic(Some(53d), Some(SimpleTypeValue(DOUBLE_CODENAME)), pathNameOpt = Some("data5")),
+          ValueLogic(Some(74f), Some(SimpleTypeValue(FLOAT_CODENAME)), pathNameOpt = Some("data4"))
+        )),
+        ValueLogic(Some(65), Some(SimpleTypeValue(INT_CODENAME)), pathNameOpt = Some("data2")),
+        ValueLogic(None, None, variableNameOpt = Some(""), None)
+      ))
+    ))
+
+    val resultJsonLogicCore = jsComposeLogic.as[JsonLogicCore]
+    val resultComposeLogic = jsComposeLogic.as[ComposeLogic]
+    resultJsonLogicCore should BeEqualJsonLogicCore (resultExpected)
+    resultComposeLogic should BeEqualJsonLogicCore (resultExpected)
+  }
+
+  "Deserialize conventional play api ValueLogic" should "return value" in {
+    val jsValueLogic = Json.parse(
+      """[{"var":"data2","type":{"codename":"int"}},
+          |{"data2":65}]""".stripMargin)
+    val resultExpected = ValueLogic(Some(65), Some(SimpleTypeValue(INT_CODENAME)), None, Some("data2"))
+
+    val resultJsonLogicCore = jsValueLogic.as[JsonLogicCore]
+    val resultValueLogic = jsValueLogic.as[ValueLogic[_]]
+    resultJsonLogicCore should BeEqualJsonLogicCore (resultExpected)
+    resultValueLogic should BeEqualJsonLogicCore (resultExpected)
+  }
 }
