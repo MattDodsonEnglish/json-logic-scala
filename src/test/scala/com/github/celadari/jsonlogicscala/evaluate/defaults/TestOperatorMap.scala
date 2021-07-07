@@ -1,7 +1,7 @@
 package com.github.celadari.jsonlogicscala.evaluate.defaults
 
 import com.github.celadari.jsonlogicscala.evaluate.EvaluatorLogic
-import com.github.celadari.jsonlogicscala.exceptions.{EvaluationException, WrongNumberOfConditionsException}
+import com.github.celadari.jsonlogicscala.exceptions.{EvaluateException, IllegalInputException, WrongNumberOfConditionsException}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
 import com.github.celadari.jsonlogicscala.tree.types.{MapTypeValue, SimpleTypeValue}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic, VariableLogic}
@@ -51,6 +51,21 @@ class TestOperatorMap extends TestNumeric with TestArray {
     evaluator.eval(tree) shouldBe arrString.map(map0.apply)
   }
 
+  "Operator Map composed with unknown operator" should "throw an exception" in {
+    val tree = new ComposeLogic("map", Array(
+      ValueLogic(Some(arrString), Some(arrStringType), None, Some("data1")),
+      new ComposeLogic("unknown_operator", Array(
+        ValueLogic(None, None, Some(""), None),
+        ValueLogic(Some(xInt), Some(SimpleTypeValue(INT_CODENAME)), None, Some("data2"))
+      ))
+    ))
+
+    val evaluator = new EvaluatorLogic
+    val thrownEvaluate = the[EvaluateException] thrownBy {evaluator.eval(tree)}
+    val thrown = the[IllegalInputException] thrownBy {throw thrownEvaluate.origException}
+    thrown.getMessage shouldBe "No configuration for operator: unknown_operator"
+  }
+
   "Operator Map more than 2 input conditions" should "throw an exception" in {
     val string0 = "You love New York"
     val tree = new ComposeLogic("map", Array(
@@ -63,7 +78,7 @@ class TestOperatorMap extends TestNumeric with TestArray {
     ))
 
     val evaluator = new EvaluatorLogic
-    val thrown = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    val thrown = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     an[WrongNumberOfConditionsException] should be thrownBy {throw thrown.origException}
   }
 
@@ -73,7 +88,7 @@ class TestOperatorMap extends TestNumeric with TestArray {
     ))
 
     val evaluator = new EvaluatorLogic
-    val thrown = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    val thrown = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     an[WrongNumberOfConditionsException] should be thrownBy {throw thrown.origException}
   }
 

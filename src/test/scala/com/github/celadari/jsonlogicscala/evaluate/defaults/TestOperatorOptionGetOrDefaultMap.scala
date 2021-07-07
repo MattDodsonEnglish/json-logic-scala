@@ -1,7 +1,7 @@
 package com.github.celadari.jsonlogicscala.evaluate.defaults
 
 import com.github.celadari.jsonlogicscala.evaluate.EvaluatorLogic
-import com.github.celadari.jsonlogicscala.exceptions.{EvaluationException, IllegalInputException}
+import com.github.celadari.jsonlogicscala.exceptions.{EvaluateException, IllegalInputException}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
 import com.github.celadari.jsonlogicscala.tree.types.{MapTypeValue, OptionTypeValue, SimpleTypeValue}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic}
@@ -41,7 +41,7 @@ class TestOperatorOptionGetOrDefaultMap extends TestNumeric with TestMap {
     ))
 
     val evaluator = new EvaluatorLogic
-    val thrownEval = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    val thrownEval = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     val thrown = the[IllegalInputException] thrownBy {throw thrownEval.origException}
     thrown.getMessage shouldBe "Operator OptionToMap can only be applied to Option[Map[_, _]] or Map[_, _] values. Input conditon: Some(5)"
   }
@@ -52,7 +52,7 @@ class TestOperatorOptionGetOrDefaultMap extends TestNumeric with TestMap {
     ))
 
     val evaluator = new EvaluatorLogic
-    val thrownEval = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    val thrownEval = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     val thrown = the[IllegalInputException] thrownBy {throw thrownEval.origException}
     thrown.getMessage shouldBe "Operator OptionToMap can only be applied to Option[Map[_, _]] or Map[_, _] values. Input conditon: 5"
   }

@@ -1,7 +1,7 @@
 package com.github.celadari.jsonlogicscala.evaluate.defaults
 
 import com.github.celadari.jsonlogicscala.evaluate.EvaluatorLogic
-import com.github.celadari.jsonlogicscala.exceptions.{EvaluationException, IllegalInputException, WrongNumberOfConditionsException}
+import com.github.celadari.jsonlogicscala.exceptions.{EvaluateException, IllegalInputException, WrongNumberOfConditionsException}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
 import com.github.celadari.jsonlogicscala.tree.types.SimpleTypeValue
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic}
@@ -42,7 +42,7 @@ class TestOperatorNeg extends TestBoolean with TestNumeric with TestArray {
     ))
 
     val evaluator = new EvaluatorLogic
-    val thrown = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    val thrown = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     an[IllegalInputException] should be thrownBy {throw thrown.origException}
   }
 

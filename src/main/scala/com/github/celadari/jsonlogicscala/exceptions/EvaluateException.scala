@@ -2,15 +2,13 @@ package com.github.celadari.jsonlogicscala.exceptions
 
 import com.github.celadari.jsonlogicscala.tree.JsonLogicCore
 
-object EvaluationException {
-  def unapply(evaluationException: EvaluationException): Option[(String, JsonLogicCore, Throwable)] = {
-    Some((evaluationException.getMessage, evaluationException.condition, evaluationException.origException))
-  }
-}
-
-final class EvaluationException(
+final class EvaluateException(
                                  msg: String,
                                  val condition: JsonLogicCore,
+                                 val root: JsonLogicCore,
                                  val origException: Throwable
                                )
-  extends JsonLogicScalaException(msg)
+  extends JsonLogicScalaException(msg) {
+
+  def debugTreeString: String = JsonLogicCore.traverseRoot(root, Some(condition))
+}

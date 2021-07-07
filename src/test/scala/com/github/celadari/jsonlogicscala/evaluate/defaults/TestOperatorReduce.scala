@@ -1,7 +1,7 @@
 package com.github.celadari.jsonlogicscala.evaluate.defaults
 
 import com.github.celadari.jsonlogicscala.evaluate.EvaluatorLogic
-import com.github.celadari.jsonlogicscala.exceptions.{EvaluationException, WrongNumberOfConditionsException}
+import com.github.celadari.jsonlogicscala.exceptions.{EvaluateException, WrongNumberOfConditionsException}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
 import com.github.celadari.jsonlogicscala.tree.types.{MapTypeValue, SimpleTypeValue}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic}
@@ -70,7 +70,7 @@ class TestOperatorReduce extends TestNumeric with TestArray {
     ))
 
     val evaluator = new EvaluatorLogic
-    val thrown = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    val thrown = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     an[WrongNumberOfConditionsException] should be thrownBy {throw thrown.origException}
   }
 
@@ -80,7 +80,7 @@ class TestOperatorReduce extends TestNumeric with TestArray {
     ))
 
     val evaluator = new EvaluatorLogic
-    val thrown = the[EvaluationException] thrownBy {evaluator.eval(tree)}
+    val thrown = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     an[WrongNumberOfConditionsException] should be thrownBy {throw thrown.origException}
   }
 

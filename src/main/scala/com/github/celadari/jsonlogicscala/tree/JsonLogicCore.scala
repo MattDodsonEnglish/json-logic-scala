@@ -29,7 +29,79 @@ object JsonLogicCore {
       JsArray(Array(jsonLogic, jsonLogicData))
     }
   }
+
+  def traverseRoot(jsonLogicCore: JsonLogicCore, errorConditionOpt: Option[JsonLogicCore]): String = {
+    val errorString = errorConditionOpt.filter(_ == jsonLogicCore).map(_ => "ERROR AT: ").getOrElse("")
+
+    jsonLogicCore match {
+      case valueLogic: ValueLogic[_] => {
+        if (valueLogic.pathNameOpt.isDefined) errorString ++ s"{ValueLogic Data '${valueLogic.pathNameOpt.get}': ${valueLogic.valueOpt.orNull}}"
+        else errorString ++ s"{ValueLogic Variable '${valueLogic.variableNameOpt.get}'}"
+      }
+      case composeLogic: ComposeLogic => {
+        val sb = new StringBuilder
+        sb.append(errorString)
+        sb.append(jsonLogicCore.operator)
+
+        val isTailNonEmpty = composeLogic.conditions.tail.nonEmpty
+        val pointerForHead = if (isTailNonEmpty) "├──" else "└──"
+
+        composeLogic.conditions.headOption.foreach(nodeHeader => traverseNodes(sb, "", pointerForHead, nodeHeader, errorConditionOpt, isTailNonEmpty))
+        composeLogic.conditions.slice(1, composeLogic.conditions.length - 1).foreach(node => traverseNodes(sb, "", "├──", node, errorConditionOpt, true))
+        composeLogic.conditions.slice(math.max(1, composeLogic.conditions.length - 1), composeLogic.conditions.length).foreach(nodeLast => traverseNodes(sb, "", "└──", nodeLast, errorConditionOpt, false))
+
+        sb.toString
+      }
+    }
+  }
+
+  def traverseNodes(
+                     sb: StringBuilder,
+                     padding: String,
+                     pointer: String,
+                     jsonLogicCore: JsonLogicCore,
+                     errorConditionOpt: Option[JsonLogicCore],
+                     hasDownSibling: Boolean
+                   ): Unit = {
+    sb ++= "\n"
+    sb ++= padding
+    sb ++= pointer
+
+    errorConditionOpt.filter(_ == jsonLogicCore).foreach(_ => sb ++= "ERROR AT: ")
+
+    jsonLogicCore match {
+      case valueLogic: ValueLogic[_] => {
+        if (valueLogic.pathNameOpt.isDefined) sb ++= s"{ValueLogic Data '${valueLogic.pathNameOpt.get}': ${valueLogic.valueOpt.orNull}}"
+        else sb ++= s"{ValueLogic Variable '${valueLogic.variableNameOpt.get}'}"
+      }
+      case variableLogic: VariableLogic => {
+        sb ++= s"{VariableLogic '${variableLogic.variableName}' of '${variableLogic.composeOperator}' compose operator"
+      }
+      case composeLogic: ComposeLogic => {
+        sb ++= composeLogic.operator
+
+        val paddingBuilder = new StringBuilder(padding)
+        if (hasDownSibling) paddingBuilder ++= "│  "
+        else paddingBuilder ++= "   "
+
+        val paddingForAll = paddingBuilder.toString
+        val isTailNonEmpty = composeLogic.conditions.tail.nonEmpty
+        val pointerForHead = if (isTailNonEmpty) "├──" else "└──"
+
+        composeLogic.conditions.headOption.foreach(nodeHeader => traverseNodes(sb, paddingForAll, pointerForHead, nodeHeader, errorConditionOpt, isTailNonEmpty))
+        composeLogic.conditions.slice(1, composeLogic.conditions.length - 1).foreach(node => traverseNodes(sb, paddingForAll, "├──", node, errorConditionOpt, true))
+        composeLogic.conditions.slice(math.max(1, composeLogic.conditions.length - 1), composeLogic.conditions.length).foreach(nodeTail => traverseNodes(sb, paddingForAll, "└──", nodeTail, errorConditionOpt, false))
+      }
+    }
+  }
+
 }
 
 
-abstract class JsonLogicCore(val operator: String)
+abstract class JsonLogicCore(val operator: String) {
+
+  def treeString: String = {
+    JsonLogicCore.traverseRoot(this, None)
+  }
+
+}

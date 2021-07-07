@@ -2,7 +2,7 @@ package com.github.celadari.jsonlogicscala.evaluate
 
 import java.lang.reflect.InvocationTargetException
 import com.github.celadari.jsonlogicscala.evaluate.CompositionOperator.ComposeJsonLogicCore
-import com.github.celadari.jsonlogicscala.exceptions.{EvaluationException, IllegalInputException, IncompatibleMethodsException, JsonLogicScalaException}
+import com.github.celadari.jsonlogicscala.exceptions.{EvaluateException, EvaluationException, IllegalInputException, IncompatibleMethodsException, JsonLogicScalaException}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic, VariableLogic}
 
 
@@ -88,9 +88,16 @@ class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
   }
 
   def eval(jsonLogicCore: JsonLogicCore): Any = {
-    val composedLogic = new ComposeJsonLogicCore(jsonLogicCore).evaluate()
-    val logicOperatorToValue: Map[ComposeLogic, Map[String, Any]] = Map()
-    evaluate(composedLogic, logicOperatorToValue)
+    var composedLogic: JsonLogicCore = null
+    try {
+      composedLogic = new ComposeJsonLogicCore(jsonLogicCore).evaluate()
+      val logicOperatorToValue: Map[ComposeLogic, Map[String, Any]] = Map()
+      evaluate(composedLogic, logicOperatorToValue)
+    }
+    catch {
+      case EvaluationException(msg, condition, origExcept) => throw new EvaluateException(msg, condition, composedLogic, origExcept)
+      case evaluateException: EvaluateException => throw evaluateException
+    }
   }
 
 }
