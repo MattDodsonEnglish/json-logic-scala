@@ -44,6 +44,9 @@ class TestOperatorNeg extends TestBoolean with TestNumeric with TestArray {
     val evaluator = new EvaluatorLogic
     val thrown = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     an[IllegalInputException] should be thrownBy {throw thrown.origException}
+    val expectedString = """ERROR AT: !
+                           |└──\{ValueLogic Data '[a-zA-Z0-9]+-[a-zA-Z0-9]+-[a-zA-Z0-9]+-[a-zA-Z0-9]+-[a-zA-Z0-9]+': \[Ljava.lang.String;@[a-zA-Z0-9]+\}""".stripMargin
+    thrown.debugTreeString should fullyMatch regex expectedString
   }
 
   "Operator Neg And true false" should "return true" in {

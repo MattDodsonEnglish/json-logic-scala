@@ -46,9 +46,9 @@ object JsonLogicCore {
         val isTailNonEmpty = composeLogic.conditions.tail.nonEmpty
         val pointerForHead = if (isTailNonEmpty) "├──" else "└──"
 
-        composeLogic.conditions.headOption.foreach(nodeHeader => traverseNodes(sb, "", pointerForHead, nodeHeader, errorConditionOpt, isTailNonEmpty))
-        composeLogic.conditions.slice(1, composeLogic.conditions.length - 1).foreach(node => traverseNodes(sb, "", "├──", node, errorConditionOpt, true))
-        composeLogic.conditions.slice(math.max(1, composeLogic.conditions.length - 1), composeLogic.conditions.length).foreach(nodeLast => traverseNodes(sb, "", "└──", nodeLast, errorConditionOpt, false))
+        composeLogic.conditions.headOption.foreach(nodeHeader => traverseNodes(sb, "", pointerForHead, nodeHeader, errorConditionOpt))
+        composeLogic.conditions.slice(1, composeLogic.conditions.length - 1).foreach(node => traverseNodes(sb, "", "├──", node, errorConditionOpt))
+        composeLogic.conditions.slice(math.max(1, composeLogic.conditions.length - 1), composeLogic.conditions.length).foreach(nodeLast => traverseNodes(sb, "", "└──", nodeLast, errorConditionOpt))
 
         sb.toString
       }
@@ -60,8 +60,7 @@ object JsonLogicCore {
                      padding: String,
                      pointer: String,
                      jsonLogicCore: JsonLogicCore,
-                     errorConditionOpt: Option[JsonLogicCore],
-                     hasDownSibling: Boolean
+                     errorConditionOpt: Option[JsonLogicCore]
                    ): Unit = {
     sb ++= "\n"
     sb ++= padding
@@ -75,22 +74,21 @@ object JsonLogicCore {
         else sb ++= s"{ValueLogic Variable '${valueLogic.variableNameOpt.get}'}"
       }
       case variableLogic: VariableLogic => {
-        sb ++= s"{VariableLogic '${variableLogic.variableName}' of '${variableLogic.composeOperator}' compose operator"
+        sb ++= s"{VariableLogic '${variableLogic.variableName}' of '${variableLogic.composeOperator}' compose operator}"
       }
       case composeLogic: ComposeLogic => {
         sb ++= composeLogic.operator
 
         val paddingBuilder = new StringBuilder(padding)
-        if (hasDownSibling) paddingBuilder ++= "│  "
-        else paddingBuilder ++= "   "
+        paddingBuilder ++= "│  "
 
         val paddingForAll = paddingBuilder.toString
         val isTailNonEmpty = composeLogic.conditions.tail.nonEmpty
         val pointerForHead = if (isTailNonEmpty) "├──" else "└──"
 
-        composeLogic.conditions.headOption.foreach(nodeHeader => traverseNodes(sb, paddingForAll, pointerForHead, nodeHeader, errorConditionOpt, isTailNonEmpty))
-        composeLogic.conditions.slice(1, composeLogic.conditions.length - 1).foreach(node => traverseNodes(sb, paddingForAll, "├──", node, errorConditionOpt, true))
-        composeLogic.conditions.slice(math.max(1, composeLogic.conditions.length - 1), composeLogic.conditions.length).foreach(nodeTail => traverseNodes(sb, paddingForAll, "└──", nodeTail, errorConditionOpt, false))
+        composeLogic.conditions.headOption.foreach(nodeHeader => traverseNodes(sb, paddingForAll, pointerForHead, nodeHeader, errorConditionOpt))
+        composeLogic.conditions.slice(1, composeLogic.conditions.length - 1).foreach(node => traverseNodes(sb, paddingForAll, "├──", node, errorConditionOpt))
+        composeLogic.conditions.slice(math.max(1, composeLogic.conditions.length - 1), composeLogic.conditions.length).foreach(nodeTail => traverseNodes(sb, paddingForAll, "└──", nodeTail, errorConditionOpt))
       }
     }
   }
