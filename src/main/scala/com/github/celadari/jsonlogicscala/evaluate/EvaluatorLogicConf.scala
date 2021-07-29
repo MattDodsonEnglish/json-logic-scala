@@ -14,6 +14,7 @@ import com.github.celadari.jsonlogicscala.exceptions.ConfigurationException
 
 object EvaluatorLogicConf {
 
+  // scalastyle:off field.name
   val DEFAULT_REDUCEOPERATORS_TO_METHODNAME: Map[String, (String, Operator)] = Map(
     "<" -> ("$less", OperatorLess),
     "<=" -> ("$less$eq", OperatorLessEq),
@@ -110,8 +111,10 @@ object EvaluatorLogicConf {
       )
     }}
 
-  val DEFAULT_METHOD_CONFS: Map[String, MethodConf] = DEFAULT_REDUCEMETHOD_CONFS ++ DEFAULT_NONREDUCEOPERATORS_CONFS ++ DEFAULT_COMPOSITIONOPERATORS_CONFS ++ DEFAULT_UNARYOPERATORS_CONFS
+  val DEFAULT_METHOD_CONFS: Map[String, MethodConf] = DEFAULT_REDUCEMETHOD_CONFS ++
+    DEFAULT_NONREDUCEOPERATORS_CONFS ++ DEFAULT_COMPOSITIONOPERATORS_CONFS ++ DEFAULT_UNARYOPERATORS_CONFS
 
+  // scalastyle:off cyclomatic.complexity method.length return
   def createConfMethod(
                         fileName: String,
                         prop: Properties,
@@ -122,50 +125,72 @@ object EvaluatorLogicConf {
     val operator = prop.remove("operator").toString
     val methodName = prop.remove("methodName").toString
 
-    val isReduceTypeOperator = ConfigurationFetcher.getOptionalBooleanProperty("isReduceTypeOperator", true, prop, new ConfigurationException(s"Property 'isReduceTypeOperator' in property file '$fileName' is not a valid boolean parameter"))
-    val isCompositionOperator = ConfigurationFetcher.getOptionalBooleanProperty("isCompositionOperator", false, prop, new ConfigurationException(s"Property 'isCompositionOperator' in property file '$fileName' is not a valid boolean parameter"))
-    val isUnaryOperator = ConfigurationFetcher.getOptionalBooleanProperty("isUnaryOperator", false, prop, new ConfigurationException(s"Property 'isUnaryOperator' in property file '$fileName' is not a valid boolean parameter"))
+    val isReduceTypeOperator = ConfigurationFetcher.getOptionalBooleanProperty("isReduceTypeOperator", defaultValue = true, prop, {
+      new ConfigurationException(s"Property 'isReduceTypeOperator' in property file '$fileName' is not a valid boolean parameter")
+    })
+    val isCompositionOperator = ConfigurationFetcher.getOptionalBooleanProperty("isCompositionOperator", false, prop, {
+      new ConfigurationException(s"Property 'isCompositionOperator' in property file '$fileName' is not a valid boolean parameter")
+    })
+    val isUnaryOperator = ConfigurationFetcher.getOptionalBooleanProperty("isUnaryOperator", false, prop, {
+      new ConfigurationException(s"Property 'isUnaryOperator' in property file '$fileName' is not a valid boolean parameter")
+    })
     val ownerMethodOptManualAdd = operatorToOwnerManualAdd.get(operator)
 
     val m = ru.runtimeMirror(getClass.getClassLoader)
 
     if (ownerMethodOptManualAdd.isDefined) {
-      (operator, MethodConf(operator, methodName, ownerMethodOptManualAdd, isReduceTypeOperator, isCompositionOperator, isUnaryOperator))
+      return (operator, MethodConf(operator, methodName, ownerMethodOptManualAdd, isReduceTypeOperator, isCompositionOperator, isUnaryOperator))
+    }
+
+    if (!prop.containsKey("ownerMethod")) {
+      return (operator, MethodConf(operator, methodName, None, isReduceTypeOperator, isCompositionOperator, isUnaryOperator))
+    }
+
+    val isObject = ConfigurationFetcher.getOptionalBooleanProperty("singleton", defaultValue= false, prop, {
+      new ConfigurationException(s"Property 'singleton' in property file '$fileName' is not a valid boolean parameter")
+    })
+    val className = prop.remove("ownerMethod").toString
+
+    if (isObject) {
+      try {
+        val instance = m.reflectModule(m.staticModule(className)).instance.asInstanceOf[Operator]
+        (operator, MethodConf(operator, methodName, Some(instance), isReduceTypeOperator, isCompositionOperator, isUnaryOperator))
+      }
+      catch {
+        case castException: java.lang.ClassCastException => {
+          throw new ConfigurationException(s"Found object is not 'com.github.celadari.jsonlogicscala.evaluate.Operator' type: \n${castException.getMessage}")
+        }
+        case _: Throwable => {
+          throw new ConfigurationException(s"No singleton object found for: '$className'\nCheck if 'ownerMethod' '$className' is correct and if 'singleton'" +
+            s" property in '$fileName' property file is correct")
+        }
+      }
     }
     else {
-      if (!prop.containsKey("ownerMethod")) return (operator, MethodConf(operator, methodName, None, isReduceTypeOperator, isCompositionOperator, isUnaryOperator))
-
-      val isObject = ConfigurationFetcher.getOptionalBooleanProperty("singleton", defaultValue= false, prop, new ConfigurationException(s"Property 'singleton' in property file '$fileName' is not a valid boolean parameter"))
-      val className = prop.remove("ownerMethod").toString
-
-      if (isObject) {
-        try {
-          val instance = m.reflectModule(m.staticModule(className)).instance.asInstanceOf[Operator]
-          (operator, MethodConf(operator, methodName, Some(instance), isReduceTypeOperator, isCompositionOperator, isUnaryOperator))
+      try {
+        val objectRecipe = new ObjectRecipe(className)
+        val sep = if (prop.containsKey("sep")) prop.remove("sep").toString else ";"
+        if (prop.containsKey("constructorArgNames")) objectRecipe.setConstructorArgNames(prop.remove("constructorArgNames").toString.split(sep))
+        objectRecipe.setAllProperties(prop)
+        val instance = objectRecipe.create().asInstanceOf[Operator]
+        (operator, MethodConf(operator, methodName, Some(instance), isReduceTypeOperator, isCompositionOperator, isUnaryOperator))
+      }
+      catch {
+        case castException: java.lang.ClassCastException => {
+          throw new ConfigurationException(s"Found class not 'com.github.celadari.jsonlogicscala.evaluate.Operator' instance: \n${castException.getMessage}")
         }
-        catch {
-          case castException: java.lang.ClassCastException => throw new ConfigurationException(s"Found object is not a 'com.github.celadari.jsonlogicscala.evaluate.Operator' instance: \n${castException.getMessage}")
-          case _: Throwable => throw new ConfigurationException(s"No singleton object found for: '$className'\nCheck if 'ownerMethod' '$className' is correct and if 'singleton' property in '$fileName' property file is correct")
+        case _: MissingAccessorException => {
+          throw new ConfigurationException(s"Field error, check that no field in '$className' is missing in '$fileName' property file.\nCheck that no" +
+            s" property in '$fileName' file is not undefined in '$className' class.\nCheck if '$className' class constructor requires arguments or if" +
+            s" argument names defined in '$fileName' property file are correct")
+        }
+        case _: Throwable => {
+          throw new ConfigurationException(s"No class found for: '$className'\nCheck if 'ownerMethod' '$className' is correct and if 'singleton'" +
+            s" property in '$fileName' property file is correct")
         }
       }
-      else {
-        try {
-          val objectRecipe = new ObjectRecipe(className)
-          val sep = if (prop.containsKey("sep")) prop.remove("sep").toString else ";"
-          if (prop.containsKey("constructorArgNames")) objectRecipe.setConstructorArgNames(prop.remove("constructorArgNames").toString.split(sep))
-          objectRecipe.setAllProperties(prop)
-          val instance = objectRecipe.create().asInstanceOf[Operator]
-          (operator, MethodConf(operator, methodName, Some(instance), isReduceTypeOperator, isCompositionOperator, isUnaryOperator))
-        }
-        catch {
-          case castException: java.lang.ClassCastException => throw new ConfigurationException(s"Found class is not a 'com.github.celadari.jsonlogicscala.evaluate.Operator' instance: \n${castException.getMessage}")
-          case _: MissingAccessorException => throw new ConfigurationException(s"Field error, check that no field in '$className' is missing in '$fileName' property file.\nCheck that no property in '$fileName' file is not undefined in '$className' class.\nCheck if '$className' class constructor requires arguments or if argument names defined in '$fileName' property file are correct")
-          case _: Throwable => throw new ConfigurationException(s"No class found for: '$className'\nCheck if 'ownerMethod' '$className' is correct and if 'singleton' property in '$fileName' property file is correct")
-        }
-
-      }
-
     }
+
   }
 
   def createConf(
@@ -179,10 +204,11 @@ object EvaluatorLogicConf {
 
     val finderEvaluatorValueLogic = new ResourceFinder(pathEvaluatorLogic)
     val propsEvaluatorValueLogic = finderEvaluatorValueLogic.mapAllProperties(classOf[EvaluatorValueLogic].getName).asScala
-    val evaluatorValueLogicMetaInfTypeNonParsed = propsEvaluatorValueLogic.map{case (fileName, prop) => {
-      ConfigurationFetcher.getOrCreateClassFromProperties[EvaluatorValueLogic](fileName, prop)
-    }}.toMap
-    val evaluatorValueLogicMetaInf = evaluatorValueLogicMetaInfTypeNonParsed.map{case (typeNonParsed, evaluator) => (Json.parse(typeNonParsed).as[TypeValue], evaluator)}
+    val evaluatorValueLogicMetaInfTypeNonParsed = propsEvaluatorValueLogic
+      .map{case (fileName, prop) => ConfigurationFetcher.getOrCreateClassFromProperties[EvaluatorValueLogic](fileName, prop)}
+      .toMap
+    val evaluatorValueLogicMetaInf = evaluatorValueLogicMetaInfTypeNonParsed
+      .map{case (typeNonParsed, evaluator) => (Json.parse(typeNonParsed).as[TypeValue], evaluator)}
 
     val finderMethodConf = new ResourceFinder(pathOperator)
     val propsMethodConf = finderMethodConf.mapAllProperties(classOf[MethodConf].getName).asScala
@@ -202,6 +228,9 @@ case class EvaluatorLogicConf(
                                isPriorityToManualAdd: Boolean = true
                              ) {
 
-  val operatorToMethodConf: Map[String, MethodConf] = if (isPriorityToManualAdd) operatorToMethodConfMetaInfAdd ++ operatorToMethodConfManualAdd else operatorToMethodConfManualAdd ++ operatorToMethodConfMetaInfAdd
-  val valueLogicTypeToReducer: Map[TypeValue, EvaluatorValueLogic] = if (isPriorityToManualAdd) valueLogicTypeToReducerMetaInfAdd ++ valueLogicTypeToReducerManualAdd else valueLogicTypeToReducerManualAdd ++ valueLogicTypeToReducerMetaInfAdd
+  val operatorToMethodConf: Map[String, MethodConf] = if (isPriorityToManualAdd) operatorToMethodConfMetaInfAdd ++ operatorToMethodConfManualAdd
+                                                      else operatorToMethodConfManualAdd ++ operatorToMethodConfMetaInfAdd
+  val valueLogicTypeToReducer: Map[TypeValue, EvaluatorValueLogic] =
+    if (isPriorityToManualAdd) valueLogicTypeToReducerMetaInfAdd ++ valueLogicTypeToReducerManualAdd
+    else valueLogicTypeToReducerManualAdd ++ valueLogicTypeToReducerMetaInfAdd
 }

@@ -11,15 +11,13 @@ object OperatorOptionGetOrDefaultBoolean extends UnaryOperator {
         bool match {
           case _: Boolean => bool
           case _: java.lang.Boolean => bool
-          case _ => throw new IllegalInputException(s"Operator OptionToBoolean can only be " +
-            s"applied to Option[Boolean] or Boolean values. Input conditon: $value")
+          case _ => throw new IllegalInputException(s"Operator OptionToBoolean can only be applied to Option[Boolean] or Boolean. Input condition: $value")
         }
       }
       case None => false
       case _: Boolean => value
       case _: java.lang.Boolean => value
-      case _ => throw new IllegalInputException(s"Operator OptionToBoolean can only be " +
-        s"applied to Option[Boolean] or Boolean values. Input conditon: $value")
+      case _ => throw new IllegalInputException(s"Operator OptionToBoolean can only be applied to Option[Boolean] or Boolean. Input condition: $value")
     }
   }
 }

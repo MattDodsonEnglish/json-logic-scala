@@ -11,15 +11,13 @@ object OperatorOptionGetOrDefaultInt extends UnaryOperator {
         i match {
           case _: Int => i
           case _: java.lang.Integer => i
-          case _ => throw new IllegalInputException(s"Operator OptionToInt can only be " +
-            s"applied to Option[Int] or Int values. Input conditon: $value")
+          case _ => throw new IllegalInputException(s"Operator OptionToInt can only be applied to Option[Int] or Int. Input condition: $value")
         }
       }
       case None => 0
       case _: Int => value
       case _: java.lang.Integer => value
-      case _ => throw new IllegalInputException(s"Operator OptionToInt can only be " +
-        s"applied to Option[Int] or Int values. Input conditon: $value")
+      case _ => throw new IllegalInputException(s"Operator OptionToInt can only be applied to Option[Int] or Int. Input condition: $value")
     }
   }
 }

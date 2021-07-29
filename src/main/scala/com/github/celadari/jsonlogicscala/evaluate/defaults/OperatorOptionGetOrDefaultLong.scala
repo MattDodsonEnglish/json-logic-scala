@@ -11,15 +11,13 @@ object OperatorOptionGetOrDefaultLong extends UnaryOperator {
         l match {
           case _: Long => l
           case _: java.lang.Long => l
-          case _ => throw new IllegalInputException(s"Operator OptionToLong can only be " +
-            s"applied to Option[Long] or Long values. Input conditon: $value")
+          case _ => throw new IllegalInputException(s"Operator OptionToLong can only be applied to Option[Long] or Long. Input condition: $value")
         }
       }
       case None => 0L
       case _: Long => value
       case _: java.lang.Long => value
-      case _ => throw new IllegalInputException(s"Operator OptionToLong can only be " +
-        s"applied to Option[Long] or Long values. Input conditon: $value")
+      case _ => throw new IllegalInputException(s"Operator OptionToLong can only be applied to Option[Long] or Long. Input condition: $value")
     }
   }
 }

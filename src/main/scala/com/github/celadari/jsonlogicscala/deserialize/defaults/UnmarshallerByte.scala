@@ -9,9 +9,10 @@ object UnmarshallerByte extends Unmarshaller{
   def unmarshal(jsValue: JsValue): Any = {
     jsValue match {
       case JsNumber(num) => num.toByte
-      case other => throw new InvalidJsonParsingException(s"Illegal input argument to UnmarshallerByte: ${other}." +
-        s"\nUnmarshallerByte could not unmarshall to Byte value." +
-        "\nCheck if \"type\" and \"var\" are correct.")
+      case other: _ => {
+        throw new InvalidJsonParsingException(s"Illegal input argument to UnmarshallerByte: ${other}.\nUnmarshallerByte could not unmarshall to Byte value." +
+          "\nCheck if \"type\" and \"var\" are correct.")
+      }
     }
   }
 }

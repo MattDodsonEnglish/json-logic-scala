@@ -45,5 +45,4 @@ object OperatorMin extends Operator {
   def min(num1: java.lang.Double, num2: java.lang.Long): java.lang.Double = if (num1 <= num2) num1 else num2.doubleValue
   def min(num1: java.lang.Double, num2: java.lang.Float): java.lang.Double = if (num1 <= num2) num1 else num2.doubleValue
   def min(num1: java.lang.Double, num2: java.lang.Double): java.lang.Double = if (num1 <= num2) num1.doubleValue else num2
-
 }

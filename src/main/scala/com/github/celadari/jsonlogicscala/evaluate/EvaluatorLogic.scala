@@ -2,7 +2,7 @@ package com.github.celadari.jsonlogicscala.evaluate
 
 import java.lang.reflect.InvocationTargetException
 import com.github.celadari.jsonlogicscala.evaluate.CompositionOperator.ComposeJsonLogicCore
-import com.github.celadari.jsonlogicscala.exceptions.{EvaluateException, EvaluationException, IllegalInputException, IncompatibleMethodsException, JsonLogicScalaException}
+import com.github.celadari.jsonlogicscala.exceptions.{EvaluateException, EvaluationException, IllegalInputException, IncompatibleMethodsException}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic, VariableLogic}
 
 
@@ -63,7 +63,7 @@ class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
 
     val evaluatorClassOpt = conf.valueLogicTypeToReducer.get(typeValueOpt.get)
     evaluatorClassOpt
-      .getOrElse(EvaluatorValueLogic.identityReducerValueLogic)
+      .getOrElse(EvaluatorValueLogic.IDENTITY_REDUCER_VALUELOGIC)
       .evaluateValueLogic(value)
   }
 

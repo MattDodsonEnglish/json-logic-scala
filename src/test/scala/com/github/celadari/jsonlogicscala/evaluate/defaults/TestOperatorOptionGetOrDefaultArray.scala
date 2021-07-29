@@ -43,7 +43,7 @@ class TestOperatorOptionGetOrDefaultArray extends TestNumeric with TestArray {
     val evaluator = new EvaluatorLogic
     val thrownEval = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     val thrown = the[IllegalInputException] thrownBy {throw thrownEval.origException}
-    thrown.getMessage shouldBe "Operator OptionToArray can only be applied to Option[Array[_]] or Array[_] values. Input conditon: Some(5)"
+    thrown.getMessage shouldBe "Operator OptionToArray can only be applied to Option[Array[_]] or Array[_] values. Input condition: Some(5)"
   }
 
   "Operator OptionGetOrDefaultArray non option non array" should "thrown an exception" in {
@@ -54,7 +54,7 @@ class TestOperatorOptionGetOrDefaultArray extends TestNumeric with TestArray {
     val evaluator = new EvaluatorLogic
     val thrownEval = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     val thrown = the[IllegalInputException] thrownBy {throw thrownEval.origException}
-    thrown.getMessage shouldBe "Operator OptionToArray can only be applied to Option[Array[_]] or Array[_] values. Input conditon: 5"
+    thrown.getMessage shouldBe "Operator OptionToArray can only be applied to Option[Array[_]] or Array[_] values. Input condition: 5"
   }
 
 }

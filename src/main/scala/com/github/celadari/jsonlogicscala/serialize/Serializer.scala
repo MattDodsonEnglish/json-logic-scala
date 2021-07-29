@@ -11,7 +11,8 @@ object Serializer {
 }
 
 class Serializer(implicit val conf: SerializerConf) {
-  protected[this] val marshallers: Map[String, Marshaller] = if (conf.isPriorityToManualAdd) conf.marshallerMetaInfAdd ++ conf.marshallersManualAdd else conf.marshallersManualAdd ++ conf.marshallerMetaInfAdd
+  protected[this] val marshallers: Map[String, Marshaller] = if (conf.isPriorityToManualAdd) conf.marshallerMetaInfAdd ++ conf.marshallersManualAdd
+    else conf.marshallersManualAdd ++ conf.marshallerMetaInfAdd
 
   protected[this] def getMarshaller(typeValue: TypeValue): Marshaller = {
     typeValue match {
@@ -20,8 +21,10 @@ class Serializer(implicit val conf: SerializerConf) {
         override def marshal(value: Any): JsValue = {
           value match {
             case arr: Array[_] => JsArray(arr.map(el => getMarshaller(paramType).marshal(el)))
-            case other => throw new IllegalInputException(s"Illegal input argument to ArrayType Marshaller: ${other}." +
-              "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
+            case other: _ => {
+              throw new IllegalInputException(s"Illegal input argument to ArrayType Marshaller: ${other}." +
+                "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
+            }
           }
         }
       }
@@ -29,8 +32,10 @@ class Serializer(implicit val conf: SerializerConf) {
         override def marshal(value: Any): JsValue = {
           value match {
             case map: Map[String, _] => JsObject(map.view.mapValues(el => getMarshaller(paramType).marshal(el)).toMap)
-            case other => throw new IllegalInputException(s"Illegal input argument to MapType Marshaller: ${other}." +
-              "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
+            case other: _ => {
+              throw new IllegalInputException(s"Illegal input argument to MapType Marshaller: ${other}." +
+                "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
+            }
           }
 
         }
@@ -39,17 +44,22 @@ class Serializer(implicit val conf: SerializerConf) {
         override def marshal(value: Any): JsValue = {
           value match {
             case opt: Option[_] => opt.map(el => getMarshaller(paramType).marshal(el)).getOrElse(JsNull)
-            case other => throw new IllegalInputException(s"Illegal input argument to OptionType Marshaller: ${other}." +
-              "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
+            case other: _ => {
+              throw new IllegalInputException(s"Illegal input argument to OptionType Marshaller: ${other}." +
+                "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
+            }
           }
         }
       }
-      case AnyTypeValue => throw new IllegalInputException("Cannot serialize JsonLogicCore object " +
-        "with type AnyTypeValue. \nAnyTypeValue is used at evaluation only for composition operators")
+      case AnyTypeValue => {
+        throw new IllegalInputException("Cannot serialize JsonLogicCore object " +
+          "with type AnyTypeValue. \nAnyTypeValue is used at evaluation only for composition operators")
+      }
       case _ => throw new IllegalInputException("Illegal argument type value")
     }
   }
 
+  // scalastyle:off return
   protected[this] def serializeValueLogic(valueLogic: ValueLogic[_]): (JsValue, JsValue) = {
 
     if (valueLogic.variableNameOpt.isDefined) return (JsObject(Map("var" -> JsString(valueLogic.variableNameOpt.get))), JsObject(Map[String, JsString]()))
@@ -88,7 +98,9 @@ class Serializer(implicit val conf: SerializerConf) {
     jsonLogic match {
       case valueLogic: ValueLogic[_] => serializeValueLogic(valueLogic)
       case composeLogic: ComposeLogic => serializeComposeLogic(composeLogic)
-      case _: VariableLogic => throw new InvalidValueLogicException("VariableLogic cannot be serialized. Resulting tree from CompositionOperator.ComposeJsonLogicCore is only used at evaluation.")
+      case _: VariableLogic => {
+        throw new InvalidValueLogicException("VariableLogic cannot be serialized. CompositionOperator.ComposeJsonLogicCore output is only used at evaluation.")
+      }
     }
   }
 }

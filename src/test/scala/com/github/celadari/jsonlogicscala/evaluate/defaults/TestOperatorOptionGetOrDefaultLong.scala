@@ -61,7 +61,7 @@ class TestOperatorOptionGetOrDefaultLong extends TestNumeric with TestArray {
     val evaluator = new EvaluatorLogic
     val thrownEval = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     val thrown = the[IllegalInputException] thrownBy {throw thrownEval.origException}
-    thrown.getMessage shouldBe "Operator OptionToLong can only be applied to Option[Long] or Long values. Input conditon: Some(5.0)"
+    thrown.getMessage shouldBe "Operator OptionToLong can only be applied to Option[Long] or Long values. Input condition: Some(5.0)"
   }
 
   "Operator OptionGetOrDefaultLong non option non long" should "thrown an exception" in {
@@ -72,7 +72,7 @@ class TestOperatorOptionGetOrDefaultLong extends TestNumeric with TestArray {
     val evaluator = new EvaluatorLogic
     val thrownEval = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     val thrown = the[IllegalInputException] thrownBy {throw thrownEval.origException}
-    thrown.getMessage shouldBe "Operator OptionToLong can only be applied to Option[Long] or Long values. Input conditon: 5.0"
+    thrown.getMessage shouldBe "Operator OptionToLong can only be applied to Option[Long] or Long values. Input condition: 5.0"
   }
 
 }

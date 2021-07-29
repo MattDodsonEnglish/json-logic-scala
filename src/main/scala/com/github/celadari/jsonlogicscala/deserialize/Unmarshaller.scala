@@ -7,6 +7,7 @@ import play.api.libs.json.JsValue
 trait Unmarshaller {
   def unmarshal(jsValue: JsValue): Any
 
+  // scalastyle:off return
   override def equals(that: Any): Boolean = {
     that match {
       case unmarshaller: Unmarshaller => {
@@ -38,5 +39,16 @@ trait Unmarshaller {
       }
       case _ => false
     }
+  }
+
+  override def hashCode(): Int = {
+    val m = ru.runtimeMirror(getClass.getClassLoader)
+    val mirror = m.reflect(this)
+    val members = mirror.symbol.toType.members
+
+    val variableHashCode = members.filter(member => member.asTerm.isVal || member.asTerm.isVar).map(sym => mirror.reflectField(sym.asTerm).get.hashCode).sum
+    val methodHashCode = members.filter(_.asTerm.isMethod).map(_.asMethod).map(method => method.hashCode).sum
+
+    variableHashCode + methodHashCode
   }
 }

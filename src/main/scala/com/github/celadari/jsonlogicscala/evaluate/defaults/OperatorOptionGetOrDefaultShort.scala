@@ -11,15 +11,13 @@ object OperatorOptionGetOrDefaultShort extends UnaryOperator {
         s match {
           case short: Short => short
           case jShort: java.lang.Short => jShort
-          case _ => throw new IllegalInputException(s"Operator OptionToShort can only be " +
-            s"applied to Option[Short] or Short values. Input conditon: $value")
+          case _ => throw new IllegalInputException(s"Operator OptionToShort can only be applied to Option[Short] or Short. Input condition: $value")
         }
       }
       case None => 0.toShort
       case short: Short => short
       case jShort: java.lang.Short => jShort
-      case _ => throw new IllegalInputException(s"Operator OptionToShort can only be " +
-        s"applied to Option[Short] or Short values. Input conditon: $value")
+      case _ => throw new IllegalInputException(s"Operator OptionToShort can only be applied to Option[Short] or Short. Input condition: $value")
     }
   }
 }

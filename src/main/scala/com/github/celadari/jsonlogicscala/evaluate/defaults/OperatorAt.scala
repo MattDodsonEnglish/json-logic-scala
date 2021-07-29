@@ -7,9 +7,10 @@ object OperatorAt extends Operator {
 
   def at(values: Array[Any]): Any = {
 
-    if (values.length != 2) throw new WrongNumberOfConditionsException(s"At operator " +
-      s"requires length of conditions input to be exactly 2. \nArray of " +
-      s"conditions: ${values.mkString("[", ", ", "]")}")
+    if (values.length != 2) {
+      val condString = values.mkString("[", ", ", "]")
+      throw new WrongNumberOfConditionsException(s"At operator requires length of conditions input to be exactly 2. \nArray of conditions: $condString")
+    }
 
     val index = values(0)
 
@@ -17,8 +18,7 @@ object OperatorAt extends Operator {
       case arr: Array[Any] => arr.apply(index.toString.toDouble.toInt)
       case map: Map[Any, Any] => map.apply(index)
       case ite: Iterable[Any] => ite.toArray.apply(index.toString.toDouble.toInt)
-      case other => throw new IllegalInputException(s"At operator second input must be either:" +
-        s"Array, Map, Iterable. Current second input: ${other.toString}")
+      case any: Any => throw new IllegalInputException(s"At operator second input must be either: Array, Map, Iterable. Current second input: ${any.toString}")
     }
   }
 }

@@ -7,6 +7,7 @@ trait Marshaller {
 
   def marshal(value: Any): JsValue
 
+  // scalastyle:off return
   override def equals(that: Any): Boolean = {
     that match {
       case marshaller: Marshaller => {
@@ -38,5 +39,16 @@ trait Marshaller {
       }
       case _ => false
     }
+  }
+
+  override def hashCode(): Int = {
+    val m = ru.runtimeMirror(getClass.getClassLoader)
+    val mirror = m.reflect(this)
+    val members = mirror.symbol.toType.members
+
+    val variableHashCode = members.filter(member => member.asTerm.isVal || member.asTerm.isVar).map(sym => mirror.reflectField(sym.asTerm).get.hashCode).sum
+    val methodHashCode = members.filter(_.asTerm.isMethod).map(_.asMethod).map(method => method.hashCode).sum
+
+    variableHashCode + methodHashCode
   }
 }

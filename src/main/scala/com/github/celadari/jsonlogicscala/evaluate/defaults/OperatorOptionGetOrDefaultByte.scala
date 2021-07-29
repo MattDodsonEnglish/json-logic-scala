@@ -11,15 +11,13 @@ object OperatorOptionGetOrDefaultByte extends UnaryOperator {
         byte match {
           case _: Byte => byte
           case _: java.lang.Byte => byte
-          case _ => throw new IllegalInputException(s"Operator OptionToByte can only be " +
-            s"applied to Option[Byte] or Byte values. Input conditon: $value")
+          case _ => throw new IllegalInputException(s"Operator OptionToByte can only be applied to Option[Byte] or Byte. Input condition: $value")
         }
       }
       case None => 0.toByte
       case _: Byte => value
       case _: java.lang.Byte => value
-      case _ => throw new IllegalInputException(s"Operator OptionToByte can only be " +
-        s"applied to Option[Byte] or Byte values. Input conditon: $value")
+      case _ => throw new IllegalInputException(s"Operator OptionToByte can only be applied to Option[Byte] or Byte. Input condition: $value")
     }
   }
 }

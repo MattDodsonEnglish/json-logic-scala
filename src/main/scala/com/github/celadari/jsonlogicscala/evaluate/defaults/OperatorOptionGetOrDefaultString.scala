@@ -10,14 +10,12 @@ object OperatorOptionGetOrDefaultString extends UnaryOperator {
       case Some(s) => {
         s match {
           case string: String => string
-          case _ => throw new IllegalInputException(s"Operator OptionToString can only be " +
-            s"applied to Option[String] or String values. Input conditon: $value")
+          case _ => throw new IllegalInputException(s"Operator OptionToString can only be applied to Option[String] or String. Input condition: $value")
         }
       }
       case None => ""
       case string: String => string
-      case _ => throw new IllegalInputException(s"Operator OptionToString can only be " +
-        s"applied to Option[String] or String values. Input conditon: $value")
+      case _ => throw new IllegalInputException(s"Operator OptionToString can only be applied to Option[String] or String. Input condition: $value")
     }
   }
 }

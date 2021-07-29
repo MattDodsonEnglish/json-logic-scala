@@ -10,14 +10,12 @@ object OperatorOptionGetOrDefaultMap extends UnaryOperator {
       case Some(map) => {
         map match {
           case _: Map[_, _] => map
-          case _ => throw new IllegalInputException(s"Operator OptionToMap can only be " +
-            s"applied to Option[Map[_, _]] or Map[_, _] values. Input conditon: $value")
+          case _ => throw new IllegalInputException(s"Operator OptionToMap can only be applied to Option[Map[_, _]] or Map[_, _]. Input condition: $value")
         }
       }
       case None => Map[Any, Any]()
       case _: Map[_, _] => value
-      case _ => throw new IllegalInputException(s"Operator OptionToMap can only be " +
-        s"applied to Option[Map[_, _]] or Map[_, _] values. Input conditon: $value")
+      case _ => throw new IllegalInputException(s"Operator OptionToMap can only be applied to Option[Map[_, _]] or Map[_, _]. Input condition: $value")
     }
   }
 }

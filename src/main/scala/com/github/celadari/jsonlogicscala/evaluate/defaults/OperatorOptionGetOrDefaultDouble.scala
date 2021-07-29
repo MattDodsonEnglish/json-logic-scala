@@ -11,15 +11,13 @@ object OperatorOptionGetOrDefaultDouble extends UnaryOperator {
         d match {
           case _: Double => d
           case _: java.lang.Double => d
-          case _ => throw new IllegalInputException(s"Operator OptionToDouble can only be " +
-            s"applied to Option[Double] or Double values. Input conditon: $value")
+          case _ => throw new IllegalInputException(s"Operator OptionToDouble can only be applied to Option[Double] or Double. Input condition: $value")
         }
       }
       case None => 0d
       case _: Double => value
       case _: java.lang.Double => value
-      case _ => throw new IllegalInputException(s"Operator OptionToDouble can only be " +
-        s"applied to Option[Double] or Double values. Input conditon: $value")
+      case _ => throw new IllegalInputException(s"Operator OptionToDouble can only be applied to Option[Double] or Double. Input condition: $value")
     }
   }
 }

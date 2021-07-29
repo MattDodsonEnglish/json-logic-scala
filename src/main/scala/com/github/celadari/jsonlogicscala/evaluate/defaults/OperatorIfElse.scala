@@ -8,13 +8,14 @@ object OperatorIfElse extends Operator {
   def ifElse(values: Array[java.lang.Object]): java.lang.Object = {
     val n = values.length
 
-    if (n < 3) throw new WrongNumberOfConditionsException(s"IfElse operator " +
-      s"requires length of conditions to be at least 3. \nArray of " +
-      s"conditions: ${values.mkString("[", ", ", "]")}")
+    if (n < 3) {
+      val valString = values.mkString("[", ", ", "]")
+      throw new WrongNumberOfConditionsException(s"IfElse operator requires length of conditions to be at least 3. \nArray of conditions: $valString")
+    }
 
     if (n % 2 == 0) {
-      throw new WrongNumberOfConditionsException(s"IfElse operator " +
-        s"requires length of conditions to be odd. \nArray of conditions: ${values.mkString("[", ", ", "]")}")
+      val valString = values.mkString("[", ", ", "]")
+      throw new WrongNumberOfConditionsException(s"IfElse operator requires length of conditions to be odd. \nArray of conditions: $valString")
     }
 
     val (boolValues, returnValues) = values.zipWithIndex.partitionMap{

@@ -45,10 +45,13 @@ object JsonLogicCore {
 
         val isTailNonEmpty = composeLogic.conditions.tail.nonEmpty
         val pointerForHead = if (isTailNonEmpty) "├──" else "└──"
+        val nbConds = composeLogic.conditions.length
 
         composeLogic.conditions.headOption.foreach(nodeHeader => traverseNodes(sb, "", pointerForHead, nodeHeader, errorConditionOpt))
-        composeLogic.conditions.slice(1, composeLogic.conditions.length - 1).foreach(node => traverseNodes(sb, "", "├──", node, errorConditionOpt))
-        composeLogic.conditions.slice(math.max(1, composeLogic.conditions.length - 1), composeLogic.conditions.length).foreach(nodeLast => traverseNodes(sb, "", "└──", nodeLast, errorConditionOpt))
+        composeLogic.conditions.slice(1, nbConds - 1).foreach(node => traverseNodes(sb, "", "├──", node, errorConditionOpt))
+        composeLogic.conditions.slice(math.max(1, nbConds - 1), nbConds).foreach(nodeLast => {
+          traverseNodes(sb, "", "└──", nodeLast, errorConditionOpt)
+        })
 
         sb.toString
       }
@@ -85,10 +88,13 @@ object JsonLogicCore {
         val paddingForAll = paddingBuilder.toString
         val isTailNonEmpty = composeLogic.conditions.tail.nonEmpty
         val pointerForHead = if (isTailNonEmpty) "├──" else "└──"
+        val nbConds = composeLogic.conditions.length
 
         composeLogic.conditions.headOption.foreach(nodeHeader => traverseNodes(sb, paddingForAll, pointerForHead, nodeHeader, errorConditionOpt))
-        composeLogic.conditions.slice(1, composeLogic.conditions.length - 1).foreach(node => traverseNodes(sb, paddingForAll, "├──", node, errorConditionOpt))
-        composeLogic.conditions.slice(math.max(1, composeLogic.conditions.length - 1), composeLogic.conditions.length).foreach(nodeTail => traverseNodes(sb, paddingForAll, "└──", nodeTail, errorConditionOpt))
+        composeLogic.conditions.slice(1, nbConds - 1).foreach(node => traverseNodes(sb, paddingForAll, "├──", node, errorConditionOpt))
+        composeLogic.conditions.slice(math.max(1, nbConds - 1), nbConds).foreach(nodeTail => {
+          traverseNodes(sb, paddingForAll, "└──", nodeTail, errorConditionOpt)
+        })
       }
     }
   }
@@ -101,5 +107,4 @@ abstract class JsonLogicCore(val operator: String) {
   def treeString: String = {
     JsonLogicCore.traverseRoot(this, None)
   }
-
 }

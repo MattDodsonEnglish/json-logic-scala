@@ -14,16 +14,17 @@ object OperatorIn extends Operator {
         case arr: Array[_] => arr.map(transformArrayToList).toList
         case map: Map[_, _] => map.map{case (key, value) => (transformArrayToList(key), transformArrayToList(value))}
         case iter: Iterable[_] => iter.map(transformArrayToList).toList
-        case other => other
+        case other: _ => other
       }
     }
   }
 
   def in(values: Array[java.lang.Object]): java.lang.Boolean = {
 
-    if (values.length != 2) throw new WrongNumberOfConditionsException(s"In operator array " +
-      s"requires length of conditions input to be exactly 2. \nArray of " +
-      s"conditions: ${values.mkString("[", ", ", "]")}")
+    if (values.length != 2) {
+      val valString = values.mkString("[", ", ", "]")
+      throw new WrongNumberOfConditionsException(s"In operator array requires length of conditions input to be exactly 2. \nArray of conditions: $valString")
+    }
 
     val value = values(0).transformArrayToList
     val list = values(1).transformArrayToList.asInstanceOf[List[Any]]
@@ -33,9 +34,8 @@ object OperatorIn extends Operator {
   def in(values: Array[java.lang.String]): java.lang.Boolean = {
 
     if (values.length != 2) {
-      throw new WrongNumberOfConditionsException(s"In operator string " +
-        s"requires length of conditions input to be exactly 2. \nArray of " +
-        s"conditions: ${values.mkString("[", ", ", "]")}")
+      val valString = values.mkString("[", ", ", "]")
+      throw new WrongNumberOfConditionsException(s"In operator string requires length of conditions input to be exactly 2. \nArray of conditions: $valString")
     }
 
     val subString = values(0)

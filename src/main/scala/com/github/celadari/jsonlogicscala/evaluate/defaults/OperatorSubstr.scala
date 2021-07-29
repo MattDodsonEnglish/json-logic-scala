@@ -8,9 +8,9 @@ object OperatorSubstr extends Operator {
   def substr(values: Array[java.lang.Object]): java.lang.String = {
 
     if (values.length < 2 || values.length > 3) {
-      throw new WrongNumberOfConditionsException(s"Subst operator " +
-        s"requires length of conditions input to be at least 2 and not greater than 3. \nArray of " +
-        s"conditions: ${values.mkString("[", ", ", "]")}")
+      val valString = values.mkString("[", ", ", "]")
+      throw new WrongNumberOfConditionsException("Subst operator requires length of conditions input to be at least 2 and not greater than 3. " +
+        s"\nArray of conditions: $valString")
     }
 
     val string = values(0).asInstanceOf[java.lang.String]

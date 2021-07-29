@@ -10,14 +10,12 @@ object OperatorOptionGetOrDefaultArray extends UnaryOperator {
       case Some(arr) => {
         arr match {
           case _: Array[_] => arr
-          case _ => throw new IllegalInputException(s"Operator OptionToArray can only be " +
-            s"applied to Option[Array[_]] or Array[_] values. Input conditon: $value")
+          case _ => throw new IllegalInputException(s"Operator OptionToArray can only be applied to Option[Array[_]] or Array[_]. Input condition: $value")
         }
       }
       case None => Array[Any]()
       case _: Array[_] => value
-      case _ => throw new IllegalInputException(s"Operator OptionToArray can only be " +
-        s"applied to Option[Array[_]] or Array[_] values. Input conditon: $value")
+      case _ => throw new IllegalInputException(s"Operator OptionToArray can only be applied to Option[Array[_]] or Array[_]. Input condition: $value")
     }
   }
 }

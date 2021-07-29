@@ -11,15 +11,13 @@ object OperatorOptionGetOrDefaultFloat extends UnaryOperator {
         f match {
           case _: Float => f
           case _: java.lang.Float => f
-          case _ => throw new IllegalInputException(s"Operator OptionToFloat can only be " +
-            s"applied to Option[Float] or Float values. Input conditon: $value")
+          case _ => throw new IllegalInputException(s"Operator OptionToFloat can only be applied to Option[Float] or Float. Input condition: $value")
         }
       }
       case None => 0f
       case _: Float => value
       case _: java.lang.Float => value
-      case _ => throw new IllegalInputException(s"Operator OptionToFloat can only be " +
-        s"applied to Option[Float] or Float values. Input conditon: $value")
+      case _ => throw new IllegalInputException(s"Operator OptionToFloat can only be applied to Option[Float] or Float. Input condition: $value")
     }
   }
 }

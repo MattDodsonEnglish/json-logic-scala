@@ -45,5 +45,4 @@ object OperatorMinus extends Operator {
   def $minus(num1: java.lang.Double, num2: java.lang.Long): java.lang.Double = num1 - num2
   def $minus(num1: java.lang.Double, num2: java.lang.Float): java.lang.Double = num1 - num2
   def $minus(num1: java.lang.Double, num2: java.lang.Double): java.lang.Double = num1 - num2
-
 }

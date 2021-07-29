@@ -13,9 +13,10 @@ object MarshallerString extends Marshaller {
   def marshal(value: Any): JsValue = {
     value match {
       case string: String => JsString(string)
-      case other => throw new IllegalInputException(s"Illegal input argument to MarshallerString: ${other}." +
-        s"\nMarshallerString can only be applied to string values." +
-        "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
+      case other: _ => {
+        throw new IllegalInputException(s"Illegal input argument to MarshallerString: ${other}.\nMarshallerString can only be applied to string values." +
+          "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
+      }
     }
   }
 }
