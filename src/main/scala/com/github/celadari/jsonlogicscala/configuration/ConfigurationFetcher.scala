@@ -23,17 +23,28 @@ object ConfigurationFetcher {
     val className = prop.remove("className").toString
     val typeCodename = prop.remove("codename").toString
 
-    val isObject = getOptionalBooleanProperty("singleton", defaultValue= false, prop, new ConfigurationException(s"Property 'singleton' in property file '$fileName' is not a valid boolean parameter"))
+    val isObject = getOptionalBooleanProperty(
+      "singleton",
+      defaultValue= false,
+      prop,
+      new ConfigurationException(s"Property 'singleton' in property file '$fileName' is not a valid boolean parameter")
+    )
+
     val m = ru.runtimeMirror(getClass.getClassLoader)
     if (isObject) {
       try {
         val instance = m.reflectModule(m.staticModule(className)).instance
-        if (!(m.reflect(instance).symbol.toType <:< ru.typeOf[T])) throw new ConfigurationException(s"Found object is not a '${ru.typeOf[T].toString}' instance: \n'${instance}'")
+        if (!(m.reflect(instance).symbol.toType <:< ru.typeOf[T])) {
+          throw new ConfigurationException(s"Found object is not a '${ru.typeOf[T].toString}' instance: \n'${instance}'")
+        }
         (typeCodename, instance.asInstanceOf[T])
       }
       catch {
         case confException: ConfigurationException => throw confException
-        case _: Throwable => throw new ConfigurationException(s"No singleton object found for: '$className'\nCheck if 'className' '$className' is correct and if 'singleton' property in '$fileName' property file is correct")
+        case _: Throwable => {
+          throw new ConfigurationException(s"No singleton object found for: '$className'\nCheck if 'className' '$className' is correct and if 'singleton' " +
+            s"property in '$fileName' property file is correct")
+        }
       }
     }
     else {
@@ -43,13 +54,22 @@ object ConfigurationFetcher {
         if (prop.containsKey("constructorArgNames")) objectRecipe.setConstructorArgNames(prop.remove("constructorArgNames").toString.split(sep))
         objectRecipe.setAllProperties(prop)
         val instance = objectRecipe.create()
-        if (!(m.reflect(instance).symbol.toType <:< ru.typeOf[T])) throw new ConfigurationException(s"Found class is not a '${ru.typeOf[T].toString}' instance: \n'${instance}'")
+        if (!(m.reflect(instance).symbol.toType <:< ru.typeOf[T])) {
+          throw new ConfigurationException(s"Found class is not a '${ru.typeOf[T].toString}' instance: \n'${instance}'")
+        }
         (typeCodename, instance.asInstanceOf[T])
       }
       catch {
         case confException: ConfigurationException => throw confException
-        case _: MissingAccessorException => throw new ConfigurationException(s"Field error, check that no field in '$className' is missing in '$fileName' property file.\nCheck that no property in '$fileName' file is not undefined in '$className' class.\nCheck if '$className' class constructor requires arguments or if argument names defined in '$fileName' property file are correct")
-        case _: Throwable => throw new ConfigurationException(s"No class found for: '$className'\nCheck if 'className' '$className' is correct and if 'singleton' property in '$fileName' property file is correct")
+        case _: MissingAccessorException => {
+          throw new ConfigurationException(s"Field error, check that no field in '$className' is missing in '$fileName' property file.\nCheck that no " +
+            s"property in '$fileName' file is not undefined in '$className' class.\nCheck if '$className' class constructor requires arguments or " +
+            s"if argument names defined in '$fileName' property file are correct")
+        }
+        case _: Throwable => {
+          throw new ConfigurationException(s"No class found for: '$className'\nCheck if 'className' '$className' is correct and if 'singleton' " +
+            s"property in '$fileName' property file is correct")
+        }
       }
     }
   }

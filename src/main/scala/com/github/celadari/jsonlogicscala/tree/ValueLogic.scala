@@ -25,7 +25,6 @@ case class ValueLogic[T](
                         ) extends JsonLogicCore(ValueLogic.OPERATOR_CODENAME) {
 
   if ((variableNameOpt.isDefined && pathNameOpt.isDefined) || (variableNameOpt.isEmpty && pathNameOpt.isEmpty)) {
-    throw new TreeException(s"ValueLogic cannot be variable compose and data at the same time: variableNameOpt and pathNameOpt cannot be both defined or empty\n$this")
+    throw new TreeException(s"ValueLogic cannot be both variable compose and data: variableNameOpt and pathNameOpt cannot be both defined or empty\n$this")
   }
-
 }

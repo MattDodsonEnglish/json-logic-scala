@@ -9,7 +9,7 @@ object OperatorMerge extends Operator {
     values.toList.flatMap{
       case arr: Array[_] => arr
       case _: Map[_, _] => throw new IllegalInputException("Merge operator does not accept map as input condition")
-      case other: _ => Array(other)
+      case other: Any => Array(other)
     }.toArray
   }
 }

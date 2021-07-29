@@ -1,6 +1,6 @@
 package com.github.celadari.jsonlogicscala.tree.types
 
-import play.api.libs.json.{JsResult, JsValue, Reads, Writes}
+import play.api.libs.json.{JsValue, Writes}
 
 object ArrayTypeValue {
   val CODENAME_TYPE: String = "array"

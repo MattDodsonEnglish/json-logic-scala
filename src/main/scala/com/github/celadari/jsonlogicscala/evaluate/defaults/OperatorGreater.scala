@@ -45,5 +45,4 @@ object OperatorGreater extends Operator {
   def $greater(num1: java.lang.Double, num2: java.lang.Long): java.lang.Boolean = num1 > num2
   def $greater(num1: java.lang.Double, num2: java.lang.Float): java.lang.Boolean = num1 > num2
   def $greater(num1: java.lang.Double, num2: java.lang.Double): java.lang.Boolean = num1 > num2
-
 }

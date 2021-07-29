@@ -145,7 +145,7 @@ SOFTWARE.]]>
   <check class="org.scalastyle.scalariform.CyclomaticComplexityChecker" level="warning" enabled="true">
     <parameters>
       <parameter name="maximum">
-        <![CDATA[10]]>
+        <![CDATA[15]]>
       </parameter>
       <parameter name="countCases">
         <![CDATA[true]]>
@@ -164,7 +164,7 @@ SOFTWARE.]]>
   <check class="org.scalastyle.scalariform.MethodLengthChecker" level="warning" enabled="true">
     <parameters>
       <parameter name="maxLength">
-        <![CDATA[50]]>
+        <![CDATA[80]]>
       </parameter>
       <parameter name="ignoreComments">
         <![CDATA[false]]>

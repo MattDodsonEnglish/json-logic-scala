@@ -45,5 +45,4 @@ object OperatorLessEq extends Operator {
   def $less$eq(num1: java.lang.Double, num2: java.lang.Long): java.lang.Boolean = num1 <= num2
   def $less$eq(num1: java.lang.Double, num2: java.lang.Float): java.lang.Boolean = num1 <= num2
   def $less$eq(num1: java.lang.Double, num2: java.lang.Double): java.lang.Boolean = num1 <= num2
-
 }

@@ -21,7 +21,7 @@ class Serializer(implicit val conf: SerializerConf) {
         override def marshal(value: Any): JsValue = {
           value match {
             case arr: Array[_] => JsArray(arr.map(el => getMarshaller(paramType).marshal(el)))
-            case other: _ => {
+            case other: Any => {
               throw new IllegalInputException(s"Illegal input argument to ArrayType Marshaller: ${other}." +
                 "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
             }
@@ -32,7 +32,7 @@ class Serializer(implicit val conf: SerializerConf) {
         override def marshal(value: Any): JsValue = {
           value match {
             case map: Map[String, _] => JsObject(map.view.mapValues(el => getMarshaller(paramType).marshal(el)).toMap)
-            case other: _ => {
+            case other: Any => {
               throw new IllegalInputException(s"Illegal input argument to MapType Marshaller: ${other}." +
                 "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
             }
@@ -44,7 +44,7 @@ class Serializer(implicit val conf: SerializerConf) {
         override def marshal(value: Any): JsValue = {
           value match {
             case opt: Option[_] => opt.map(el => getMarshaller(paramType).marshal(el)).getOrElse(JsNull)
-            case other: _ => {
+            case other: Any => {
               throw new IllegalInputException(s"Illegal input argument to OptionType Marshaller: ${other}." +
                 "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
             }

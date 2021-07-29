@@ -14,9 +14,10 @@ object MarshallerDouble extends Marshaller {
     value match {
       case doubleValue: Double => JsNumber(doubleValue)
       case doubleValue: java.lang.Double => JsNumber(doubleValue.toDouble)
-      case other => throw new IllegalInputException(s"Illegal input argument to MarshallerDouble: ${other}." +
-        s"\nMarshallerDouble can only be applied to Double values." +
-        "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
+      case other: Any => {
+        throw new IllegalInputException(s"Illegal input argument to MarshallerDouble: ${other}.\nMarshallerDouble can only be applied to Double values." +
+          "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
+      }
     }
   }
 }

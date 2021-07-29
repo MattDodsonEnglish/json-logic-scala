@@ -12,8 +12,9 @@ object MarshallerNull extends Marshaller {
 
   def marshal(value: Any): JsValue = {
     if (value == null) JsNull
-    else throw new IllegalInputException(s"Illegal input argument to MarshallerNull: $value." +
-        s"\nMarshallerNull can only be applied to null value." +
+    else {
+      throw new IllegalInputException(s"Illegal input argument to MarshallerNull: $value.\nMarshallerNull can only be applied to null value." +
         "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
+    }
   }
 }

@@ -7,7 +7,7 @@ object OperatorOptionGetValueOrNull extends UnaryOperator {
   def unaryOperator(value: Any): Any = {
     value match {
       case opt: Option[_] => opt.orNull
-      case other: _ => other
+      case other: Any => other
     }
   }
 }

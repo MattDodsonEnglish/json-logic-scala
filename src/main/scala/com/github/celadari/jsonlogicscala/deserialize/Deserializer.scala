@@ -23,7 +23,8 @@ object Deserializer {
 }
 
 class Deserializer(implicit val conf: DeserializerConf) {
-  protected[this] val unmarshallers: Map[String, Unmarshaller] = if (conf.isPriorityToManualAdd) conf.unmarshallerMetaInfAdd ++ conf.unmarshallersManualAdd else conf.unmarshallersManualAdd ++ conf.unmarshallerMetaInfAdd
+  protected[this] val unmarshallers: Map[String, Unmarshaller] = if (conf.isPriorityToManualAdd) conf.unmarshallerMetaInfAdd ++ conf.unmarshallersManualAdd
+                                                                 else conf.unmarshallersManualAdd ++ conf.unmarshallerMetaInfAdd
 
   protected[this] def getUnmarshaller(typeValue: TypeValue): Unmarshaller = {
     typeValue match {
@@ -32,7 +33,9 @@ class Deserializer(implicit val conf: DeserializerConf) {
         override def unmarshal(jsValue: JsValue): Any = jsValue.as[JsArray].value.toArray.map(jsValue => getUnmarshaller(paramType).unmarshal(jsValue))
       }
       case MapTypeValue(paramType) => new Unmarshaller {
-        override def unmarshal(jsValue: JsValue): Any = jsValue.as[JsObject].value.view.mapValues(jsValue => getUnmarshaller(paramType).unmarshal(jsValue)).toMap
+        override def unmarshal(jsValue: JsValue): Any = {
+          jsValue.as[JsObject].value.view.mapValues(jsValue => getUnmarshaller(paramType).unmarshal(jsValue)).toMap
+        }
       }
       case OptionTypeValue(paramType) => new Unmarshaller {
         override def unmarshal(jsValue: JsValue): Any = {
@@ -40,8 +43,9 @@ class Deserializer(implicit val conf: DeserializerConf) {
           else Some(getUnmarshaller(paramType).unmarshal(jsValue))
         }
       }
-      case AnyTypeValue => throw new IllegalArgumentException("Cannot serialize JsonLogicCore object " +
-        "of type AnyTypeValue. \nAnyTypeValue is used at evaluation for composition operators")
+      case AnyTypeValue => {
+        throw new IllegalArgumentException("Cannot serialize type AnyTypeValue. \nAnyTypeValue is for sole use at evaluation for composition operators")
+      }
     }
   }
 
@@ -52,8 +56,14 @@ class Deserializer(implicit val conf: DeserializerConf) {
     val lookUpPathData = (jsonLogicData \ pathData)
     val jsValue = lookUpPathData.getOrElse(JsNull)
 
-    if (isTypeDefined && lookUpPathData.isEmpty) throw new InvalidJsonParsingException("Error while parsing ValueLogic of type value: \"var\" path is undefined")
-    if (!isTypeDefined && lookUpPathData.isDefined) throw new InvalidJsonParsingException("Error while parsing ValueLogic of type variable: \"var\" must not be a key on data dictionary")
+    if (isTypeDefined && lookUpPathData.isEmpty) {
+      throw new InvalidJsonParsingException(s"""Error while parsing ValueLogic of type value: "var" $pathData is undefined""")
+    }
+    if (!isTypeDefined && lookUpPathData.isDefined) {
+      throw new InvalidJsonParsingException(
+        """Error while parsing ValueLogic of type variable: "var" must not be a key on data dictionary.""" +
+        s"\nActual: $pathData")
+    }
 
     val valueOpt = typeValueOpt.flatMap(typeValue => Option(getUnmarshaller(typeValue).unmarshal(jsValue)))
     val variableNameOpt = if (lookUpPathData.isDefined) None else Some(pathData)
@@ -68,8 +78,8 @@ class Deserializer(implicit val conf: DeserializerConf) {
 
     // check for compose logic operator field
     if (fields.length > 1) {
-      throw new InvalidJsonParsingException(s"ComposeLogic cannot have more than one operator field." +
-        s"\nCurrent operators: ${fields.map(_._1).mkString("[", ", ", "]")}" +
+      throw new InvalidJsonParsingException("ComposeLogic cannot have more than one operator field.\nCurrent operators: " +
+        fields.map(_._1).mkString("[", ", ", "]") +
         s"\nInvalid ComposeLogic json: ${jsonLogic.toString}")
     }
     if (fields.isEmpty) throw new InvalidJsonParsingException("ComposeLogic cannot be empty")
@@ -89,6 +99,7 @@ class Deserializer(implicit val conf: DeserializerConf) {
       .toArray
   }
 
+  // scalastyle:off return
   def deserialize(jsonLogic: JsObject, jsonLogicData: JsObject): JsonLogicCore = {
     // check for operator field
     val fields = jsonLogic.fields

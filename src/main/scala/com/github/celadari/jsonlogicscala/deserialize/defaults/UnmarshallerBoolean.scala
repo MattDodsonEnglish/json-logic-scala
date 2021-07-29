@@ -9,9 +9,10 @@ object UnmarshallerBoolean extends Unmarshaller {
   def unmarshal(jsValue: JsValue): Any = {
     jsValue match {
       case JsBoolean(bool) => bool
-      case other => throw new InvalidJsonParsingException(s"Illegal input argument to UnmarshallerBoolean: ${other}." +
-        s"\nUnmarshallerBoolean could not unmarshall to boolean value." +
-        "\nCheck if \"type\" and \"var\" are correct.")
+      case other: Any => {
+        throw new InvalidJsonParsingException(s"Illegal input argument to UnmarshallerBoolean: ${other}.\nUnmarshallerBoolean could not unmarshall " +
+          "to boolean value.\nCheck if \"type\" and \"var\" are correct.")
+      }
     }
   }
 }

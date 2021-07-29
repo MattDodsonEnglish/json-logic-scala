@@ -3,6 +3,7 @@ package com.github.celadari.jsonlogicscala.evaluate.defaults
 import com.github.celadari.jsonlogicscala.evaluate.UnaryOperator
 import com.github.celadari.jsonlogicscala.exceptions.IllegalInputException
 
+
 object OperatorOptionGetOrDefaultArray extends UnaryOperator {
 
   def unaryOperator(value: Any): Any = {

@@ -9,7 +9,7 @@ object OperatorNeg extends UnaryOperator {
     value match {
       case bool: Boolean => !bool
       case bool: java.lang.Boolean => !bool
-      case other: _ => throw new IllegalInputException(s"Operator Neg can only be applied to boolean values. Input condition: ${other.toString}")
+      case other: Any => throw new IllegalInputException(s"Operator Neg can only be applied to boolean values. Input condition: ${other.toString}")
     }
   }
 }

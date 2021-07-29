@@ -14,7 +14,7 @@ import com.github.celadari.jsonlogicscala.exceptions.ConfigurationException
 
 object EvaluatorLogicConf {
 
-  // scalastyle:off field.name
+  // scalastyle:off null
   val DEFAULT_REDUCEOPERATORS_TO_METHODNAME: Map[String, (String, Operator)] = Map(
     "<" -> ("$less", OperatorLess),
     "<=" -> ("$less$eq", OperatorLessEq),
@@ -114,7 +114,7 @@ object EvaluatorLogicConf {
   val DEFAULT_METHOD_CONFS: Map[String, MethodConf] = DEFAULT_REDUCEMETHOD_CONFS ++
     DEFAULT_NONREDUCEOPERATORS_CONFS ++ DEFAULT_COMPOSITIONOPERATORS_CONFS ++ DEFAULT_UNARYOPERATORS_CONFS
 
-  // scalastyle:off cyclomatic.complexity method.length return
+  // scalastyle:off return
   def createConfMethod(
                         fileName: String,
                         prop: Properties,
@@ -190,7 +190,6 @@ object EvaluatorLogicConf {
         }
       }
     }
-
   }
 
   def createConf(

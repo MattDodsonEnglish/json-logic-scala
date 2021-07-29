@@ -8,6 +8,7 @@ import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, Val
 
 class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
 
+  // scalastyle:off return
   protected[this] def evaluateComposeLogic(condition: ComposeLogic, logicToValue: Map[ComposeLogic, Map[String, Any]]): Any = {
     val operator = condition.operator
     val confMethod = conf.operatorToMethodConf.getOrElse(operator, {
@@ -56,6 +57,7 @@ class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
       }}
   }
 
+  // scalastyle:off return null
   protected[this] def evaluateValueLogic(condition: ValueLogic[_]): Any = {
     val value = condition.valueOpt.get
     val typeValueOpt = condition.typeCodenameOpt
@@ -87,6 +89,7 @@ class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
     }
   }
 
+  // scalastyle:off null
   def eval(jsonLogicCore: JsonLogicCore): Any = {
     var composedLogic: JsonLogicCore = null
     try {
