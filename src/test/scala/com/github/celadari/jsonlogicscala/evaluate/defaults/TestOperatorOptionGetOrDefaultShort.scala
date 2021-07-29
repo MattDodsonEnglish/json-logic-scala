@@ -61,7 +61,7 @@ class TestOperatorOptionGetOrDefaultShort extends TestNumeric with TestArray {
     val evaluator = new EvaluatorLogic
     val thrownEval = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     val thrown = the[IllegalInputException] thrownBy {throw thrownEval.origException}
-    thrown.getMessage shouldBe "Operator OptionToShort can only be applied to Option[Short] or Short values. Input condition: Some(5)"
+    thrown.getMessage shouldBe "Operator OptionToShort can only be applied to Option[Short] or Short. Input condition: Some(5)"
   }
 
   "Operator OptionGetOrDefaultShort non option non short" should "thrown an exception" in {
@@ -72,7 +72,7 @@ class TestOperatorOptionGetOrDefaultShort extends TestNumeric with TestArray {
     val evaluator = new EvaluatorLogic
     val thrownEval = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     val thrown = the[IllegalInputException] thrownBy {throw thrownEval.origException}
-    thrown.getMessage shouldBe "Operator OptionToShort can only be applied to Option[Short] or Short values. Input condition: 5"
+    thrown.getMessage shouldBe "Operator OptionToShort can only be applied to Option[Short] or Short. Input condition: 5"
   }
 
 }

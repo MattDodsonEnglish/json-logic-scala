@@ -52,7 +52,6 @@ class TestDeserializerConf extends AnyFlatSpec with Matchers {
   "createConf non unmarshaller object" should "throw an exception" in {
     val thrown = the[ConfigurationException] thrownBy {DeserializerConf.createConf("META-INF/services/json-logic-scala/tests/deserializer/exceptions/cast-exception-singleton/")}
     val expectedMessage = "Found object is not a 'com.github.celadari.jsonlogicscala.deserialize.Unmarshaller' instance: \n'com.github.celadari.jsonlogicscala.serialize.impl.MarshallerIntImpl$'"
-    println(thrown.getMessage)
     thrown.getMessage shouldBe expectedMessage
   }
 

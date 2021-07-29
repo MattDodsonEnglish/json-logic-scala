@@ -105,7 +105,7 @@ class TestTypeValue extends TestPrivateMethods {
 
   "Private method serializeTypeValue AnyTypeValue" should "throw an exception" in {
     val thrown = the[IllegalInputException] thrownBy {TypeValue invokePrivate serializeTypeValue(AnyTypeValue)}
-    thrown.getMessage shouldBe "'AnyTypeValue' type cannot be serialized"
+    thrown.getMessage should fullyMatch regex """'com\.github\.celadari\.jsonlogicscala\.tree\.types\.AnyTypeValue\$@[a-zA-Z0-9]+' type cannot be serialized"""
   }
 
   "Write ArrayTypeValue(SimpleTypeValue(INT_CODENAME)) into json" should "return deserialized TypeValue" in {
@@ -138,7 +138,7 @@ class TestTypeValue extends TestPrivateMethods {
 
   "Write AnyTypeValue" should "throw an exception" in {
     val thrown = the[IllegalInputException] thrownBy {Json.toJson(AnyTypeValue)}
-    thrown.getMessage shouldBe "'AnyTypeValue' type cannot be serialized"
+    thrown.getMessage should fullyMatch regex """'com\.github\.celadari\.jsonlogicscala\.tree\.types\.AnyTypeValue\$@[a-zA-Z0-9]+' type cannot be serialized"""
   }
 
 }

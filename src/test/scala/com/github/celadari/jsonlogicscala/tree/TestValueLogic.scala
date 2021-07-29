@@ -22,8 +22,7 @@ class TestValueLogic extends AnyFlatSpec with Matchers {
 
   "Instantiate ValueLogic as both data and variable" should "thrown an exception" in {
     val thrown = the[TreeException] thrownBy {ValueLogic(Some(4), Some(SimpleTypeValue(INT_CODENAME)), Some("variableName"), Some("data"))}
-    println(thrown.getMessage)
-    val expectedMessage = """ValueLogic cannot be variable compose and data at the same time: variableNameOpt and pathNameOpt cannot be both defined or empty
+    val expectedMessage = """ValueLogic cannot be both variable compose and data: variableNameOpt and pathNameOpt cannot be both defined or empty
                             |ValueLogic(Some(4),Some(SimpleTypeValue(int)),Some(variableName),Some(data))""".stripMargin
     thrown.getMessage shouldBe expectedMessage
   }

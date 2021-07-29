@@ -201,7 +201,7 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
     val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
       pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/exceptions/cast-exception-singleton/"
     )}
-    val expectedMessage = "Found object is not a 'com.github.celadari.jsonlogicscala.evaluate.Operator' instance: \ncom.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplString$ cannot be cast to com.github.celadari.jsonlogicscala.evaluate.Operator"
+    val expectedMessage = "Found object is not 'com.github.celadari.jsonlogicscala.evaluate.Operator' type: \ncom.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplString$ cannot be cast to com.github.celadari.jsonlogicscala.evaluate.Operator"
     thrown.getMessage shouldBe expectedMessage
   }
 
@@ -217,7 +217,7 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
     val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
       pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/exceptions/cast-exception-class/"
     )}
-    val expectedMessage = "Found class is not a 'com.github.celadari.jsonlogicscala.evaluate.Operator' instance: \ncom.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplInt cannot be cast to com.github.celadari.jsonlogicscala.evaluate.Operator"
+    val expectedMessage = "Found class not 'com.github.celadari.jsonlogicscala.evaluate.Operator' instance: \ncom.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplInt cannot be cast to com.github.celadari.jsonlogicscala.evaluate.Operator"
     thrown.getMessage shouldBe expectedMessage
   }
 

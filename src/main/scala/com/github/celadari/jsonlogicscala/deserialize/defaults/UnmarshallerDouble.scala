@@ -9,7 +9,7 @@ object UnmarshallerDouble extends Unmarshaller{
   def unmarshal(jsValue: JsValue): Any = {
     jsValue match {
       case JsNumber(num) => num.toDouble
-      case other: Any => {
+      case other => {
         throw new InvalidJsonParsingException(s"Illegal input argument to UnmarshallerDouble: ${other}.\nUnmarshallerDouble could not unmarshall " +
           "to Double value.\nCheck if \"type\" and \"var\" are correct.")
       }

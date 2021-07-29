@@ -30,14 +30,14 @@ class TestDeserializer extends TestPrivateMethods {
     val (jsLogic, jsData) = (Json.parse("""{"var":"data2","type":{"codename":"int"}}"""), Json.parse("""{"data1":45}"""))
     val deserializer = new Deserializer
     val thrown = the[InvalidJsonParsingException] thrownBy {deserializer invokePrivate deserializeValueLogic(jsLogic, jsData)}
-    thrown.getMessage shouldBe "Error while parsing ValueLogic of type value: \"var\" path is undefined"
+    thrown.getMessage shouldBe "Error while parsing ValueLogic of type value: \"var\" data2 is undefined"
   }
 
   "Private method deserializeValueLogic defined path data but no type" should "throw an exception" in {
     val (jsLogic, jsData) = (Json.parse("""{"var":"data1"}"""), Json.parse("""{"data1":45}"""))
     val deserializer = new Deserializer
     val thrown = the[InvalidJsonParsingException] thrownBy {deserializer invokePrivate deserializeValueLogic(jsLogic, jsData)}
-    thrown.getMessage shouldBe "Error while parsing ValueLogic of type variable: \"var\" must not be a key on data dictionary"
+    thrown.getMessage shouldBe "Error while parsing ValueLogic of type variable: \"var\" must not be a key on data dictionary.\nActual: \"data1\""
   }
 
   "Private method deserializeValueLogic type null" should "return deserialized ValueLogic" in {
@@ -124,7 +124,7 @@ class TestDeserializer extends TestPrivateMethods {
   "Private method getUnmarshaller AnyTypeValue" should "throw an exception" in {
     val deserializer = new Deserializer
     val thrown = the[IllegalArgumentException] thrownBy {deserializer invokePrivate getUnmarshaller(AnyTypeValue)}
-    thrown.getMessage shouldBe "Cannot serialize JsonLogicCore object of type AnyTypeValue. \nAnyTypeValue is used at evaluation for composition operators"
+    thrown.getMessage shouldBe "Cannot serialize type AnyTypeValue.\nAnyTypeValue is for sole use at evaluation for composition operators"
   }
 
   "Deserialize ComposeLogic valueLogic value Option(Int)" should "return value" in {

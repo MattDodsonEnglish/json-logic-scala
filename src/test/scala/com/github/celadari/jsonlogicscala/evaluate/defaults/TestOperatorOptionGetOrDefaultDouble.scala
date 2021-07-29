@@ -61,7 +61,7 @@ class TestOperatorOptionGetOrDefaultDouble extends TestNumeric with TestArray {
     val evaluator = new EvaluatorLogic
     val thrownEval = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     val thrown = the[IllegalInputException] thrownBy {throw thrownEval.origException}
-    thrown.getMessage shouldBe "Operator OptionToDouble can only be applied to Option[Double] or Double values. Input condition: Some(5)"
+    thrown.getMessage shouldBe "Operator OptionToDouble can only be applied to Option[Double] or Double. Input condition: Some(5)"
   }
 
   "Operator OptionGetOrDefaultDouble non option non double" should "thrown an exception" in {
@@ -72,7 +72,7 @@ class TestOperatorOptionGetOrDefaultDouble extends TestNumeric with TestArray {
     val evaluator = new EvaluatorLogic
     val thrownEval = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     val thrown = the[IllegalInputException] thrownBy {throw thrownEval.origException}
-    thrown.getMessage shouldBe "Operator OptionToDouble can only be applied to Option[Double] or Double values. Input condition: 5"
+    thrown.getMessage shouldBe "Operator OptionToDouble can only be applied to Option[Double] or Double. Input condition: 5"
   }
 
 }

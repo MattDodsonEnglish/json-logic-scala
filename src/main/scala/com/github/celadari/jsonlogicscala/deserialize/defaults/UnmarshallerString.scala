@@ -8,7 +8,7 @@ object UnmarshallerString extends Unmarshaller{
   def unmarshal(jsValue: JsValue): Any = {
     jsValue match {
       case JsString(string) => string
-      case other: Any => {
+      case other => {
         throw new InvalidJsonParsingException(s"Illegal input argument to UnmarshallerString: ${other}.\nUnmarshallerString could not unmarshall to " +
           "String value.\nCheck if \"type\" and \"var\" are correct.")
       }

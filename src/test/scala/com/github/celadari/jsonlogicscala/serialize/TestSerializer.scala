@@ -79,7 +79,7 @@ class TestSerializer extends TestPrivateMethods {
     val valueLogic = VariableLogic("acc", new ComposeLogic("+", Array()))
     val serializer = new Serializer
     val thrown = the[InvalidValueLogicException] thrownBy {serializer.serialize(valueLogic)}
-    thrown.getMessage shouldBe "VariableLogic cannot be serialized. Resulting tree from CompositionOperator.ComposeJsonLogicCore is only used at evaluation."
+    thrown.getMessage shouldBe "VariableLogic cannot be serialized. CompositionOperator.ComposeJsonLogicCore output is only used at evaluation."
   }
 
   "Serialize default ComposeLogic" should "return value" in {

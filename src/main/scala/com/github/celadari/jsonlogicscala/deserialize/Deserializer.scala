@@ -44,7 +44,7 @@ class Deserializer(implicit val conf: DeserializerConf) {
         }
       }
       case AnyTypeValue => {
-        throw new IllegalArgumentException("Cannot serialize type AnyTypeValue. \nAnyTypeValue is for sole use at evaluation for composition operators")
+        throw new IllegalArgumentException("Cannot serialize type AnyTypeValue.\nAnyTypeValue is for sole use at evaluation for composition operators")
       }
     }
   }
@@ -62,7 +62,7 @@ class Deserializer(implicit val conf: DeserializerConf) {
     if (!isTypeDefined && lookUpPathData.isDefined) {
       throw new InvalidJsonParsingException(
         """Error while parsing ValueLogic of type variable: "var" must not be a key on data dictionary.""" +
-        s"\nActual: $pathData")
+        s"""\nActual: "$pathData"""")
     }
 
     val valueOpt = typeValueOpt.flatMap(typeValue => Option(getUnmarshaller(typeValue).unmarshal(jsValue)))

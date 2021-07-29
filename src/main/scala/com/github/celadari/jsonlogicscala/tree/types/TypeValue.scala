@@ -18,7 +18,7 @@ object TypeValue {
         case ArrayTypeValue.CODENAME_TYPE => ArrayTypeValue(parseTypeValue(jsParamType))
         case MapTypeValue.CODENAME_TYPE => MapTypeValue(parseTypeValue(jsParamType))
         case OptionTypeValue.CODENAME_TYPE => OptionTypeValue(parseTypeValue(jsParamType))
-        case other: Any => throw new InvalidJsonParsingException(s"Illegal 'codename': '$other' in parameter type. SimpleTypeValue cannot have 'paramType' key")
+        case other => throw new InvalidJsonParsingException(s"Illegal 'codename': '$other' in parameter type. SimpleTypeValue cannot have 'paramType' key")
       })
       .getOrElse(SimpleTypeValue(codename))
   }
@@ -49,7 +49,7 @@ object TypeValue {
         "codename" -> JsString(OptionTypeValue.CODENAME_TYPE),
         "paramType" -> serializeTypeValue(paramType)
       ))
-      case other: Any => throw new IllegalInputException(s"'$other' type cannot be serialized")
+      case other => throw new IllegalInputException(s"'$other' type cannot be serialized")
     }
   }
 

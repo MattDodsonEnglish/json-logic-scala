@@ -14,7 +14,7 @@ object OperatorIn extends Operator {
         case arr: Array[_] => arr.map(transformArrayToList).toList
         case map: Map[_, _] => map.map{case (key, value) => (transformArrayToList(key), transformArrayToList(value))}
         case iter: Iterable[_] => iter.map(transformArrayToList).toList
-        case other: Any => other
+        case other => other
       }
     }
   }

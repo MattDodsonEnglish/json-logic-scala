@@ -8,7 +8,7 @@ object UnmarshallerInt extends Unmarshaller{
   def unmarshal(jsValue: JsValue): Any = {
     jsValue match {
       case JsNumber(num) => num.toInt
-      case other: Any => {
+      case other => {
         throw new InvalidJsonParsingException(s"Illegal input argument to UnmarshallerInt: ${other}.\nUnmarshallerInt could not unmarshall to Int value." +
           "\nCheck if \"type\" and \"var\" are correct.")
       }

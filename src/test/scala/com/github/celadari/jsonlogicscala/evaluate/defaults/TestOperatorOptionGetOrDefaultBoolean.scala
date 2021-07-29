@@ -61,7 +61,7 @@ class TestOperatorOptionGetOrDefaultBoolean extends TestNumeric with TestBoolean
     val evaluator = new EvaluatorLogic
     val thrownEval = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     val thrown = the[IllegalInputException] thrownBy {throw thrownEval.origException}
-    thrown.getMessage shouldBe "Operator OptionToBoolean can only be applied to Option[Boolean] or Boolean values. Input condition: Some(5)"
+    thrown.getMessage shouldBe "Operator OptionToBoolean can only be applied to Option[Boolean] or Boolean. Input condition: Some(5)"
   }
 
   "Operator OptionGetOrDefaultBoolean non option non boolean" should "thrown an exception" in {
@@ -72,7 +72,7 @@ class TestOperatorOptionGetOrDefaultBoolean extends TestNumeric with TestBoolean
     val evaluator = new EvaluatorLogic
     val thrownEval = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     val thrown = the[IllegalInputException] thrownBy {throw thrownEval.origException}
-    thrown.getMessage shouldBe "Operator OptionToBoolean can only be applied to Option[Boolean] or Boolean values. Input condition: 5"
+    thrown.getMessage shouldBe "Operator OptionToBoolean can only be applied to Option[Boolean] or Boolean. Input condition: 5"
   }
 
 }

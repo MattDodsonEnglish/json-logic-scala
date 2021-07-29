@@ -43,7 +43,7 @@ class TestOperatorOptionGetOrDefaultMap extends TestNumeric with TestMap {
     val evaluator = new EvaluatorLogic
     val thrownEval = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     val thrown = the[IllegalInputException] thrownBy {throw thrownEval.origException}
-    thrown.getMessage shouldBe "Operator OptionToMap can only be applied to Option[Map[_, _]] or Map[_, _] values. Input condition: Some(5)"
+    thrown.getMessage shouldBe "Operator OptionToMap can only be applied to Option[Map[_, _]] or Map[_, _]. Input condition: Some(5)"
   }
 
   "Operator OptionGetOrDefaultMap non option non map" should "thrown an exception" in {
@@ -54,7 +54,7 @@ class TestOperatorOptionGetOrDefaultMap extends TestNumeric with TestMap {
     val evaluator = new EvaluatorLogic
     val thrownEval = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     val thrown = the[IllegalInputException] thrownBy {throw thrownEval.origException}
-    thrown.getMessage shouldBe "Operator OptionToMap can only be applied to Option[Map[_, _]] or Map[_, _] values. Input condition: 5"
+    thrown.getMessage shouldBe "Operator OptionToMap can only be applied to Option[Map[_, _]] or Map[_, _]. Input condition: 5"
   }
 
 }

@@ -10,7 +10,7 @@ object UnmarshallerShort extends Unmarshaller{
   def unmarshal(jsValue: JsValue): Any = {
     jsValue match {
       case JsNumber(num) => num.toShort
-      case other: Any => {
+      case other => {
         throw new InvalidJsonParsingException(s"Illegal input argument to UnmarshallerShort: ${other}.\nUnmarshallerShort could not unmarshall to Short " +
           "value.\nCheck if \"type\" and \"var\" are correct.")
       }

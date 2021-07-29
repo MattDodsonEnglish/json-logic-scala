@@ -61,7 +61,7 @@ class TestOperatorOptionGetOrDefaultString extends TestNumeric with TestString {
     val evaluator = new EvaluatorLogic
     val thrownEval = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     val thrown = the[IllegalInputException] thrownBy {throw thrownEval.origException}
-    thrown.getMessage shouldBe "Operator OptionToString can only be applied to Option[String] or String values. Input condition: Some(5)"
+    thrown.getMessage shouldBe "Operator OptionToString can only be applied to Option[String] or String. Input condition: Some(5)"
   }
 
   "Operator OptionGetOrDefaultString non option non string" should "thrown an exception" in {
@@ -72,7 +72,7 @@ class TestOperatorOptionGetOrDefaultString extends TestNumeric with TestString {
     val evaluator = new EvaluatorLogic
     val thrownEval = the[EvaluateException] thrownBy {evaluator.eval(tree)}
     val thrown = the[IllegalInputException] thrownBy {throw thrownEval.origException}
-    thrown.getMessage shouldBe "Operator OptionToString can only be applied to Option[String] or String values. Input condition: 5"
+    thrown.getMessage shouldBe "Operator OptionToString can only be applied to Option[String] or String. Input condition: 5"
   }
 
 }

@@ -14,7 +14,7 @@ object MarshallerBoolean extends Marshaller {
     value match {
       case boolean: Boolean => JsBoolean(boolean)
       case bool: java.lang.Boolean => JsBoolean(bool)
-      case other: Any => {
+      case other => {
         throw new IllegalInputException(s"Illegal input argument to MarshallerBoolean: ${other}.\nMarshallerBoolean can only be applied to boolean values." +
           "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
       }

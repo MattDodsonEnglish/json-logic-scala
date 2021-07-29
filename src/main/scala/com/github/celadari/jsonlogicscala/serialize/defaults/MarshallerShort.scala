@@ -14,7 +14,7 @@ object MarshallerShort extends Marshaller {
     value match {
       case short: Short => JsNumber(short)
       case short: java.lang.Short => JsNumber(short.toShort)
-      case other: Any => {
+      case other => {
         throw new IllegalInputException(s"Illegal input argument to MarshallerShort: ${other}.\nMarshallerShort can only be applied to short values." +
           "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
       }
