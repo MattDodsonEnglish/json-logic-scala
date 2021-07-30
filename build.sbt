@@ -15,26 +15,35 @@ resolvers ++= Seq(
   "sonatype-releases"  at "https://oss.sonatype.org/content/repositories/releases",
 )
 
-val typeSafeVersions = Map("2.10" -> "2.6.14", "2.11" -> "2.7.4", "2.12" -> "2.8.1", "2.13" -> "2.8.1")
+// This forbids including Scala related libraries into the dependency
+autoScalaLibrary := false
+
+// scalastyle:off magic.number
 def resolveVersion(scalaV: String, versionsResolver: Map[String, String]): String = versionsResolver(scalaV.slice(0, 4))
 
-libraryDependencies ++= {
-  Seq(
+val typeSafeVersions = Map("2.10" -> "2.6.14", "2.11" -> "2.7.4", "2.12" -> "2.8.1", "2.13" -> "2.8.1")
+
+libraryDependencies ++= Seq(
     "com.typesafe.play" %% "play-json" % resolveVersion(scalaVersion.value, typeSafeVersions),
     "org.apache.xbean" % "xbean-finder" % "4.20",
     "org.apache.xbean" % "xbean-reflect" % "4.20",
-    "org.scalatest" %% "scalatest" % "3.2.9" % Test,
-    "org.mockito" % "mockito-inline" % "3.8.0" % Test,
-    "org.scalatestplus" %% "mockito-3-4" % "3.2.9.0" % Test,
-    //"org.powermock" % "powermock-api-mockito" % "2.0.0" % Test,
-    //"org.powermock" % "powermock-module-junit4" % "2.0.0" % Test
-  )
-}
+    "org.scalatest" %% "scalatest" % "3.2.9" % Test
+)
 
-//scalacOptions ++= ("-feature" :: "-language:postfixOps" :: "-language:implicitConversions" :: Nil)
+// scalacOptions ++= ("-feature" :: "-language:postfixOps" :: "-language:implicitConversions" :: Nil)
+scalacOptions ++= Seq(
+  "-encoding", "utf8",
+  "-deprecation",
+  "-feature",
+  "-language:higherKinds",
+  "-Ywarn-unused:imports",
+  //"-Xfatal-warnings"
+)
+
+Test / testOptions += Tests.Argument("-oGK")
 
 // scalastyle unit test configuration
-(scalastyleConfig in Test) := baseDirectory.value / "scalastyle-test-config.xml"
+Test / scalastyleConfig := baseDirectory.value / "scalastyle-test-config.xml"
 
 // Publishing stuff for sonatype
 publishTo := {
@@ -46,7 +55,7 @@ publishConfiguration := publishConfiguration.value.withOverwrite(true)
 
 credentials += Credentials(Path.userHome / ".sbt" / ".credentials")
 
-publishArtifact in Test := false
+Test / publishArtifact := false
 
 publishMavenStyle := true
 
@@ -66,6 +75,6 @@ pomExtra := (
          </developers>
  )
 
-licenses += ("MIT", url("http://mit-license.org/"))
+licenses += ("MIT", url("https://mit-license.org/"))
 
 // Scaladoc publishing stuff

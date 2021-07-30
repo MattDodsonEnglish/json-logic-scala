@@ -85,9 +85,9 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
       pathEvaluatorLogic = "META-INF/services/json-logic-scala/tests/evaluator-value-logic/exceptions/cast-exception-singleton/"
     )}
     val expectedMessage =
-      """Found object is not a 'com.github.celadari.jsonlogicscala.evaluate.EvaluatorValueLogic' instance:
-        |'com.github.celadari.jsonlogicscala.deserialize.impl.UnmarshallerIntImpl$'""".stripMargin
-    thrown.getMessage shouldBe expectedMessage
+      """Found object is not a 'com\.github\.celadari\.jsonlogicscala\.evaluate\.EvaluatorValueLogic' instance:
+        |'(?:class\s)?com\.github\.celadari\.jsonlogicscala\.deserialize\.impl\.UnmarshallerIntImpl\$'""".stripMargin
+    thrown.getMessage should fullyMatch regex expectedMessage
   }
 
   "createConf EvaluateValueLogic non singleton with singleton true in props file" should "throw an exception" in {
@@ -106,9 +106,9 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
       pathEvaluatorLogic = "META-INF/services/json-logic-scala/tests/evaluator-value-logic/exceptions/cast-exception-class/"
     )}
     val expectedMessage =
-      """Found class is not a 'com.github.celadari.jsonlogicscala.evaluate.EvaluatorValueLogic' instance:
-        |'com.github.celadari.jsonlogicscala.deserialize.impl.UnmarshallerDoubleImpl'""".stripMargin
-    thrown.getMessage shouldBe expectedMessage
+      """Found class is not a 'com\.github\.celadari\.jsonlogicscala\.evaluate\.EvaluatorValueLogic' instance:
+        |'(?:class\s)?com\.github\.celadari\.jsonlogicscala\.deserialize\.impl\.UnmarshallerDoubleImpl'""".stripMargin
+    thrown.getMessage should fullyMatch regex expectedMessage
   }
 
   "createConf EvaluateValueLogic singleton with singleton false in props file" should "throw an exception" in {
@@ -215,10 +215,10 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
       pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/exceptions/cast-exception-singleton/"
     )}
     val expectedMessage =
-      """Found object is not 'com.github.celadari.jsonlogicscala.evaluate.Operator' type:
-        |com.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplString$ cannot be cast to""".stripMargin +
-        """ com.github.celadari.jsonlogicscala.evaluate.Operator""".stripMargin
-    thrown.getMessage shouldBe expectedMessage
+      """Found object is not 'com\.github\.celadari\.jsonlogicscala\.evaluate\.Operator' type:
+        |(?:class\s)?com\.github\.celadari\.jsonlogicscala\.evaluate\.impl\.EvaluatorValueLogicImplString\$ cannot be cast to""".stripMargin +
+        """ (?:class\s)?com\.github\.celadari\.jsonlogicscala\.evaluate\.Operator[\S\s]*""".stripMargin
+    thrown.getMessage should fullyMatch regex expectedMessage
   }
 
   "createConf MethodConf non singleton with singleton true in props file" should "throw an exception" in {
@@ -237,10 +237,10 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
       pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/exceptions/cast-exception-class/"
     )}
     val expectedMessage =
-      """Found class not 'com.github.celadari.jsonlogicscala.evaluate.Operator' instance:
-        |com.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplInt cannot be cast to""".stripMargin +
-        """ com.github.celadari.jsonlogicscala.evaluate.Operator"""
-    thrown.getMessage shouldBe expectedMessage
+      """Found class not 'com\.github\.celadari\.jsonlogicscala\.evaluate\.Operator' instance:
+        |(?:class\s)?com\.github\.celadari\.jsonlogicscala\.evaluate\.impl\.EvaluatorValueLogicImplInt cannot be cast to""".stripMargin +
+        """ (?:class\s)?com\.github\.celadari\.jsonlogicscala\.evaluate\.Operator([\s\S])*"""
+    thrown.getMessage should fullyMatch regex expectedMessage
   }
 
   "createConf MethodConf singleton with singleton false in props file" should "throw an exception" in {
