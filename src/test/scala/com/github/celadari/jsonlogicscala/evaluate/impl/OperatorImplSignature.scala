@@ -34,5 +34,4 @@ object OperatorImplSignature extends Operator {
   def doOperation(value1: Child1, value2: Child2): Child1 = new Child1 {num = 185}
   def doOperation(value1: Child2, value2: Child2): Child2 = new Child2 {num = 195}
   def doOperation(value1: Cousin, value2: Child2): Cousin = new Cousin{num = -195}
-
 }

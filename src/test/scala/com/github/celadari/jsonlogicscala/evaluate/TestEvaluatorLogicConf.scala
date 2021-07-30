@@ -2,11 +2,12 @@ package com.github.celadari.jsonlogicscala.evaluate
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.flatspec.AnyFlatSpec
-import com.github.celadari.jsonlogicscala.evaluate.impl.{EvaluatorValueLogicImplArrayInt, EvaluatorValueLogicImplDouble, EvaluatorValueLogicImplInt, EvaluatorValueLogicImplString, OperatorImplArrayLength, OperatorImplGreater, OperatorImplPrefix, OperatorImplSurroundString}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes.{DOUBLE_CODENAME, INT_CODENAME, STRING_CODENAME}
 import com.github.celadari.jsonlogicscala.tree.types.{ArrayTypeValue, SimpleTypeValue}
 import com.github.celadari.jsonlogicscala.evaluate.EvaluatorLogicConf.DEFAULT_METHOD_CONFS
+import com.github.celadari.jsonlogicscala.evaluate.impl._
 import com.github.celadari.jsonlogicscala.exceptions.ConfigurationException
+
 
 class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
 
@@ -14,8 +15,8 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
     val result = EvaluatorLogicConf.createConf()
     val expectedResult = EvaluatorLogicConf(
       Map(
-        "gt" -> MethodConf("gt", "greater", Some(OperatorImplGreater), true, false, false),
-        "prefix" -> MethodConf("prefix", "prefix", Some(new OperatorImplPrefix("before")), false, false, false)
+        "gt" -> MethodConf("gt", "greater", Some(OperatorImplGreater)),
+        "prefix" -> MethodConf("prefix", "prefix", Some(new OperatorImplPrefix("before")), isReduceTypeOperator = false)
       ),
       DEFAULT_METHOD_CONFS,
       Map(
@@ -32,13 +33,12 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
   "createConf EvaluateValueLogic other path with manual add priority" should "return conf" in {
     val result = EvaluatorLogicConf.createConf(
       pathEvaluatorLogic = "META-INF/services/json-logic-scala/tests/evaluator-value-logic/normal/manual-add-priority/",
-      evaluatorValueLogicManualAdd = Map(SimpleTypeValue(DOUBLE_CODENAME) -> EvaluatorValueLogicImplDouble),
-      isPriorityToManualAdd = true
+      evaluatorValueLogicManualAdd = Map(SimpleTypeValue(DOUBLE_CODENAME) -> EvaluatorValueLogicImplDouble)
     )
     val expectedResult = EvaluatorLogicConf(
       Map(
-        "gt" -> MethodConf("gt", "greater", Some(OperatorImplGreater), true, false, false),
-        "prefix" -> MethodConf("prefix", "prefix", Some(new OperatorImplPrefix("before")), false, false, false)
+        "gt" -> MethodConf("gt", "greater", Some(OperatorImplGreater)),
+        "prefix" -> MethodConf("prefix", "prefix", Some(new OperatorImplPrefix("before")), isReduceTypeOperator = false)
       ),
       DEFAULT_METHOD_CONFS,
       Map(
@@ -62,8 +62,8 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
     )
     val expectedResult = EvaluatorLogicConf(
       Map(
-        "gt" -> MethodConf("gt", "greater", Some(OperatorImplGreater), true, false, false),
-        "prefix" -> MethodConf("prefix", "prefix", Some(new OperatorImplPrefix("before")), false, false, false)
+        "gt" -> MethodConf("gt", "greater", Some(OperatorImplGreater)),
+        "prefix" -> MethodConf("prefix", "prefix", Some(new OperatorImplPrefix("before")), isReduceTypeOperator = false)
       ),
       DEFAULT_METHOD_CONFS,
       Map(
@@ -84,7 +84,9 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
     val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
       pathEvaluatorLogic = "META-INF/services/json-logic-scala/tests/evaluator-value-logic/exceptions/cast-exception-singleton/"
     )}
-    val expectedMessage = "Found object is not a 'com.github.celadari.jsonlogicscala.evaluate.EvaluatorValueLogic' instance: \n'com.github.celadari.jsonlogicscala.deserialize.impl.UnmarshallerIntImpl$'"
+    val expectedMessage =
+      """Found object is not a 'com.github.celadari.jsonlogicscala.evaluate.EvaluatorValueLogic' instance:
+        |'com.github.celadari.jsonlogicscala.deserialize.impl.UnmarshallerIntImpl$'""".stripMargin
     thrown.getMessage shouldBe expectedMessage
   }
 
@@ -92,7 +94,10 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
     val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
       pathEvaluatorLogic = "META-INF/services/json-logic-scala/tests/evaluator-value-logic/exceptions/non-singleton-exception-singleton-set-to-true/"
     )}
-    val expectedMessage = "No singleton object found for: 'com.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplInt'\nCheck if 'className' 'com.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplInt' is correct and if 'singleton' property in 'int' property file is correct"
+    val expectedMessage =
+      """No singleton object found for: 'com.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplInt'
+        |Check if 'className' 'com.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplInt' is correct and if 'singleton'""".stripMargin +
+        """ property in 'int' property file is correct""".stripMargin
     thrown.getMessage shouldBe expectedMessage
   }
 
@@ -100,7 +105,9 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
     val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
       pathEvaluatorLogic = "META-INF/services/json-logic-scala/tests/evaluator-value-logic/exceptions/cast-exception-class/"
     )}
-    val expectedMessage = "Found class is not a 'com.github.celadari.jsonlogicscala.evaluate.EvaluatorValueLogic' instance: \n'com.github.celadari.jsonlogicscala.deserialize.impl.UnmarshallerDoubleImpl'"
+    val expectedMessage =
+      """Found class is not a 'com.github.celadari.jsonlogicscala.evaluate.EvaluatorValueLogic' instance:
+        |'com.github.celadari.jsonlogicscala.deserialize.impl.UnmarshallerDoubleImpl'""".stripMargin
     thrown.getMessage shouldBe expectedMessage
   }
 
@@ -108,7 +115,10 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
     val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
       pathEvaluatorLogic = "META-INF/services/json-logic-scala/tests/evaluator-value-logic/exceptions/singleton-exception-singleton-set-to-false/"
     )}
-    val expectedMessage = "No class found for: 'com.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplDouble'\nCheck if 'className' 'com.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplDouble' is correct and if 'singleton' property in 'double' property file is correct"
+    val expectedMessage =
+      """No class found for: 'com.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplDouble'
+        |Check if 'className' 'com.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplDouble' is correct and if 'singleton'""".stripMargin +
+        """ property in 'double' property file is correct"""
     thrown.getMessage shouldBe expectedMessage
   }
 
@@ -130,9 +140,15 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
 
   "createConf EvaluateValueLogic wrong constructor argument names in props file" should "throw an exception" in {
     val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
-      pathEvaluatorLogic = "META-INF/services/json-logic-scala/tests/evaluator-value-logic/exceptions/wrong-constructor-argument-names-definition-exception-class/"
+      pathEvaluatorLogic =
+        "META-INF/services/json-logic-scala/tests/evaluator-value-logic/exceptions/wrong-constructor-argument-names-definition-exception-class/"
     )}
-    val expectedMessage = "Field error, check that no field in 'com.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplFloat' is missing in 'float' property file.\nCheck that no property in 'float' file is not undefined in 'com.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplFloat' class.\nCheck if 'com.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplFloat' class constructor requires arguments or if argument names defined in 'float' property file are correct"
+    val expectedMessage =
+      """Field error, check that no field in 'com.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplFloat' is missing in""" +
+      """ 'float' property file.
+        |Check that no property in 'float' file is not undefined in 'com.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplFloat' class.
+        |Check if 'com.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplFloat' class constructor requires arguments or if""".stripMargin +
+        """ argument names defined in 'float' property file are correct"""
     thrown.getMessage shouldBe expectedMessage
   }
 
@@ -149,42 +165,39 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
     val result = EvaluatorLogicConf.createConf(
       pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/normal/manual-add-priority/",
       operatorToOwnerManualAdd = Map("surround" -> operatorSurround),
-      methodConfsManualAdd = Map("length" -> MethodConf("length", "length", Some(OperatorImplArrayLength), false, false, false)),
-      isPriorityToManualAdd = true
+      methodConfsManualAdd = Map("length" -> MethodConf("length", "length", Some(OperatorImplArrayLength), isReduceTypeOperator = false)),
     )
     val expectedResult = EvaluatorLogicConf(
       Map(
-        "gt" -> MethodConf("gt", "greater", Some(OperatorImplGreater), true, false, false),
-        "prefix" -> MethodConf("prefix", "prefix", Some(new OperatorImplPrefix("before")), false, false, false),
-        "surround" -> MethodConf("surround", "surroundString", Some(operatorSurround), false, false, false),
+        "gt" -> MethodConf("gt", "greater", Some(OperatorImplGreater)),
+        "prefix" -> MethodConf("prefix", "prefix", Some(new OperatorImplPrefix("before")), isReduceTypeOperator = false),
+        "surround" -> MethodConf("surround", "surroundString", Some(operatorSurround), isReduceTypeOperator = false),
       ),
-      Map("length" -> MethodConf("length", "length", Some(OperatorImplArrayLength), false, false, false)),
+      Map("length" -> MethodConf("length", "length", Some(OperatorImplArrayLength), isReduceTypeOperator = false)),
       Map(
         SimpleTypeValue(INT_CODENAME) -> new EvaluatorValueLogicImplInt(0),
         SimpleTypeValue(STRING_CODENAME) -> EvaluatorValueLogicImplString,
         ArrayTypeValue(SimpleTypeValue(INT_CODENAME)) -> EvaluatorValueLogicImplArrayInt
       ),
       Map(),
-      isPriorityToManualAdd = true
     )
 
     result shouldBe expectedResult
   }
 
   "createConf MethodConf other path with meta inf add priority" should "return conf" in {
-    val operatorSurround = new OperatorImplSurroundString("before", "after")
     val result = EvaluatorLogicConf.createConf(
       pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/normal/meta-inf-priority/",
       operatorToOwnerManualAdd = Map(),
-      methodConfsManualAdd = Map("length" -> MethodConf("length", "length", Some(OperatorImplArrayLength), false, false, false)),
+      methodConfsManualAdd = Map("length" -> MethodConf("length", "length", Some(OperatorImplArrayLength), isReduceTypeOperator = false)),
       isPriorityToManualAdd = false
     )
     val expectedResult = EvaluatorLogicConf(
       Map(
-        "gt" -> MethodConf("gt", "greater", Some(OperatorImplGreater), true, false, false),
-        "prefix" -> MethodConf("prefix", "prefix", Some(new OperatorImplPrefix("before")), false, false, false)
+        "gt" -> MethodConf("gt", "greater", Some(OperatorImplGreater)),
+        "prefix" -> MethodConf("prefix", "prefix", Some(new OperatorImplPrefix("before")), isReduceTypeOperator = false)
       ),
-      Map("length" -> MethodConf("length", "length", Some(OperatorImplArrayLength), false, false, false)),
+      Map("length" -> MethodConf("length", "length", Some(OperatorImplArrayLength), isReduceTypeOperator = false)),
       Map(
         SimpleTypeValue(INT_CODENAME) -> new EvaluatorValueLogicImplInt(0),
         SimpleTypeValue(STRING_CODENAME) -> EvaluatorValueLogicImplString,
@@ -201,7 +214,10 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
     val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
       pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/exceptions/cast-exception-singleton/"
     )}
-    val expectedMessage = "Found object is not 'com.github.celadari.jsonlogicscala.evaluate.Operator' type: \ncom.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplString$ cannot be cast to com.github.celadari.jsonlogicscala.evaluate.Operator"
+    val expectedMessage =
+      """Found object is not 'com.github.celadari.jsonlogicscala.evaluate.Operator' type:
+        |com.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplString$ cannot be cast to""".stripMargin +
+        """ com.github.celadari.jsonlogicscala.evaluate.Operator""".stripMargin
     thrown.getMessage shouldBe expectedMessage
   }
 
@@ -209,7 +225,10 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
     val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
       pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/exceptions/non-singleton-exception-singleton-set-to-true/"
     )}
-    val expectedMessage = "No singleton object found for: 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplPrefix'\nCheck if 'ownerMethod' 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplPrefix' is correct and if 'singleton' property in 'prefix' property file is correct"
+    val expectedMessage =
+      """No singleton object found for: 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplPrefix'
+        |Check if 'ownerMethod' 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplPrefix' is correct and if 'singleton' property""".stripMargin +
+        """ in 'prefix' property file is correct""".stripMargin
     thrown.getMessage shouldBe expectedMessage
   }
 
@@ -217,7 +236,10 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
     val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
       pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/exceptions/cast-exception-class/"
     )}
-    val expectedMessage = "Found class not 'com.github.celadari.jsonlogicscala.evaluate.Operator' instance: \ncom.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplInt cannot be cast to com.github.celadari.jsonlogicscala.evaluate.Operator"
+    val expectedMessage =
+      """Found class not 'com.github.celadari.jsonlogicscala.evaluate.Operator' instance:
+        |com.github.celadari.jsonlogicscala.evaluate.impl.EvaluatorValueLogicImplInt cannot be cast to""".stripMargin +
+        """ com.github.celadari.jsonlogicscala.evaluate.Operator"""
     thrown.getMessage shouldBe expectedMessage
   }
 
@@ -225,7 +247,10 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
     val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
       pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/exceptions/singleton-exception-singleton-set-to-false/"
     )}
-    val expectedMessage = "No class found for: 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplGreater'\nCheck if 'ownerMethod' 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplGreater' is correct and if 'singleton' property in 'gt' property file is correct"
+    val expectedMessage =
+      """No class found for: 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplGreater'
+        |Check if 'ownerMethod' 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplGreater' is correct and if 'singleton'""".stripMargin +
+        """ property in 'gt' property file is correct"""
     thrown.getMessage shouldBe expectedMessage
   }
 
@@ -241,7 +266,11 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
     val thrown = the[ConfigurationException] thrownBy {EvaluatorLogicConf.createConf(
       pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/exceptions/wrong-constructor-argument-names-definition-exception-class/"
     )}
-    val expectedMessage = "Field error, check that no field in 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplSurroundString' is missing in 'surround' property file.\nCheck that no property in 'surround' file is not undefined in 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplSurroundString' class.\nCheck if 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplSurroundString' class constructor requires arguments or if argument names defined in 'surround' property file are correct"
+    val expectedMessage = """Field error, check that no field in 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplSurroundString' is""" +
+      """ missing in 'surround' property file.
+        |Check that no property in 'surround' file is not undefined in 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplSurroundString' class.
+        |Check if 'com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplSurroundString' class constructor requires arguments or if""".stripMargin +
+        """ argument names defined in 'surround' property file are correct"""
     thrown.getMessage shouldBe expectedMessage
   }
 

@@ -1,7 +1,7 @@
 package com.github.celadari.jsonlogicscala.serialize.impl
 
-import com.github.celadari.jsonlogicscala.serialize.Marshaller
 import play.api.libs.json.{JsString, JsValue}
+import com.github.celadari.jsonlogicscala.serialize.Marshaller
 
 class MarshallerStringImpl2(val prefix: String, val suffix: String) extends Marshaller {
 

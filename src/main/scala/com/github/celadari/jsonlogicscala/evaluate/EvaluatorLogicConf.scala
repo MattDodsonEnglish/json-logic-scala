@@ -158,7 +158,7 @@ object EvaluatorLogicConf {
       }
       catch {
         case castException: java.lang.ClassCastException => {
-          throw new ConfigurationException(s"Found object is not 'com.github.celadari.jsonlogicscala.evaluate.Operator' type: \n${castException.getMessage}")
+          throw new ConfigurationException(s"Found object is not 'com.github.celadari.jsonlogicscala.evaluate.Operator' type:\n${castException.getMessage}")
         }
         case _: Throwable => {
           throw new ConfigurationException(s"No singleton object found for: '$className'\nCheck if 'ownerMethod' '$className' is correct and if 'singleton'" +
@@ -177,7 +177,7 @@ object EvaluatorLogicConf {
       }
       catch {
         case castException: java.lang.ClassCastException => {
-          throw new ConfigurationException(s"Found class not 'com.github.celadari.jsonlogicscala.evaluate.Operator' instance: \n${castException.getMessage}")
+          throw new ConfigurationException(s"Found class not 'com.github.celadari.jsonlogicscala.evaluate.Operator' instance:\n${castException.getMessage}")
         }
         case _: MissingAccessorException => {
           throw new ConfigurationException(s"Field error, check that no field in '$className' is missing in '$fileName' property file.\nCheck that no" +

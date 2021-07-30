@@ -5,8 +5,8 @@ import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
 import com.github.celadari.jsonlogicscala.tree.types.SimpleTypeValue
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic}
 
-class TestOperatorPow extends TestNumeric {
 
+class TestOperatorPow extends TestNumeric {
 
   "Operator Pow Byte ** Byte" should "return value" in {
     val tree = new ComposeLogic("**", Array(
@@ -137,7 +137,7 @@ class TestOperatorPow extends TestNumeric {
     val evaluator = new EvaluatorLogic
     evaluator.eval(tree) shouldBe OperatorPow.pow(xInt, yByte.toInt)
   }
-  
+
   "Operator Pow Int ** Short" should "return value" in {
     val tree = new ComposeLogic("**", Array(
       ValueLogic(Some(xInt), Some(SimpleTypeValue(INT_CODENAME))),
@@ -257,7 +257,7 @@ class TestOperatorPow extends TestNumeric {
     val evaluator = new EvaluatorLogic
     evaluator.eval(tree) shouldBe math.pow(xFloat.toDouble, yInt.toDouble)
   }
-  
+
   "Operator Pow Float ** Long" should "return value" in {
     val tree = new ComposeLogic("**", Array(
       ValueLogic(Some(xFloat), Some(SimpleTypeValue(FLOAT_CODENAME))),
@@ -351,7 +351,18 @@ class TestOperatorPow extends TestNumeric {
 
     val evaluator = new EvaluatorLogic
     evaluator.eval(tree) shouldBe
-      math.pow(math.pow(math.pow(math.pow(OperatorPow.pow(OperatorPow.pow(xByte.toInt: java.lang.Integer, yByte.toInt: java.lang.Integer).toLong, xLong).toDouble, xFloat.toDouble), yInt.toDouble), xShort.toDouble), xShort.toDouble)
+      math.pow(
+        math.pow(
+          math.pow(
+            math.pow(
+              OperatorPow.pow(OperatorPow.pow(xByte.toInt: java.lang.Integer, yByte.toInt: java.lang.Integer).toLong, xLong).toDouble,
+              xFloat.toDouble
+            ),
+            yInt.toDouble
+          ),
+          xShort.toDouble
+        ),
+        xShort.toDouble
+      )
   }
-
 }

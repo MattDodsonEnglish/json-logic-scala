@@ -33,6 +33,9 @@ libraryDependencies ++= {
 
 //scalacOptions ++= ("-feature" :: "-language:postfixOps" :: "-language:implicitConversions" :: Nil)
 
+// scalastyle unit test configuration
+(scalastyleConfig in Test) := baseDirectory.value / "scalastyle-test-config.xml"
+
 // Publishing stuff for sonatype
 publishTo := {
   if (version.value.endsWith("SNAPSHOT")) Some("snapshots" at "https://oss.sonatype.org/content/repositories/snapshots")

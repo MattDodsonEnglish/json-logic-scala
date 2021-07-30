@@ -18,9 +18,9 @@ class TestMarshallerShort extends AnyFlatSpec with Matchers {
 
   "Marshall non short value" should "throw an exception" in {
     val thrown = the[IllegalInputException] thrownBy {MarshallerShort.marshal(null)}
-    val expectedErrorMessage = "Illegal input argument to MarshallerShort: null." +
-      "\nMarshallerShort can only be applied to short values." +
-      "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct."
+    val expectedErrorMessage = """Illegal input argument to MarshallerShort: null.
+                                 |MarshallerShort can only be applied to short values.
+                                 |Check if valueOpt and typeCodenameOpt of ValueLogic are correct.""".stripMargin
     thrown.getMessage shouldBe expectedErrorMessage
   }
 }

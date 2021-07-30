@@ -77,7 +77,6 @@ class TestJsonLogicCore extends AnyFlatSpec with Matchers with TestNumeric with 
   }
 
   "Method treeString ValueLogic Variable" should "return string tree representation" in {
-    val composeLogic = new ComposeLogic("+", Array())
     val valueLogic = ValueLogic(None, None, Some(""), None)
 
     val expectedString = """{ValueLogic Variable ''}"""

@@ -8,6 +8,7 @@ import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, Val
 
 trait JsonLogicCoreMatcher extends AnyFlatSpec with Matchers {
 
+  // scalastyle:off cyclomatic.complexity
   def compareObject(value1: Any, value2: Any): Boolean = {
     value1 match {
       case arr1: Array[_] => {
@@ -82,6 +83,7 @@ trait JsonLogicCoreMatcher extends AnyFlatSpec with Matchers {
     }
   }
 
+  // scalastyle:off method.name
   def BeEqualJsonLogicCore(right: JsonLogicCore): BeEqualJsonLogicCore = new BeEqualJsonLogicCore(right)
 
 }

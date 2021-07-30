@@ -1,12 +1,11 @@
 package com.github.celadari.jsonlogicscala.evaluate
 
 import com.github.celadari.jsonlogicscala.TestPrivateMethods
-import com.github.celadari.jsonlogicscala.evaluate.MethodConf
-import com.github.celadari.jsonlogicscala.exceptions.{EvaluateException, IllegalInputException, IncompatibleMethodsException}
-import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes.{INT_CODENAME, STRING_CODENAME}
+import com.github.celadari.jsonlogicscala.exceptions.{IllegalInputException, IncompatibleMethodsException}
+import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes.INT_CODENAME
 import com.github.celadari.jsonlogicscala.tree.types.SimpleTypeValue
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic}
-import play.api.libs.json.Json
+
 
 class TestEvaluatorLogic extends TestPrivateMethods {
 
@@ -62,7 +61,8 @@ class TestEvaluatorLogic extends TestPrivateMethods {
   "Evaluate Compose Logic non-existing method of nonReduce type operator" should "throw exception" in {
     object FooOperator extends Operator
     implicit val conf: EvaluatorLogicConf = EvaluatorLogicConf.createConf(
-      methodConfsManualAdd = Map("foo" -> MethodConf("foo", "nonexisting", Some(FooOperator), isReduceTypeOperator = false)) ++ EvaluatorLogicConf.DEFAULT_METHOD_CONFS
+      methodConfsManualAdd = Map("foo" -> MethodConf("foo", "nonexisting", Some(FooOperator), isReduceTypeOperator = false)) ++
+        EvaluatorLogicConf.DEFAULT_METHOD_CONFS
     )
     val evaluator = new EvaluatorLogic
 

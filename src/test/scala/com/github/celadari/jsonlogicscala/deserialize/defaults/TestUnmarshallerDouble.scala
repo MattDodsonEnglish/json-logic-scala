@@ -14,9 +14,9 @@ class TestUnmarshallerDouble extends AnyFlatSpec with Matchers {
 
   "Unmarshall non JsNumber value" should "throw an exception" in {
     val thrown = the[InvalidJsonParsingException] thrownBy {UnmarshallerDouble.unmarshal(JsNull)}
-    val expectedErrorMessage = "Illegal input argument to UnmarshallerDouble: null." +
-      "\nUnmarshallerDouble could not unmarshall to Double value." +
-      "\nCheck if \"type\" and \"var\" are correct."
+    val expectedErrorMessage = """Illegal input argument to UnmarshallerDouble: null.
+                                 |UnmarshallerDouble could not unmarshall to Double value.
+                                 |Check if "type" and "var" are correct.""".stripMargin
     thrown.getMessage shouldBe expectedErrorMessage
   }
 

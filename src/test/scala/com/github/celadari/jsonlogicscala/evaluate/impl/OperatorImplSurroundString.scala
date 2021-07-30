@@ -10,6 +10,11 @@ class OperatorImplSurroundString(val prefix: String, val suffix: String) extends
       case _ => false
     }
   }
+
+  override def hashCode(): Int = {
+    prefix.hashCode + suffix.hashCode
+  }
+
   def surroundString(value: Any): Any = {
     s"$prefix${value.asInstanceOf[String]}$suffix"
   }

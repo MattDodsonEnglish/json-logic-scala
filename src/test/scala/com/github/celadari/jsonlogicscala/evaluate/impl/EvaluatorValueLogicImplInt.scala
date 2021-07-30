@@ -11,6 +11,8 @@ class EvaluatorValueLogicImplInt(val num: Int) extends EvaluatorValueLogic {
     }
   }
 
+  override def hashCode(): Int = num.hashCode()
+
   override def evaluateValueLogic(value: Any): Any = {
     num + value.asInstanceOf[Int]
   }

@@ -17,9 +17,9 @@ class TestUnmarshallerBoolean extends AnyFlatSpec with Matchers {
 
   "Unmarshall non JsBool value" should "throw an exception" in {
     val thrown = the[InvalidJsonParsingException] thrownBy {UnmarshallerBoolean.unmarshal(null)}
-    val expectedErrorMessage = "Illegal input argument to UnmarshallerBoolean: null." +
-      "\nUnmarshallerBoolean could not unmarshall to boolean value." +
-      "\nCheck if \"type\" and \"var\" are correct."
+    val expectedErrorMessage = """Illegal input argument to UnmarshallerBoolean: null.
+                                 |UnmarshallerBoolean could not unmarshall to boolean value.
+                                 |Check if "type" and "var" are correct.""".stripMargin
     thrown.getMessage shouldBe expectedErrorMessage
   }
 

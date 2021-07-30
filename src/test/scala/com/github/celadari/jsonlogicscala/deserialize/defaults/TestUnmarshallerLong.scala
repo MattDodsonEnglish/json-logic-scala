@@ -1,9 +1,9 @@
 package com.github.celadari.jsonlogicscala.deserialize.defaults
 
-import com.github.celadari.jsonlogicscala.exceptions.InvalidJsonParsingException
+import play.api.libs.json.JsNumber
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import play.api.libs.json.JsNumber
+import com.github.celadari.jsonlogicscala.exceptions.InvalidJsonParsingException
 
 class TestUnmarshallerLong extends AnyFlatSpec with Matchers {
 
@@ -13,9 +13,9 @@ class TestUnmarshallerLong extends AnyFlatSpec with Matchers {
 
   "Unmarshall non JsNumber value" should "throw an exception" in {
     val thrown = the[InvalidJsonParsingException] thrownBy {UnmarshallerLong.unmarshal(null)}
-    val expectedErrorMessage = "Illegal input argument to UnmarshallerLong: null." +
-      "\nUnmarshallerLong could not unmarshall to Long value." +
-      "\nCheck if \"type\" and \"var\" are correct."
+    val expectedErrorMessage = """Illegal input argument to UnmarshallerLong: null.
+                                 |UnmarshallerLong could not unmarshall to Long value.
+                                 |Check if "type" and "var" are correct.""".stripMargin
     thrown.getMessage shouldBe expectedErrorMessage
   }
 

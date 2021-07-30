@@ -56,12 +56,17 @@ class TestDeserializer extends TestPrivateMethods {
   }
 
   "Private method deserializeComposeLogic composeLogic json more than one field" should "throw an exception" in {
-    val (jsLogic, jsData) = (Json.parse("""{"*":[{"var":"data1","type":{"codename":"int"}}, {"var":"data1","type":{"codename":"int"}}], "+":[{"var":"data1","type":{"codename":"int"}},{"var":"data2","type":{"codename":"int"}}]}"""), Json.parse("""{"data1":null}"""))
+    val (jsLogic, jsData) = (
+      Json.parse("""{"*":[{"var":"data1","type":{"codename":"int"}}, {"var":"data1","type":{"codename":"int"}}],
+        |"+":[{"var":"data1","type":{"codename":"int"}},{"var":"data2","type":{"codename":"int"}}]}""".stripMargin),
+      Json.parse("""{"data1":null}""")
+    )
     val deserializer = new Deserializer
     val thrown = the[InvalidJsonParsingException] thrownBy {deserializer invokePrivate deserializeComposeLogic(jsLogic, jsData)}
     val expectedMessage = """ComposeLogic cannot have more than one operator field.
                             |Current operators: [*, +]
-                            |Invalid ComposeLogic json: {"*":[{"var":"data1","type":{"codename":"int"}},{"var":"data1","type":{"codename":"int"}}],"+":[{"var":"data1","type":{"codename":"int"}},{"var":"data2","type":{"codename":"int"}}]}""".stripMargin
+                            |Invalid ComposeLogic json: {"*":[{"var":"data1","type":{"codename":"int"}},{"var":"data1",""".stripMargin +
+                            """"type":{"codename":"int"}}],"+":[{"var":"data1","type":{"codename":"int"}},{"var":"data2","type":{"codename":"int"}}]}"""
     thrown.getMessage shouldBe expectedMessage
   }
 
@@ -73,7 +78,10 @@ class TestDeserializer extends TestPrivateMethods {
   }
 
   "Private method deserializeArrayOfConditions" should "return deserialized conditions" in {
-    val (jsLogic, jsData) = (Json.parse("""[{"var":"data1","type":{"codename":"int"}},{"var":"data2","type":{"codename":"int"}}]"""), Json.parse("""{"data1":45,"data2":65}"""))
+    val (jsLogic, jsData) = (
+      Json.parse("""[{"var":"data1","type":{"codename":"int"}},{"var":"data2","type":{"codename":"int"}}]"""),
+      Json.parse("""{"data1":45,"data2":65}""")
+    )
     val deserializer = new Deserializer
     val resultExpected = Array(
       ValueLogic(Some(45), Some(SimpleTypeValue(INT_CODENAME)), pathNameOpt = Some("data1")),
@@ -84,11 +92,13 @@ class TestDeserializer extends TestPrivateMethods {
   }
 
   "Deserialize ComposeLogic map operator" should "return value" in {
-    val (jsLogic, jsData) = (Json.parse(
-      """{"map":[{"var":"data1","type":{"codename":"array",
+    val (jsLogic, jsData) = (
+      Json.parse("""{"map":[{"var":"data1","type":{"codename":"array",
         |"paramType":{"codename":"int"}}},{"+":[{"+":[{"var":"data3","type":{"codename":"long"}},
         |{"var":"data5","type":{"codename":"double"}},{"var":"data4","type":{"codename":"float"}}]},
-        |{"var":"data2","type":{"codename":"int"}},{"var":""}]}]}""".stripMargin), Json.parse("""{"data1":[4,5,6,9],"data3":54,"data5":53,"data4":74,"data2":65}"""))
+        |{"var":"data2","type":{"codename":"int"}},{"var":""}]}]}""".stripMargin),
+      Json.parse("""{"data1":[4,5,6,9],"data3":54,"data5":53,"data4":74,"data2":65}""")
+    )
     val deserializer = new Deserializer
     val resultExpected = new ComposeLogic("map", Array(
       ValueLogic(Some(Array(4, 5, 6, 9)), Some(ArrayTypeValue(SimpleTypeValue(INT_CODENAME))), pathNameOpt = Some("data1")),
@@ -128,7 +138,10 @@ class TestDeserializer extends TestPrivateMethods {
   }
 
   "Deserialize ComposeLogic valueLogic value Option(Int)" should "return value" in {
-    val (jsLogic, jsData) = (Json.parse("""{"get_or_default_boolean":[{"var":"data2","type":{"codename":"option","paramType":{"codename":"string"}}}]}"""), Json.parse("""{"data2":null}"""))
+    val (jsLogic, jsData) = (
+      Json.parse("""{"get_or_default_boolean":[{"var":"data2","type":{"codename":"option","paramType":{"codename":"string"}}}]}"""),
+      Json.parse("""{"data2":null}""")
+    )
     val deserializer = new Deserializer
     val resultExpected = new ComposeLogic("get_or_default_boolean", Array(
       ValueLogic(Some(None.asInstanceOf[Option[String]]), Some(OptionTypeValue(SimpleTypeValue(STRING_CODENAME))), pathNameOpt = Some("data2"))
@@ -139,10 +152,19 @@ class TestDeserializer extends TestPrivateMethods {
   }
 
   "Deserialize ComposeLogic valueLogic value Option(Map(String -> Option(Int))" should "return value" in {
-    val (jsLogic, jsData) = (Json.parse("""{"get_or_default_boolean":[{"var":"data2","type":{"codename":"option","paramType":{"codename":"map","paramType":{"codename":"option","paramType":{"codename":"int"}}}}}]}"""), Json.parse("""{"data2":{"car":null,"truck":45}}"""))
+    val (jsLogic, jsData) = (
+      Json.parse(
+        """{"get_or_default_boolean":[{"var":"data2","type":{"codename":"option","paramType":{"codename":"map",
+          |"paramType":{"codename":"option","paramType":{"codename":"int"}}}}}]}""".stripMargin),
+      Json.parse("""{"data2":{"car":null,"truck":45}}""")
+    )
     val deserializer = new Deserializer
     val resultExpected = new ComposeLogic("get_or_default_boolean", Array(
-      ValueLogic(Some(Some(Map("car" -> None, "truck" -> Some(45)))), Some(OptionTypeValue(MapTypeValue(OptionTypeValue(SimpleTypeValue(INT_CODENAME))))), pathNameOpt = Some("data2"))
+      ValueLogic(
+        Some(Some(Map("car" -> None, "truck" -> Some(45)))),
+        Some(OptionTypeValue(MapTypeValue(OptionTypeValue(SimpleTypeValue(INT_CODENAME))))),
+        pathNameOpt = Some("data2")
+      )
     )).asInstanceOf[JsonLogicCore]
 
     val result = deserializer.deserialize(jsLogic.asInstanceOf[JsObject], jsData.asInstanceOf[JsObject])

@@ -1,9 +1,9 @@
 package com.github.celadari.jsonlogicscala.serialize.defaults
 
-import com.github.celadari.jsonlogicscala.exceptions.IllegalInputException
+import play.api.libs.json.JsBoolean
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import play.api.libs.json.JsBoolean
+import com.github.celadari.jsonlogicscala.exceptions.IllegalInputException
 
 class TestMarshallerBoolean extends AnyFlatSpec with Matchers {
 
@@ -17,9 +17,9 @@ class TestMarshallerBoolean extends AnyFlatSpec with Matchers {
 
   "Marshall non boolean value" should "throw an exception" in {
     val thrown = the[IllegalInputException] thrownBy {MarshallerBoolean.marshal(null)}
-    val expectedErrorMessage = "Illegal input argument to MarshallerBoolean: null." +
-      "\nMarshallerBoolean can only be applied to boolean values." +
-      "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct."
+    val expectedErrorMessage = """Illegal input argument to MarshallerBoolean: null.
+                                 |MarshallerBoolean can only be applied to boolean values.
+                                 |Check if valueOpt and typeCodenameOpt of ValueLogic are correct.""".stripMargin
     thrown.getMessage shouldBe expectedErrorMessage
   }
 }

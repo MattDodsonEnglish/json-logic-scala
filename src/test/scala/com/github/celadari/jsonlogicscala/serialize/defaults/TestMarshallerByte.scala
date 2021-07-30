@@ -18,9 +18,9 @@ class TestMarshallerByte extends AnyFlatSpec with Matchers {
 
   "Marshall non byte value" should "throw an exception" in {
     val thrown = the[IllegalInputException] thrownBy {MarshallerByte.marshal(null)}
-    val expectedErrorMessage = "Illegal input argument to MarshallerByte: null." +
-      "\nMarshallerByte can only be applied to byte values." +
-      "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct."
+    val expectedErrorMessage = """Illegal input argument to MarshallerByte: null.
+                                 |MarshallerByte can only be applied to byte values.
+                                 |Check if valueOpt and typeCodenameOpt of ValueLogic are correct.""".stripMargin
     thrown.getMessage shouldBe expectedErrorMessage
   }
 }

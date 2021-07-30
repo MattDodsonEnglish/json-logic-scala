@@ -18,9 +18,9 @@ class TestMarshallerDouble extends AnyFlatSpec with Matchers {
 
   "Marshall non Double value" should "throw an exception" in {
     val thrown = the[IllegalInputException] thrownBy {MarshallerDouble.marshal(null)}
-    val expectedErrorMessage = "Illegal input argument to MarshallerDouble: null." +
-      "\nMarshallerDouble can only be applied to Double values." +
-      "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct."
+    val expectedErrorMessage = """Illegal input argument to MarshallerDouble: null.
+                                 |MarshallerDouble can only be applied to Double values.
+                                 |Check if valueOpt and typeCodenameOpt of ValueLogic are correct.""".stripMargin
     thrown.getMessage shouldBe expectedErrorMessage
   }
 }

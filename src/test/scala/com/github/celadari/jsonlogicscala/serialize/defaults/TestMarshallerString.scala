@@ -17,9 +17,9 @@ class TestMarshallerString extends AnyFlatSpec with Matchers {
 
   "Marshall non string value" should "throw an exception" in {
     val thrown = the[IllegalInputException] thrownBy {MarshallerString.marshal(null)}
-    val expectedErrorMessage = "Illegal input argument to MarshallerString: null." +
-      "\nMarshallerString can only be applied to string values." +
-      "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct."
+    val expectedErrorMessage = """Illegal input argument to MarshallerString: null.
+                                 |MarshallerString can only be applied to string values.
+                                 |Check if valueOpt and typeCodenameOpt of ValueLogic are correct.""".stripMargin
     thrown.getMessage shouldBe expectedErrorMessage
   }
 }

@@ -18,9 +18,9 @@ class TestMarshallerLong extends AnyFlatSpec with Matchers {
 
   "Marshall non Long value" should "throw an exception" in {
     val thrown = the[IllegalInputException] thrownBy {MarshallerLong.marshal(null)}
-    val expectedErrorMessage = "Illegal input argument to MarshallerLong: null." +
-      "\nMarshallerLong can only be applied to Long values." +
-      "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct."
+    val expectedErrorMessage = """Illegal input argument to MarshallerLong: null.
+                                 |MarshallerLong can only be applied to Long values.
+                                 |Check if valueOpt and typeCodenameOpt of ValueLogic are correct.""".stripMargin
     thrown.getMessage shouldBe expectedErrorMessage
   }
 }

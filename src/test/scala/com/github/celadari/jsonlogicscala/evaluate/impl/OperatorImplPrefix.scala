@@ -10,6 +10,9 @@ class OperatorImplPrefix(val prefix: String) extends Operator {
       case _ => false
     }
   }
+
+  override def hashCode(): Int = prefix.hashCode
+
   def prefix(values: Array[java.lang.Object]): java.lang.String = {
     s"$prefix${values(0)}"
   }

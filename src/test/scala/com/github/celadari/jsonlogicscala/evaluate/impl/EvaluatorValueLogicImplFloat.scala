@@ -11,6 +11,10 @@ class EvaluatorValueLogicImplFloat(val num1: Float, val num2: Float) extends Eva
     }
   }
 
+  override def hashCode(): Int = {
+    num1.hashCode() + num2.hashCode()
+  }
+
   override def evaluateValueLogic(value: Any): Any = {
     0f + value.asInstanceOf[Int]
   }

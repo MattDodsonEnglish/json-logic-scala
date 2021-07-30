@@ -1,10 +1,11 @@
 package com.github.celadari.jsonlogicscala.evaluate
 
-import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplSignature
+import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic}
 import com.github.celadari.jsonlogicscala.tree.types.SimpleTypeValue
+import com.github.celadari.jsonlogicscala.evaluate.impl.OperatorImplSignature
+
 
 class TestMethodSignature extends AnyFlatSpec with Matchers {
 
@@ -18,10 +19,7 @@ class TestMethodSignature extends AnyFlatSpec with Matchers {
     val conf = EvaluatorLogicConf.createConf(methodConfsManualAdd=Map("method_signature" -> MethodConf(
       "method_signature",
       "doOperation",
-      Some(OperatorImplSignature),
-      isReduceTypeOperator = true,
-      isCompositionOperator = false,
-      isUnaryOperator = false
+      Some(OperatorImplSignature)
     )))
     val evaluatorLogic = new EvaluatorLogic()(conf)
 

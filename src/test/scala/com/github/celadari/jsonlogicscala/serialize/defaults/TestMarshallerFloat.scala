@@ -18,9 +18,9 @@ class TestMarshallerFloat extends AnyFlatSpec with Matchers {
 
   "Marshall non Float value" should "throw an exception" in {
     val thrown = the[IllegalInputException] thrownBy {MarshallerFloat.marshal(null)}
-    val expectedErrorMessage = "Illegal input argument to MarshallerFloat: null." +
-      "\nMarshallerFloat can only be applied to Float values." +
-      "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct."
+    val expectedErrorMessage = """Illegal input argument to MarshallerFloat: null.
+                                 |MarshallerFloat can only be applied to Float values.
+                                 |Check if valueOpt and typeCodenameOpt of ValueLogic are correct.""".stripMargin
     thrown.getMessage shouldBe expectedErrorMessage
   }
 }

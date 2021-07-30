@@ -327,7 +327,7 @@ class TestOperatorDiv extends TestNumeric {
     val evaluator = new EvaluatorLogic
     evaluator.eval(tree) shouldBe (xDouble / yFloat)
   }
-  
+
   "Operator Div different types" should "return value" in {
     val tree = new ComposeLogic("/", Array(
       ValueLogic(Some(xByte), Some(SimpleTypeValue(BYTE_CODENAME))),
@@ -342,5 +342,4 @@ class TestOperatorDiv extends TestNumeric {
     val evaluator = new EvaluatorLogic
     evaluator.eval(tree) shouldBe (xByte / yByte / xLong / xFloat / yInt / xShort / xShort)
   }
-
 }
