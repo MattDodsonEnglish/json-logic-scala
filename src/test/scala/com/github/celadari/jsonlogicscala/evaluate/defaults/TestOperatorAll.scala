@@ -41,7 +41,7 @@ class TestOperatorAll extends TestNumeric with TestArray {
       ValueLogic(Some(arrString), Some(arrStringType)),
       new ComposeLogic("in", Array(
         ValueLogic(None, None, Some(""), None),
-        ValueLogic(Some(string0), Some(SimpleTypeValue(STRING_CODENAME))),
+        ValueLogic(Some(string0), Some(SimpleTypeValue(STRING_CODENAME)))
       ))
     ))
 
@@ -55,7 +55,7 @@ class TestOperatorAll extends TestNumeric with TestArray {
       ValueLogic(Some(arrString), Some(arrStringType), None, Some("data1")),
       new ComposeLogic("in", Array(
         ValueLogic(None, None, Some(""), None),
-        ValueLogic(Some(string0), Some(SimpleTypeValue(STRING_CODENAME)), None, Some("data2")),
+        ValueLogic(Some(string0), Some(SimpleTypeValue(STRING_CODENAME)), None, Some("data2"))
       )),
       ValueLogic(Some(arrInt), Some(arrIntType), None, Some("data3"))
     ))
@@ -67,7 +67,7 @@ class TestOperatorAll extends TestNumeric with TestArray {
 
   "Operator All less than 2 input conditions" should "throw an exception" in {
     val tree = new ComposeLogic("all", Array(
-      ValueLogic(Some(arrString), Some(arrStringType)),
+      ValueLogic(Some(arrString), Some(arrStringType))
     ))
 
     val evaluator = new EvaluatorLogic

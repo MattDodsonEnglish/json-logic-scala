@@ -1,10 +1,10 @@
 package com.github.celadari.jsonlogicscala.serialize
 
-import scala.jdk.CollectionConverters.MapHasAsScala
 import org.apache.xbean.finder.ResourceFinder
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
 import com.github.celadari.jsonlogicscala.serialize.defaults._
 import com.github.celadari.jsonlogicscala.configuration.ConfigurationFetcher
+import com.github.celadari.jsonlogicscala.converters.CollectionConverters.MapHasAsScala
 
 
 object SerializerConf {

@@ -124,7 +124,7 @@ class TestDeserializer extends TestPrivateMethods {
     val deserializer = new Deserializer
     val resultExpected = new ComposeLogic("in", Array(
       ValueLogic(Some("car"), Some(SimpleTypeValue(STRING_CODENAME)), pathNameOpt = Some("data2")),
-      ValueLogic(Some(Map("car" -> 4, "truck" -> 67)), Some(MapTypeValue(SimpleTypeValue(INT_CODENAME))), pathNameOpt = Some("data1")),
+      ValueLogic(Some(Map("car" -> 4, "truck" -> 67)), Some(MapTypeValue(SimpleTypeValue(INT_CODENAME))), pathNameOpt = Some("data1"))
     )).asInstanceOf[JsonLogicCore]
 
     val result = deserializer.deserialize(jsLogic.asInstanceOf[JsObject], jsData.asInstanceOf[JsObject])

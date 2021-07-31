@@ -165,13 +165,13 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
     val result = EvaluatorLogicConf.createConf(
       pathOperator = "META-INF/services/json-logic-scala/tests/method-conf/normal/manual-add-priority/",
       operatorToOwnerManualAdd = Map("surround" -> operatorSurround),
-      methodConfsManualAdd = Map("length" -> MethodConf("length", "length", Some(OperatorImplArrayLength), isReduceTypeOperator = false)),
+      methodConfsManualAdd = Map("length" -> MethodConf("length", "length", Some(OperatorImplArrayLength), isReduceTypeOperator = false))
     )
     val expectedResult = EvaluatorLogicConf(
       Map(
         "gt" -> MethodConf("gt", "greater", Some(OperatorImplGreater)),
         "prefix" -> MethodConf("prefix", "prefix", Some(new OperatorImplPrefix("before")), isReduceTypeOperator = false),
-        "surround" -> MethodConf("surround", "surroundString", Some(operatorSurround), isReduceTypeOperator = false),
+        "surround" -> MethodConf("surround", "surroundString", Some(operatorSurround), isReduceTypeOperator = false)
       ),
       Map("length" -> MethodConf("length", "length", Some(OperatorImplArrayLength), isReduceTypeOperator = false)),
       Map(
@@ -179,7 +179,7 @@ class TestEvaluatorLogicConf extends AnyFlatSpec with Matchers {
         SimpleTypeValue(STRING_CODENAME) -> EvaluatorValueLogicImplString,
         ArrayTypeValue(SimpleTypeValue(INT_CODENAME)) -> EvaluatorValueLogicImplArrayInt
       ),
-      Map(),
+      Map()
     )
 
     result shouldBe expectedResult

@@ -52,8 +52,10 @@ class EvaluatorLogic(implicit val conf: EvaluatorLogicConf) {
     methodsAndIsOwned
       .zip(conditionsEval.tail)
       .foldLeft[Any](conditionsEval.head){case (conditionEval1, ((method, isMethodOwnedByReducedValue), conditionEval2)) => {
-        if (isMethodOwnedByReducedValue) method.invoke(conditionEval1, conditionEval1, conditionEval2)
-        else method.invoke(confMethod.ownerMethodOpt.get, conditionEval1, conditionEval2)
+        if (isMethodOwnedByReducedValue) {
+          method.invoke(conditionEval1, conditionEval1.asInstanceOf[java.lang.Object], conditionEval2.asInstanceOf[java.lang.Object])
+        }
+        else method.invoke(confMethod.ownerMethodOpt.get, conditionEval1.asInstanceOf[java.lang.Object], conditionEval2.asInstanceOf[java.lang.Object])
       }}
   }
 

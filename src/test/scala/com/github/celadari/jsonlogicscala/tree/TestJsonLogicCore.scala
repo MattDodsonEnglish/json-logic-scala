@@ -32,7 +32,7 @@ class TestJsonLogicCore extends AnyFlatSpec with Matchers with TestNumeric with 
       ValueLogic(Some(arrString), Some(arrStringType), None, Some("data1")),
       new ComposeLogic("in", Array(
         ValueLogic(None, None, Some(""), None),
-        ValueLogic(Some("Singing in the rain"), Some(SimpleTypeValue(STRING_CODENAME)), None, Some("data2")),
+        ValueLogic(Some("Singing in the rain"), Some(SimpleTypeValue(STRING_CODENAME)), None, Some("data2"))
       )),
       ValueLogic(Some(arrInt), Some(arrIntType), None, Some("data3"))
     ))
@@ -53,7 +53,7 @@ class TestJsonLogicCore extends AnyFlatSpec with Matchers with TestNumeric with 
       ValueLogic(Some(arrString), Some(arrStringType), None, Some("data1")),
       new ComposeLogic("in", Array(
         ValueLogic(None, None, Some(""), None),
-        ValueLogic(Some("Singing in the rain"), Some(SimpleTypeValue(STRING_CODENAME)), None, Some("data2")),
+        ValueLogic(Some("Singing in the rain"), Some(SimpleTypeValue(STRING_CODENAME)), None, Some("data2"))
       )),
       ValueLogic(Some(arrInt), Some(arrIntType), None, Some("data3"))
     ))

@@ -83,7 +83,7 @@ class TestOperatorIn extends TestMap with TestNumeric with TestArray with TestSt
 
   "Operator In less than 2 input conditions" should "throw an exception" in {
     val tree = new ComposeLogic("in", Array(
-      ValueLogic(Some(arrInt), Some(arrIntType)),
+      ValueLogic(Some(arrInt), Some(arrIntType))
     ))
 
     val evaluator = new EvaluatorLogic
@@ -105,7 +105,7 @@ class TestOperatorIn extends TestMap with TestNumeric with TestArray with TestSt
 
   "Operator String In less than 2 input conditions" should "throw an exception" in {
     val tree = new ComposeLogic("in", Array(
-      ValueLogic(Some(xString), Some(SimpleTypeValue(STRING_CODENAME))),
+      ValueLogic(Some(xString), Some(SimpleTypeValue(STRING_CODENAME)))
     ))
 
     val evaluator = new EvaluatorLogic

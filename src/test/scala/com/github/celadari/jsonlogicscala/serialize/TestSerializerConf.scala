@@ -26,7 +26,7 @@ class TestSerializerConf extends AnyFlatSpec with Matchers {
     val result = SerializerConf.createConf("META-INF/services/json-logic-scala/tests/serializer/normal/manual-add-priority/")
     val expectedResult = SerializerConf(Map(
       "boolean" -> MarshallerBooleanImpl2,
-      "string" -> new MarshallerStringImpl2("before", "after"),
+      "string" -> new MarshallerStringImpl2("before", "after")
     ), SerializerConf.DEFAULT_MARSHALLERS
     )
 
@@ -41,7 +41,7 @@ class TestSerializerConf extends AnyFlatSpec with Matchers {
     )
     val expectedResult = SerializerConf(Map(
       "boolean" -> MarshallerBooleanImpl2,
-      "string" -> new MarshallerStringImpl2("before", "after"),
+      "string" -> new MarshallerStringImpl2("before", "after")
     ),
       SerializerConf.DEFAULT_MARSHALLERS,
       isPriorityToManualAdd = false

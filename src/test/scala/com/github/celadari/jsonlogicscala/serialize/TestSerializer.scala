@@ -117,7 +117,7 @@ class TestSerializer extends TestPrivateMethods {
     val expectedResult = """[{"merge":[{"var":"data1","type":{"codename":"map","paramType":{"codename":"map","paramType":{"codename":"int"}}}},""" +
       """{"var":"data1","type":{"codename":"map","paramType":{"codename":"map","paramType":{"codename":"int"}}}}]},{"data1":{"truck":{"8p":53},""" +
       """"bike":{"4p":89}}}]"""
-    Json.stringify(Json.toJson(tree)) shouldBe expectedResult
+    Json.stringify(Json.toJson(tree)(ComposeLogic.composeLogicWrites)) shouldBe expectedResult
     Json.stringify(Json.toJson(tree.asInstanceOf[JsonLogicCore])) shouldBe expectedResult
   }
 
@@ -138,7 +138,7 @@ class TestSerializer extends TestPrivateMethods {
     val expectedResult = """[{"merge":[{"var":"data1","type":{"codename":"map","paramType":{"codename":"map","paramType":{"codename":"option",""" +
       """"paramType":{"codename":"int"}}}}},{"var":"data1","type":{"codename":"map","paramType":{"codename":"map","paramType":{"codename":"option",""" +
       """"paramType":{"codename":"int"}}}}}]},{"data1":{"truck":{"8p":53},"bike":{"4p":89}}}]"""
-    Json.stringify(Json.toJson(tree)) shouldBe expectedResult
+    Json.stringify(Json.toJson(tree)(ComposeLogic.composeLogicWrites)) shouldBe expectedResult
     Json.stringify(Json.toJson(tree.asInstanceOf[JsonLogicCore])) shouldBe expectedResult
   }
 
@@ -174,7 +174,7 @@ class TestSerializer extends TestPrivateMethods {
 
   "Serialize non map type value with MapTypeValue" should "throw an exception" in {
     val tree = new ComposeLogic("merge", Array(
-      ValueLogic(Some(45), Some(MapTypeValue(SimpleTypeValue(INT_CODENAME))), pathNameOpt = Some("data1")),
+      ValueLogic(Some(45), Some(MapTypeValue(SimpleTypeValue(INT_CODENAME))), pathNameOpt = Some("data1"))
     )).asInstanceOf[JsonLogicCore]
     val thrown = the[IllegalInputException] thrownBy {Json.toJson(tree)}
     thrown.getMessage shouldBe "Illegal input argument to MapType Marshaller: 45.\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct."
@@ -182,7 +182,7 @@ class TestSerializer extends TestPrivateMethods {
 
   "Serialize non array type value with ArrayTypeValue" should "throw an exception" in {
     val tree = new ComposeLogic("merge", Array(
-      ValueLogic(Some(45), Some(ArrayTypeValue(SimpleTypeValue(INT_CODENAME))), pathNameOpt = Some("data1")),
+      ValueLogic(Some(45), Some(ArrayTypeValue(SimpleTypeValue(INT_CODENAME))), pathNameOpt = Some("data1"))
     )).asInstanceOf[JsonLogicCore]
     val thrown = the[IllegalInputException] thrownBy {Json.toJson(tree)}
     thrown.getMessage shouldBe "Illegal input argument to ArrayType Marshaller: 45.\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct."
@@ -190,7 +190,7 @@ class TestSerializer extends TestPrivateMethods {
 
   "Serialize non option type value with OptionTypeValue" should "throw an exception" in {
     val tree = new ComposeLogic("merge", Array(
-      ValueLogic(Some(45), Some(OptionTypeValue(SimpleTypeValue(INT_CODENAME))), pathNameOpt = Some("data1")),
+      ValueLogic(Some(45), Some(OptionTypeValue(SimpleTypeValue(INT_CODENAME))), pathNameOpt = Some("data1"))
     )).asInstanceOf[JsonLogicCore]
     val thrown = the[IllegalInputException] thrownBy {Json.toJson(tree)}
     thrown.getMessage shouldBe "Illegal input argument to OptionType Marshaller: 45.\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct."

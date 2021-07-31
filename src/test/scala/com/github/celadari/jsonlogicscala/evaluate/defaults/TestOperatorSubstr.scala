@@ -33,7 +33,7 @@ class TestOperatorSubstr extends TestMap with TestNumeric with TestArray with Te
     val tree = new ComposeLogic("substr", Array(
       ValueLogic(Some(uString), Some(SimpleTypeValue(STRING_CODENAME))),
       ValueLogic(Some(4), Some(SimpleTypeValue(INT_CODENAME))),
-      ValueLogic(Some(2), Some(SimpleTypeValue(INT_CODENAME))),
+      ValueLogic(Some(2), Some(SimpleTypeValue(INT_CODENAME)))
     ))
 
     val evaluator = new EvaluatorLogic
@@ -67,7 +67,7 @@ class TestOperatorSubstr extends TestMap with TestNumeric with TestArray with Te
     val tree = new ComposeLogic("substr", Array(
       ValueLogic(Some(uString), Some(SimpleTypeValue(STRING_CODENAME))),
       ValueLogic(Some(4), Some(SimpleTypeValue(INT_CODENAME))),
-      ValueLogic(Some(-2), Some(SimpleTypeValue(INT_CODENAME))),
+      ValueLogic(Some(-2), Some(SimpleTypeValue(INT_CODENAME)))
     ))
 
     val evaluator = new EvaluatorLogic
@@ -78,7 +78,7 @@ class TestOperatorSubstr extends TestMap with TestNumeric with TestArray with Te
     val tree = new ComposeLogic("substr", Array(
       ValueLogic(Some(uString), Some(SimpleTypeValue(STRING_CODENAME))),
       ValueLogic(Some(-4), Some(SimpleTypeValue(INT_CODENAME))),
-      ValueLogic(Some(2), Some(SimpleTypeValue(INT_CODENAME))),
+      ValueLogic(Some(2), Some(SimpleTypeValue(INT_CODENAME)))
     ))
 
     val evaluator = new EvaluatorLogic
@@ -89,7 +89,7 @@ class TestOperatorSubstr extends TestMap with TestNumeric with TestArray with Te
     val tree = new ComposeLogic("substr", Array(
       ValueLogic(Some(uString), Some(SimpleTypeValue(STRING_CODENAME))),
       ValueLogic(Some(-4), Some(SimpleTypeValue(INT_CODENAME))),
-      ValueLogic(Some(-1), Some(SimpleTypeValue(INT_CODENAME))),
+      ValueLogic(Some(-1), Some(SimpleTypeValue(INT_CODENAME)))
     ))
 
     val evaluator = new EvaluatorLogic

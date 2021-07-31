@@ -25,7 +25,7 @@ class TestDeserializerConf extends AnyFlatSpec with Matchers {
     val result = DeserializerConf.createConf("META-INF/services/json-logic-scala/tests/deserializer/normal/manual-add-priority/")
     val expectedResult = DeserializerConf(Map(
       "boolean" -> UnmarshallerBooleanImpl2,
-      "string" -> new UnmarshallerStringImpl2("before", "after"),
+      "string" -> new UnmarshallerStringImpl2("before", "after")
     ), DeserializerConf.DEFAULT_UNMARSHALLERS
     )
 
@@ -40,7 +40,7 @@ class TestDeserializerConf extends AnyFlatSpec with Matchers {
     )
     val expectedResult = DeserializerConf(Map(
       "boolean" -> UnmarshallerBooleanImpl2,
-      "string" -> new UnmarshallerStringImpl2("before", "after"),
+      "string" -> new UnmarshallerStringImpl2("before", "after")
     ),
       DeserializerConf.DEFAULT_UNMARSHALLERS,
       isPriorityToManualAdd = false

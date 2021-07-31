@@ -4,6 +4,7 @@ import play.api.libs.json._
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic, VariableLogic}
 import com.github.celadari.jsonlogicscala.tree.types.{AnyTypeValue, ArrayTypeValue, MapTypeValue, OptionTypeValue, SimpleTypeValue, TypeValue}
 import com.github.celadari.jsonlogicscala.exceptions.{IllegalInputException, InvalidValueLogicException}
+import com.github.celadari.jsonlogicscala.converters.CollectionConverters.HasMapValues
 
 
 object Serializer {
@@ -31,7 +32,7 @@ class Serializer(implicit val conf: SerializerConf) {
       case MapTypeValue(paramType) => new Marshaller {
         override def marshal(value: Any): JsValue = {
           value match {
-            case map: Map[String, _] => JsObject(map.view.mapValues(el => getMarshaller(paramType).marshal(el)).toMap)
+            case map: Map[String, _] => JsObject(map.mapValuesAccordingToScalaVersion(el => getMarshaller(paramType).marshal(el)).toMap)
             case other => {
               throw new IllegalInputException(s"Illegal input argument to MapType Marshaller: ${other}." +
                 "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")

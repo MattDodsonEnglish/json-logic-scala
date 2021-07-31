@@ -39,14 +39,14 @@ class TestOperatorReduce extends TestNumeric with TestArray {
             ValueLogic(Some(2), Some(SimpleTypeValue(INT_CODENAME))),
             ValueLogic(None, None, Some("accumulator"), None)
           )),
-          ValueLogic(None, None, Some("current"), None),
+          ValueLogic(None, None, Some("current"), None)
         )),
         new ComposeLogic("+", Array(
           new ComposeLogic("*", Array(
             ValueLogic(Some(5), Some(SimpleTypeValue(INT_CODENAME))),
             ValueLogic(None, None, Some("accumulator"), None)
           )),
-          ValueLogic(Some(3), Some(SimpleTypeValue(INT_CODENAME))),
+          ValueLogic(Some(3), Some(SimpleTypeValue(INT_CODENAME)))
         ))
       )),
       ValueLogic(Some(0), Some(SimpleTypeValue(INT_CODENAME)))

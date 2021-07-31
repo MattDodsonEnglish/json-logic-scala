@@ -111,33 +111,33 @@ class TestTypeValue extends TestPrivateMethods {
   "Write ArrayTypeValue(SimpleTypeValue(INT_CODENAME)) into json" should "return deserialized TypeValue" in {
     val typeValue = ArrayTypeValue(SimpleTypeValue(INT_CODENAME))
     val resultExpected = Json.parse("""{"codename": "array","paramType":{"codename":"int"}}""")
-    val result = Json.toJson(typeValue)
+    val result = Json.toJson(typeValue)(ArrayTypeValue.writeArrayTypeValue)
     result shouldBe resultExpected
   }
 
   "Write MapTypeValue(SimpleTypeValue(INT_CODENAME)) into json" should "return deserialized TypeValue" in {
     val typeValue = MapTypeValue(SimpleTypeValue(INT_CODENAME))
     val resultExpected = Json.parse("""{"codename": "map","paramType":{"codename":"int"}}""")
-    val result = Json.toJson(typeValue)
+    val result = Json.toJson(typeValue)(MapTypeValue.writeMapTypeValue)
     result shouldBe resultExpected
   }
 
   "Write OptionTypeValue(SimpleTypeValue(INT_CODENAME)) into json" should "return deserialized TypeValue" in {
     val typeValue = OptionTypeValue(SimpleTypeValue(INT_CODENAME))
     val resultExpected = Json.parse("""{"codename": "option","paramType":{"codename":"int"}}""")
-    val result = Json.toJson(typeValue)
+    val result = Json.toJson(typeValue)(OptionTypeValue.writeOptionTypeValue)
     result shouldBe resultExpected
   }
 
   "Write SimpleTypeValue(INT_CODENAME) into json" should "return deserialized TypeValue" in {
     val typeValue = SimpleTypeValue(INT_CODENAME)
     val resultExpected = Json.parse("""{"codename":"int"}""")
-    val result = Json.toJson(typeValue)
+    val result = Json.toJson(typeValue)(SimpleTypeValue.writeSimpleTypeValue)
     result shouldBe resultExpected
   }
 
   "Write AnyTypeValue" should "throw an exception" in {
-    val thrown = the[IllegalInputException] thrownBy {Json.toJson(AnyTypeValue)}
+    val thrown = the[IllegalInputException] thrownBy {Json.toJson(AnyTypeValue)(AnyTypeValue.writeArrayTypeValue)}
     thrown.getMessage should fullyMatch regex """'com\.github\.celadari\.jsonlogicscala\.tree\.types\.AnyTypeValue\$@[a-zA-Z0-9]+' type cannot be serialized"""
   }
 

@@ -65,7 +65,7 @@ class TestOperatorIfElse extends TestNumeric with TestBoolean with TestArray {
       ValueLogic(Some(yShort), Some(SimpleTypeValue(SHORT_CODENAME))),
       ValueLogic(Some(xBool), Some(SimpleTypeValue(BOOL_CODENAME))),
       ValueLogic(Some(xDouble), Some(SimpleTypeValue(DOUBLE_CODENAME))),
-      ValueLogic(Some(yInt), Some(SimpleTypeValue(INT_CODENAME))),
+      ValueLogic(Some(yInt), Some(SimpleTypeValue(INT_CODENAME)))
     ))
 
     val evaluator = new EvaluatorLogic
@@ -105,7 +105,7 @@ class TestOperatorIfElse extends TestNumeric with TestBoolean with TestArray {
       ValueLogic(Some(yShort), Some(SimpleTypeValue(SHORT_CODENAME))),
       ValueLogic(Some(yBool), Some(SimpleTypeValue(BOOL_CODENAME))),
       ValueLogic(Some(yDouble), Some(SimpleTypeValue(DOUBLE_CODENAME))),
-      ValueLogic(Some(yInt), Some(SimpleTypeValue(INT_CODENAME))),
+      ValueLogic(Some(yInt), Some(SimpleTypeValue(INT_CODENAME)))
     ))
 
     val evaluator = new EvaluatorLogic

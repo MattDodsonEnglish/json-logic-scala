@@ -41,7 +41,7 @@ class TestOperatorFilter extends TestNumeric with TestArray {
       ValueLogic(Some(arrString), Some(arrStringType)),
       new ComposeLogic("in", Array(
         ValueLogic(None, None, Some(""), None),
-        ValueLogic(Some(string0), Some(SimpleTypeValue(STRING_CODENAME))),
+        ValueLogic(Some(string0), Some(SimpleTypeValue(STRING_CODENAME)))
       ))
     ))
 
@@ -55,7 +55,7 @@ class TestOperatorFilter extends TestNumeric with TestArray {
       ValueLogic(Some(arrString), Some(arrStringType)),
       new ComposeLogic("in", Array(
         ValueLogic(None, None, Some(""), None),
-        ValueLogic(Some(string0), Some(SimpleTypeValue(STRING_CODENAME))),
+        ValueLogic(Some(string0), Some(SimpleTypeValue(STRING_CODENAME)))
       )),
       ValueLogic(Some(arrInt), Some(arrIntType))
     ))
@@ -67,7 +67,7 @@ class TestOperatorFilter extends TestNumeric with TestArray {
 
   "Operator Filter less than 2 input conditions" should "throw an exception" in {
     val tree = new ComposeLogic("filter", Array(
-      ValueLogic(Some(arrString), Some(arrStringType)),
+      ValueLogic(Some(arrString), Some(arrStringType))
     ))
 
     val evaluator = new EvaluatorLogic

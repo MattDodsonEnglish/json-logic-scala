@@ -28,7 +28,7 @@ class TestOperatorMap extends TestNumeric with TestArray {
       new ComposeLogic("if", Array(
         ValueLogic(None, None, Some(""), None),
         ValueLogic(Some(xFloat), Some(SimpleTypeValue(FLOAT_CODENAME))),
-        ValueLogic(Some(yDouble), Some(SimpleTypeValue(DOUBLE_CODENAME))),
+        ValueLogic(Some(yDouble), Some(SimpleTypeValue(DOUBLE_CODENAME)))
       ))
     ))
 
@@ -72,7 +72,7 @@ class TestOperatorMap extends TestNumeric with TestArray {
       ValueLogic(Some(arrString), Some(arrStringType)),
       new ComposeLogic("in", Array(
         ValueLogic(None, None, Some(""), None),
-        ValueLogic(Some(string0), Some(SimpleTypeValue(STRING_CODENAME))),
+        ValueLogic(Some(string0), Some(SimpleTypeValue(STRING_CODENAME)))
       )),
       ValueLogic(Some(arrInt), Some(arrIntType))
     ))
@@ -84,7 +84,7 @@ class TestOperatorMap extends TestNumeric with TestArray {
 
   "Operator Map less than 2 input conditions" should "throw an exception" in {
     val tree = new ComposeLogic("map", Array(
-      ValueLogic(Some(arrString), Some(arrStringType)),
+      ValueLogic(Some(arrString), Some(arrStringType))
     ))
 
     val evaluator = new EvaluatorLogic

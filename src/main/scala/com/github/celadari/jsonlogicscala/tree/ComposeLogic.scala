@@ -12,7 +12,7 @@ object ComposeLogic {
     }
   }
 
-  implicit def composeLogicReadsWrites(implicit serializer: Serializer): Writes[ComposeLogic] = new Writes[ComposeLogic] {
+  implicit def composeLogicWrites(implicit serializer: Serializer): Writes[ComposeLogic] = new Writes[ComposeLogic] {
     override def writes(composeLogic: ComposeLogic): JsValue = {
       JsonLogicCore.jsonLogicCoreWrites(serializer).writes(composeLogic)
     }

@@ -95,7 +95,7 @@ class TestOperatorAt extends TestMap with TestNumeric with TestArray {
 
   "Operator At less than 2 input conditions" should "throw an exception" in {
     val tree = new ComposeLogic("at", Array(
-      ValueLogic(Some(arrString), Some(arrStringType)),
+      ValueLogic(Some(arrString), Some(arrStringType))
     ))
 
     val evaluator = new EvaluatorLogic

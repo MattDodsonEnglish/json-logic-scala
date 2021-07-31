@@ -36,7 +36,9 @@ scalacOptions ++= Seq(
   "-deprecation",
   "-feature",
   "-language:higherKinds",
-  "-Ywarn-unused:imports",
+  if (Set("2.12", "2.13").contains(scalaVersion.value.slice(0, 4))) "-Ywarn-unused:imports" else "-Ywarn-unused-import",
+  if (Set("2.11", "2.12").contains(scalaVersion.value.slice(0, 4))) "-Xmax-classfile-name" else "",
+  if (Set("2.11", "2.12").contains(scalaVersion.value.slice(0, 4))) "128" else ""
   //"-Xfatal-warnings"
 )
 

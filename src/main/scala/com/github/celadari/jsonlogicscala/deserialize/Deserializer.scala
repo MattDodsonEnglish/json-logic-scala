@@ -4,6 +4,7 @@ import play.api.libs.json.{JsArray, JsLookupResult, JsNull, JsObject, JsValue}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, JsonLogicCore, ValueLogic}
 import com.github.celadari.jsonlogicscala.tree.types.{AnyTypeValue, ArrayTypeValue, MapTypeValue, OptionTypeValue, SimpleTypeValue, TypeValue}
 import com.github.celadari.jsonlogicscala.exceptions.{IllegalInputException, InvalidJsonParsingException}
+import com.github.celadari.jsonlogicscala.converters.CollectionConverters.HasMapValues
 
 
 object Deserializer {
@@ -34,7 +35,7 @@ class Deserializer(implicit val conf: DeserializerConf) {
       }
       case MapTypeValue(paramType) => new Unmarshaller {
         override def unmarshal(jsValue: JsValue): Any = {
-          jsValue.as[JsObject].value.view.mapValues(jsValue => getUnmarshaller(paramType).unmarshal(jsValue)).toMap
+          jsValue.as[JsObject].value.mapValuesAccordingToScalaVersion(jsValue => getUnmarshaller(paramType).unmarshal(jsValue))
         }
       }
       case OptionTypeValue(paramType) => new Unmarshaller {

@@ -1,7 +1,6 @@
 package com.github.celadari.jsonlogicscala.evaluate
 
 import java.util.Properties
-import scala.jdk.CollectionConverters.MapHasAsScala
 import scala.reflect.runtime.{universe => ru}
 import org.apache.xbean.finder.ResourceFinder
 import org.apache.xbean.recipe.{MissingAccessorException, ObjectRecipe}
@@ -10,6 +9,7 @@ import com.github.celadari.jsonlogicscala.tree.types.TypeValue
 import com.github.celadari.jsonlogicscala.evaluate.defaults._
 import com.github.celadari.jsonlogicscala.configuration.ConfigurationFetcher
 import com.github.celadari.jsonlogicscala.exceptions.ConfigurationException
+import com.github.celadari.jsonlogicscala.converters.CollectionConverters.MapHasAsScala
 
 
 object EvaluatorLogicConf {
