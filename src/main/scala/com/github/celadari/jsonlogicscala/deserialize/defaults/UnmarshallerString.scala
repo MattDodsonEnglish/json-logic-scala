@@ -9,7 +9,7 @@ object UnmarshallerString extends Unmarshaller{
     jsValue match {
       case JsString(string) => string
       case other => {
-        throw new InvalidJsonParsingException(s"Illegal input argument to UnmarshallerString: ${other}.\nUnmarshallerString could not unmarshall to " +
+        throw new InvalidJsonParsingException(s"Illegal input argument to UnmarshallerString: $other.\nUnmarshallerString could not unmarshall to " +
           "String value.\nCheck if \"type\" and \"var\" are correct.")
       }
     }

@@ -16,7 +16,7 @@ object OperatorAt extends Operator {
 
     values(1) match {
       case arr: Array[Any] => arr.apply(index.toString.toDouble.toInt)
-      case map: Map[Any, Any] => map.apply(index)
+      case map: Map[_, _] => map.asInstanceOf[Map[Any, Any]].apply(index)
       case ite: Iterable[Any] => ite.toArray.apply(index.toString.toDouble.toInt)
       case any: Any => throw new IllegalInputException(s"At operator second input must be either: Array, Map, Iterable. Current second input: ${any.toString}")
     }

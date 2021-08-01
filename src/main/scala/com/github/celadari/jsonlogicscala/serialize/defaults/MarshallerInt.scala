@@ -14,7 +14,7 @@ object MarshallerInt extends Marshaller {
       case intValue: Int => JsNumber(intValue)
       case intValue: java.lang.Integer => JsNumber(intValue.toInt)
       case other => {
-        throw new IllegalInputException(s"Illegal input argument to MarshallerInt: ${other}.\nMarshallerInt can only be applied to Int values." +
+        throw new IllegalInputException(s"Illegal input argument to MarshallerInt: $other.\nMarshallerInt can only be applied to Int values." +
           "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
       }
     }

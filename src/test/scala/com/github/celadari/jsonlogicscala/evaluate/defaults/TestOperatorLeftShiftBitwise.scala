@@ -44,7 +44,7 @@ class TestOperatorLeftShiftBitwise extends TestNumeric {
     ))
 
     val evaluator = new EvaluatorLogic
-    evaluator.eval(tree) shouldBe (xByte << yLong)
+    evaluator.eval(tree) shouldBe (xByte << yLong.toInt)
   }
 
   "Operator LeftShiftBitwise Short << Byte" should "return value" in {
@@ -114,7 +114,7 @@ class TestOperatorLeftShiftBitwise extends TestNumeric {
     ))
 
     val evaluator = new EvaluatorLogic
-    evaluator.eval(tree) shouldBe (xShort << yLong)
+    evaluator.eval(tree) shouldBe (xShort << yLong.toInt)
   }
 
   "Operator LeftShiftBitwise Long << Int" should "return value" in {
@@ -148,7 +148,7 @@ class TestOperatorLeftShiftBitwise extends TestNumeric {
     ))
 
     val evaluator = new EvaluatorLogic
-    evaluator.eval(tree) shouldBe (xByte << yByte.toInt << xLong << yInt << xShort.toInt << xShort.toInt)
+    evaluator.eval(tree) shouldBe (xByte << yByte.toInt << xLong.toInt << yInt << xShort.toInt << xShort.toInt)
   }
 
 }

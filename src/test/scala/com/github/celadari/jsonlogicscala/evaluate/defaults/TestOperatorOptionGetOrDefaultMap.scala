@@ -3,7 +3,7 @@ package com.github.celadari.jsonlogicscala.evaluate.defaults
 import com.github.celadari.jsonlogicscala.evaluate.EvaluatorLogic
 import com.github.celadari.jsonlogicscala.exceptions.{EvaluateException, IllegalInputException}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
-import com.github.celadari.jsonlogicscala.tree.types.{MapTypeValue, OptionTypeValue, SimpleTypeValue}
+import com.github.celadari.jsonlogicscala.tree.types.{OptionTypeValue, SimpleTypeValue}
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic}
 
 class TestOperatorOptionGetOrDefaultMap extends TestNumeric with TestMap {

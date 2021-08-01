@@ -15,7 +15,7 @@ class TestOperatorAll extends TestNumeric with TestArray {
     ))
 
     val evaluator = new EvaluatorLogic
-    evaluator.eval(tree) shouldBe (arrBool.forall(_.booleanValue()))
+    evaluator.eval(tree) shouldBe arrBool.forall(_.booleanValue())
   }
 
   "Operator All f(el: Float => el + 1 <= 0)" should "return value" in {

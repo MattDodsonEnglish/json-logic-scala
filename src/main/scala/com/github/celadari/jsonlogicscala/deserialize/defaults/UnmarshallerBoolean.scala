@@ -10,7 +10,7 @@ object UnmarshallerBoolean extends Unmarshaller {
     jsValue match {
       case JsBoolean(bool) => bool
       case other => {
-        throw new InvalidJsonParsingException(s"Illegal input argument to UnmarshallerBoolean: ${other}.\nUnmarshallerBoolean could not unmarshall " +
+        throw new InvalidJsonParsingException(s"Illegal input argument to UnmarshallerBoolean: $other.\nUnmarshallerBoolean could not unmarshall " +
           "to boolean value.\nCheck if \"type\" and \"var\" are correct.")
       }
     }

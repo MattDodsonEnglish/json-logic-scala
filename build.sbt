@@ -4,11 +4,11 @@ organization := "com.github.celadari"
 
 homepage := Some(url("https://github.com/celadari/json-logic-scala"))
 
-version := "1.1.0"
+version := "2.0.0"
 
-scalaVersion := "2.13.1"
+scalaVersion := "2.13.2"
 
-crossScalaVersions := Seq("2.11.12", "2.12.6", "2.13.1")
+crossScalaVersions := Seq("2.11.12", "2.12.6", "2.13.2")
 
 resolvers ++= Seq(
   "sonatype-snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
@@ -38,8 +38,11 @@ scalacOptions ++= Seq(
   "-language:higherKinds",
   if (Set("2.12", "2.13").contains(scalaVersion.value.slice(0, 4))) "-Ywarn-unused:imports" else "-Ywarn-unused-import",
   if (Set("2.11", "2.12").contains(scalaVersion.value.slice(0, 4))) "-Xmax-classfile-name" else "",
-  if (Set("2.11", "2.12").contains(scalaVersion.value.slice(0, 4))) "128" else ""
-  //"-Xfatal-warnings"
+  if (Set("2.11", "2.12").contains(scalaVersion.value.slice(0, 4))) "128" else "",
+  "-language:existentials",
+  if (scalaVersion.value.slice(0, 4) == "2.11") "-Xfatal-warnings"
+  else if (scalaVersion.value.slice(0, 4) == "2.12") ""
+  else "-Werror"
 )
 
 Test / testOptions += Tests.Argument("-oGK")
@@ -63,7 +66,7 @@ publishMavenStyle := true
 
 pomIncludeRepository := { _ => false }
 
-pomExtra := (
+pomExtra :=
          <scm>
             <url>git@github.com:celadari/json-logic-scala.git</url>
             <connection>scm:git:git@github.com:celadari/json-logic-scala.git</connection>
@@ -75,7 +78,6 @@ pomExtra := (
               <url>https://github.com/celadari</url>
             </developer>
          </developers>
- )
 
 licenses += ("MIT", url("https://mit-license.org/"))
 

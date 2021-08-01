@@ -23,9 +23,12 @@ trait JsonLogicCoreMatcher extends AnyFlatSpec with Matchers {
           case _ => false
         }
       }
-      case map1: Map[Any, _] => {
+      case map1: Map[_, _] => {
         value2 match {
-          case map2: Map[Any, _] => (map1.size == map2.size) && (map1.keySet == map2.keySet) && map1.forall{case (key1, value1) => map2(key1) == value1}
+          case map2: Map[_, _] => {
+            (map1.size == map2.size) && (map1.keySet == map2.keySet) &&
+              map1.asInstanceOf[Map[Any, Any]].forall{case (key1, value1) => map2.asInstanceOf[Map[Any, Any]](key1) == value1}
+          }
           case _ => false
         }
       }

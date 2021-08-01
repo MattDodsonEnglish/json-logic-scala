@@ -45,7 +45,7 @@ class TestOperatorRightShiftZeroFillerBitwise extends TestNumeric {
     ))
 
     val evaluator = new EvaluatorLogic
-    evaluator.eval(tree) shouldBe (xByte >>> yLong)
+    evaluator.eval(tree) shouldBe (xByte >>> yLong.toInt)
   }
 
   "Operator RightShiftZeroFillerBitwise Short >>> Byte" should "return value" in {
@@ -85,7 +85,7 @@ class TestOperatorRightShiftZeroFillerBitwise extends TestNumeric {
     ))
 
     val evaluator = new EvaluatorLogic
-    evaluator.eval(tree) shouldBe (xShort >>> yLong)
+    evaluator.eval(tree) shouldBe (xShort >>> yLong.toInt)
   }
 
   "Operator RightShiftZeroFillerBitwise Int >>> Byte" should "return value" in {
@@ -135,7 +135,7 @@ class TestOperatorRightShiftZeroFillerBitwise extends TestNumeric {
     ))
 
     val evaluator = new EvaluatorLogic
-    evaluator.eval(tree) shouldBe (xLong >>> yLong)
+    evaluator.eval(tree) shouldBe (xLong >>> yLong.toInt)
   }
 
   "Operator RightShiftZeroFillerBitwise different types" should "return value" in {
@@ -149,7 +149,7 @@ class TestOperatorRightShiftZeroFillerBitwise extends TestNumeric {
     ))
 
     val evaluator = new EvaluatorLogic
-    evaluator.eval(tree) shouldBe (xByte >>> yByte.toInt >>> xLong >>> yInt >>> xShort.toInt >>> xShort.toInt)
+    evaluator.eval(tree) shouldBe (xByte >>> yByte.toInt >>> xLong.toInt >>> yInt >>> xShort.toInt >>> xShort.toInt)
   }
 
 }

@@ -15,7 +15,7 @@ class TestOperatorSome extends TestNumeric with TestArray {
     ))
 
     val evaluator = new EvaluatorLogic
-    evaluator.eval(tree) shouldBe (arrBool.exists(_.booleanValue()))
+    evaluator.eval(tree) shouldBe arrBool.exists(_.booleanValue())
   }
 
   "Operator Some f(el: Float => el + 1 <= 0)" should "return value" in {

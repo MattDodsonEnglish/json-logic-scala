@@ -45,7 +45,7 @@ class TestOperatorEqWithTypeCoercion extends TestNumeric {
     ))
 
     val evaluator = new EvaluatorLogic
-    evaluator.eval(tree) shouldBe (xByte.equals(yLong))
+    evaluator.eval(tree) shouldBe xByte.equals(yLong)
   }
 
   "Operator EqWithTypeCoercion Byte === Float" should "return false" in {

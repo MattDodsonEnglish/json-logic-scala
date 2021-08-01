@@ -15,7 +15,7 @@ object MarshallerFloat extends Marshaller {
       case floatValue: Float => JsNumber(floatValue)
       case floatValue: java.lang.Float => JsNumber(floatValue.toFloat)
       case other => {
-        throw new IllegalInputException(s"Illegal input argument to MarshallerFloat: ${other}.\nMarshallerFloat can only be applied to Float values." +
+        throw new IllegalInputException(s"Illegal input argument to MarshallerFloat: $other.\nMarshallerFloat can only be applied to Float values." +
           "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
       }
     }

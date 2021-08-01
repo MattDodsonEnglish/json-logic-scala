@@ -52,9 +52,9 @@ class Deserializer(implicit val conf: DeserializerConf) {
 
   protected[this] def deserializeValueLogic(jsonLogic: JsObject, jsonLogicData: JsObject): ValueLogic[_] = {
     val isTypeDefined = (jsonLogic \ "type").isDefined
-    val typeValueOpt = Deserializer.unmarshType((jsonLogic \ "type"))
+    val typeValueOpt = Deserializer.unmarshType(jsonLogic \ "type")
     val pathData = (jsonLogic \ "var").as[String]
-    val lookUpPathData = (jsonLogicData \ pathData)
+    val lookUpPathData = jsonLogicData \ pathData
     val jsValue = lookUpPathData.getOrElse(JsNull)
 
     if (isTypeDefined && lookUpPathData.isEmpty) {

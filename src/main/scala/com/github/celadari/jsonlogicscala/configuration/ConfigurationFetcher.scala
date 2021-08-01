@@ -35,7 +35,7 @@ object ConfigurationFetcher {
       try {
         val instance = m.reflectModule(m.staticModule(className)).instance
         if (!(m.reflect(instance).symbol.toType <:< ru.typeOf[T])) {
-          throw new ConfigurationException(s"Found object is not a '${ru.typeOf[T].toString}' instance:\n'${instance}'")
+          throw new ConfigurationException(s"Found object is not a '${ru.typeOf[T].toString}' instance:\n'$instance'")
         }
         (typeCodename, instance.asInstanceOf[T])
       }
@@ -55,7 +55,7 @@ object ConfigurationFetcher {
         objectRecipe.setAllProperties(prop)
         val instance = objectRecipe.create()
         if (!(m.reflect(instance).symbol.toType <:< ru.typeOf[T])) {
-          throw new ConfigurationException(s"Found class is not a '${ru.typeOf[T].toString}' instance:\n'${instance}'")
+          throw new ConfigurationException(s"Found class is not a '${ru.typeOf[T].toString}' instance:\n'$instance'")
         }
         (typeCodename, instance.asInstanceOf[T])
       }

@@ -14,7 +14,7 @@ object MarshallerByte extends Marshaller {
       case byte: Byte => JsNumber(byte)
       case byte: java.lang.Byte => JsNumber(byte.toByte)
       case other => {
-        throw new IllegalInputException(s"Illegal input argument to MarshallerByte: ${other}.\nMarshallerByte can only be applied to byte values." +
+        throw new IllegalInputException(s"Illegal input argument to MarshallerByte: $other.\nMarshallerByte can only be applied to byte values." +
           "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
       }
     }

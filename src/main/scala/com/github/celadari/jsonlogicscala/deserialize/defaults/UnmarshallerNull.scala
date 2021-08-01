@@ -12,7 +12,7 @@ object UnmarshallerNull extends Unmarshaller {
     jsValue match {
       case JsNull => null
       case other => {
-        throw new InvalidJsonParsingException(s"Illegal input argument to UnmarshallerNull: ${other}.\nUnmarshallerNull can only be applied to null value." +
+        throw new InvalidJsonParsingException(s"Illegal input argument to UnmarshallerNull: $other.\nUnmarshallerNull can only be applied to null value." +
           "\nCheck if \"type\" and \"var\" are correct.")
       }
     }

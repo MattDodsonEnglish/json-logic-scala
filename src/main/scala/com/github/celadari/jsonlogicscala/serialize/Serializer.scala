@@ -23,7 +23,7 @@ class Serializer(implicit val conf: SerializerConf) {
           value match {
             case arr: Array[_] => JsArray(arr.map(el => getMarshaller(paramType).marshal(el)))
             case other => {
-              throw new IllegalInputException(s"Illegal input argument to ArrayType Marshaller: ${other}." +
+              throw new IllegalInputException(s"Illegal input argument to ArrayType Marshaller: $other." +
                 "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
             }
           }
@@ -32,9 +32,14 @@ class Serializer(implicit val conf: SerializerConf) {
       case MapTypeValue(paramType) => new Marshaller {
         override def marshal(value: Any): JsValue = {
           value match {
-            case map: Map[String, _] => JsObject(map.mapValuesAccordingToScalaVersion(el => getMarshaller(paramType).marshal(el)).toMap)
+            case map: Map[_, _] => {
+              if (!map.keySet.forall(_.isInstanceOf[String])) {
+                throw new IllegalInputException(s"Map keys must be of type String to be serialized.\nCurrent type: $map")
+              }
+              JsObject(map.asInstanceOf[Map[String, Any]].mapValuesAccordingToScalaVersion(key => getMarshaller(paramType).marshal(key)))
+            }
             case other => {
-              throw new IllegalInputException(s"Illegal input argument to MapType Marshaller: ${other}." +
+              throw new IllegalInputException(s"Illegal input argument to MapType Marshaller: $other." +
                 "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
             }
           }
@@ -46,7 +51,7 @@ class Serializer(implicit val conf: SerializerConf) {
           value match {
             case opt: Option[_] => opt.map(el => getMarshaller(paramType).marshal(el)).getOrElse(JsNull)
             case other => {
-              throw new IllegalInputException(s"Illegal input argument to OptionType Marshaller: ${other}." +
+              throw new IllegalInputException(s"Illegal input argument to OptionType Marshaller: $other." +
                 "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
             }
           }

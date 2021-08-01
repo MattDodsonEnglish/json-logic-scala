@@ -3,7 +3,7 @@ package com.github.celadari.jsonlogicscala.evaluate.defaults
 import com.github.celadari.jsonlogicscala.evaluate.EvaluatorLogic
 import com.github.celadari.jsonlogicscala.exceptions.{EvaluateException, WrongNumberOfConditionsException}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
-import com.github.celadari.jsonlogicscala.tree.types.{MapTypeValue, SimpleTypeValue}
+import com.github.celadari.jsonlogicscala.tree.types.SimpleTypeValue
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic}
 
 class TestOperatorReduce extends TestNumeric with TestArray {
@@ -57,7 +57,6 @@ class TestOperatorReduce extends TestNumeric with TestArray {
   }
 
   "Operator Reduce more than 3 input conditions" should "throw an exception" in {
-    val string0 = "You love New York"
     val tree = new ComposeLogic("reduce", Array(
       ValueLogic(Some(arrString), Some(arrStringType)),
       new ComposeLogic("cat", Array(

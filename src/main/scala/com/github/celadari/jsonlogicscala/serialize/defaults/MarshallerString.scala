@@ -14,7 +14,7 @@ object MarshallerString extends Marshaller {
     value match {
       case string: String => JsString(string)
       case other => {
-        throw new IllegalInputException(s"Illegal input argument to MarshallerString: ${other}.\nMarshallerString can only be applied to string values." +
+        throw new IllegalInputException(s"Illegal input argument to MarshallerString: $other.\nMarshallerString can only be applied to string values." +
           "\nCheck if valueOpt and typeCodenameOpt of ValueLogic are correct.")
       }
     }

@@ -3,7 +3,7 @@ package com.github.celadari.jsonlogicscala.evaluate.defaults
 import com.github.celadari.jsonlogicscala.evaluate.EvaluatorLogic
 import com.github.celadari.jsonlogicscala.exceptions.{EvaluateException, WrongNumberOfConditionsException}
 import com.github.celadari.jsonlogicscala.tree.types.DefaultTypes._
-import com.github.celadari.jsonlogicscala.tree.types.{MapTypeValue, SimpleTypeValue}
+import com.github.celadari.jsonlogicscala.tree.types.SimpleTypeValue
 import com.github.celadari.jsonlogicscala.tree.{ComposeLogic, ValueLogic}
 
 class TestOperatorFilter extends TestNumeric with TestArray {
@@ -15,7 +15,7 @@ class TestOperatorFilter extends TestNumeric with TestArray {
     ))
 
     val evaluator = new EvaluatorLogic
-    evaluator.eval(tree) shouldBe (arrBool.filter(_.booleanValue()))
+    evaluator.eval(tree) shouldBe arrBool.filter(_.booleanValue())
   }
 
   "Operator Filter f(el: Float => el + 1 <= 0)" should "return value" in {

@@ -57,7 +57,7 @@ class TestOperatorOr extends TestBoolean with TestNumeric with TestArray {
     ))
 
     val evaluator = new EvaluatorLogic
-    evaluator.eval(tree) shouldBe (arrDouble.exists(_ == 23) || xBool)
+    evaluator.eval(tree) shouldBe (arrDouble.contains(23) || xBool)
   }
 
   "Operator Or (All arrDouble >=0) (xBool)" should "return false" in {

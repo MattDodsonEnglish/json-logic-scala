@@ -17,7 +17,7 @@ class TestOperatorIfElse extends TestNumeric with TestBoolean with TestArray {
     ))
 
     val evaluator = new EvaluatorLogic
-    evaluator.eval(tree) shouldBe (xByte)
+    evaluator.eval(tree) shouldBe xByte
   }
 
   "Operator If yBool xByte else yByte" should "return value" in {
@@ -28,7 +28,7 @@ class TestOperatorIfElse extends TestNumeric with TestBoolean with TestArray {
     ))
 
     val evaluator = new EvaluatorLogic
-    evaluator.eval(tree) shouldBe (yByte)
+    evaluator.eval(tree) shouldBe yByte
   }
 
   "Operator If uBool xByte else if vBool yShort else xLong" should "return value" in {
@@ -41,7 +41,7 @@ class TestOperatorIfElse extends TestNumeric with TestBoolean with TestArray {
     ))
 
     val evaluator = new EvaluatorLogic
-    evaluator.eval(tree) shouldBe (xLong)
+    evaluator.eval(tree) shouldBe xLong
   }
 
   "Operator If xBool xFloat else if vBool yShort else xLong" should "return value" in {
@@ -54,7 +54,7 @@ class TestOperatorIfElse extends TestNumeric with TestBoolean with TestArray {
     ))
 
     val evaluator = new EvaluatorLogic
-    evaluator.eval(tree) shouldBe (xFloat)
+    evaluator.eval(tree) shouldBe xFloat
   }
 
   "Operator If uBool xFloat else if vBool yShort else if xBool xDouble else yInt" should "return value" in {
@@ -69,11 +69,10 @@ class TestOperatorIfElse extends TestNumeric with TestBoolean with TestArray {
     ))
 
     val evaluator = new EvaluatorLogic
-    evaluator.eval(tree) shouldBe (xDouble)
+    evaluator.eval(tree) shouldBe xDouble
   }
 
   "Operator IfElse less than 3 input conditions" should "throw an exception" in {
-    val string0 = "You love New York"
     val tree = new ComposeLogic("if", Array(
       ValueLogic(Some(xBool), Some(SimpleTypeValue(BOOL_CODENAME))),
       ValueLogic(Some(arrInt), Some(arrIntType))
@@ -109,7 +108,7 @@ class TestOperatorIfElse extends TestNumeric with TestBoolean with TestArray {
     ))
 
     val evaluator = new EvaluatorLogic
-    evaluator.eval(tree) shouldBe (yInt)
+    evaluator.eval(tree) shouldBe yInt
   }
 
 }
