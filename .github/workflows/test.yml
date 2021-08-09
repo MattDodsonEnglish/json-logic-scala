@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        scala_version: [2.11,2.12,2.13]
+        scala_version: ["2.11", "2.12", "2.13"]
     steps:
       - name: TRF
         run: echo "${{ strategy.matrix.scala_version }}"
