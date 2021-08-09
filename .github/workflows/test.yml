@@ -16,6 +16,7 @@ jobs:
           outputScalaVersion=$(sbt +scalaBinaryVersion)
           echo "$outputScalaVersion"
           echo "AAAA"
+          echo "something" | awk '/something/{print}'
           echo "$outputScalaVersion" | awk '/\[info\] [0-9]\.[0-9]+/{print}'
           echo $outputScalaVersion | grep -oE ".info. 2.12"
           something_to_show=$(echo $outputScalaVersion | grep -P -o "\[info\]\s[0-9]\.[0-9]+")
