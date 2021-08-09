@@ -32,7 +32,8 @@ libraryDependencies ++= Seq(
 //          echo ::set-output name=matrix::"${scala_versions[@]}"
 // scalacOptions ++= ("-feature" :: "-language:postfixOps" :: "-language:implicitConversions" :: Nil)
 scalacOptions ++= Seq(
-  "-encoding", "utf8",
+  "-encoding",
+  "utf8",
   "-deprecation",
   "-feature",
   "-language:higherKinds",
