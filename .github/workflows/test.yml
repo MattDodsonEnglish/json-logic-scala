@@ -13,20 +13,10 @@ jobs:
       - name: Retrieve Scala Versions from build.sbt file
         id: set-matrix
         run: |
-          outputScalaVersion=$(sbt +scalaBinaryVersion)
-          echo "$outputScalaVersion"
-          echo "AAAA"
-          echo "$outputScalaVersion" | sed -r 's/[^ \t\r\n\v\f0-9\.]([0-9]\.[0-9]+)/SCALA_VERSION\1/' | grep -oE 'CALA_VERSION[0-9]\.[0-9]+' | sed -r 's/CALA_VERSION([0-9]\.[0-9]+)/\1/'
-          echo $outputScalaVersion | grep -oE 'CALA_VERSION[0-9]\.[0-9]+'
-          something_to_show=$(echo $outputScalaVersion | grep -P -o "\[info\]\s[0-9]\.[0-9]+")
-          echo "$something_to_show"
-          echo "BBBB"
-          scala_versions=$(echo "$outputScalaVersion" | grep -E -o "\[info\] [0-9]\.[0-9][0-9]")
+          scalaVersionPref=$(sbt +scalaBinaryVersion | sed -r 's/[^ \t\r\n\v\f0-9\.]([0-9]\.[0-9]+)/SCALA_VERSION\1/' | grep -oE 'CALA_VERSION[0-9]\.[0-9]+')
+          scala_versions=$(echo "$scalaVersionPref" | sed -r 's/CALA_VERSION([0-9]\.[0-9]+)/\1/')
           echo "$scala_versions"
-          echo "CCCC"
-          scala_versionsee=$(echo "$scala_versions" | grep "[0-9]\.[0-9][0-9]")
-          echo "$scala_versionsee"
-          run: echo ::set-output name=matrix::"${scala_versions[@]}"
+          run: echo ::set-output name=matrix::"$scala_versions"
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
 
