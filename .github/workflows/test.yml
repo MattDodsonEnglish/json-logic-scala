@@ -13,10 +13,10 @@ jobs:
       - name: Retrieve Scala Versions from build.sbt file
         id: set-matrix
         run: |
-          outputScalaVersion=$(sbt +scalaBinaryVersion | awk '/\[info\] [0-9]\.[0-9]+/{print}')
+          outputScalaVersion=$(sbt +scalaBinaryVersion)
           echo $outputScalaVersion
           echo "AAAA"
-          echo $outputScalaVersion | grep "[info]"
+          echo $outputScalaVersion | awk '/\[info\] [0-9]\.[0-9]+/{print}'"
           echo $outputScalaVersion | grep -oE ".info. 2.12"
           something_to_show=$(echo $outputScalaVersion | grep -P -o "\[info\]\s[0-9]\.[0-9]+")
           echo "$something_to_show"
