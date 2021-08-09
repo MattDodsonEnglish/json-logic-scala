@@ -20,6 +20,17 @@ jobs:
     outputs:
       scala_versions: ${{ steps.set-matrix.outputs.matrix }}
 
+  check-something:
+    runs-on: ubuntu-20.04
+    needs: [retrieve-scala-versions]
+    strategy:
+      fail-fast: false
+      matrix:
+        scala_version: [2.11,2.12,2.13]
+    steps:
+      - name: TRF
+        run: echo "${{ strategy.matrix.scala_version }}"
+
   test-coverage:
     runs-on: ubuntu-20.04
     steps:
