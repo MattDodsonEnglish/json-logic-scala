@@ -19,7 +19,7 @@ jobs:
           echo "$something_to_show"
           scala_versions=$(echo "$outputScalaVersion" | grep -E \[info\] [0-9]\.[0-9][0-9])
           echo "$scala_versions"
-          scala_versionsee=$(echo "$scala_versions" | grep -o "[0-9]\.[0-9][0-9]")
+          scala_versionsee=$(echo "$scala_versions" | grep -oE [0-9]\.[0-9][0-9])
           echo "$scala_versionsee"
           run: echo ::set-output name=matrix::"${scala_versions[@]}"
     outputs:
