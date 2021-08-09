@@ -17,7 +17,7 @@ jobs:
           echo $outputScalaVersion
           echo "AAAA"
           echo $outputScalaVersion | grep "[info]"
-          echo $outputScalaVersion | grep -o "info"
+          echo $outputScalaVersion | grep -oE "[\[]info"
           something_to_show=$(echo $outputScalaVersion | grep -P -o "\[info\]\s[0-9]\.[0-9]+")
           echo "$something_to_show"
           echo "BBBB"
