@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        scala_version: ${{ needs.retrieve-scala-versions.outputs.scala_versions }}
+        scala_version: ${{ fromJSON(needs.retrieve-scala-versions.outputs.scala_versions) }}
     steps:
       - name: TRF
         run: echo "${{ matrix.scala_version }}"
