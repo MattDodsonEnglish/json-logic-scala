@@ -16,9 +16,11 @@ jobs:
           outputScalaVersion=$(sbt +scalaBinaryVersion)
           echo $outputScalaVersion
           something_to_show=$(echo "dada" | grep -o "dad")
-          echo $something_to_show
-          scala_versions=$(echo "$outputScalaVersion" | grep -E "^\[info\] ([0-9]\.[0-9][0-9])$" | grep -o "[0-9]\.[0-9][0-9]")
-          echo $scala_versions
+          echo "$something_to_show"
+          scala_versions=$(echo "$outputScalaVersion" | grep -E "^\[info\] ([0-9]\.[0-9][0-9])$")
+          echo "$scala_versions"
+          scala_versionsee=$(echo "$scala_versions" | grep -o "[0-9]\.[0-9][0-9]")
+          echo "$scala_versionsee"
           run: echo ::set-output name=matrix::"${scala_versions[@]}"
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
