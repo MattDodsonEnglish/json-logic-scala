@@ -14,7 +14,8 @@ jobs:
         id: set-matrix
         run: |
           scalaVersionPref=$(sbt +scalaBinaryVersion | sed -r 's/[^ \t\r\n\v\f0-9\.]([0-9]\.[0-9]+)/SCALA_VERSION\1/' | grep -oE 'CALA_VERSION[0-9]\.[0-9]+')
-          scala_versions=$(echo "$scalaVersionPref" | sed -r 's/CALA_VERSION([0-9]\.[0-9]+)/\1/')
+          scala_versions=$(echo "$scalaVersionPref" | sed -r 's/CALA_VERSION([0-9]\.[0-9]+)/\1/' | tr '\n' ',')
+          scala_versions="[${scala_versions%?}]"
           echo "$scala_versions"
           echo ::set-output name=matrix::"$scala_versions"
     outputs:
