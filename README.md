@@ -2,7 +2,8 @@
 
 [![Scala versions](https://img.shields.io/badge/scala-2.11%7C2.12%7C2.13-blue.svg)]()
 [![Linter](https://github.com/celadari/json-logic-scala/actions/workflows/linter.yml/badge.svg)](https://github.com/celadari/json-logic-scala/actions/workflows/linter.yml)
-[![Test](https://github.com/celadari/json-logic-scala/actions/workflows/test.yml/badge.svg)](https://github.com/celadari/json-logic-scala/actions/workflows/test.yml)
+[![Unittests](https://github.com/celadari/json-logic-scala/actions/workflows/tests.yml/badge.svg)](https://github.com/celadari/json-logic-scala/actions/workflows/tests.yml)
+[![Build](https://github.com/celadari/json-logic-scala/actions/workflows/build.yml/badge.svg)](https://github.com/celadari/json-logic-scala/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/celadari/json-logic-scala/branch/v2/graph/badge.svg?token=9LEB1I50R3)](https://codecov.io/gh/celadari/json-logic-scala)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)]()
 
