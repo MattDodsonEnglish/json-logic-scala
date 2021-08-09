@@ -15,9 +15,9 @@ jobs:
         run: |
           outputScalaVersion=$(sbt +scalaBinaryVersion)
           echo $outputScalaVersion
-          something_to_show=$(echo "$outputScalaVersion" | egrep -o "^\[info\] [0-9]\.[0-9]+$")
+          something_to_show=$(echo "$outputScalaVersion" | grep -o "^\[info\] [0-9]\.[0-9]+$")
           echo "$something_to_show"
-          scala_versions=$(echo "$outputScalaVersion" | grep -E \[info\] [0-9]\.[0-9][0-9])
+          scala_versions=$(echo "$outputScalaVersion" | grep -E -o "\[info\] [0-9]\.[0-9][0-9]")
           echo "$scala_versions"
           scala_versionsee=$(echo "$scala_versions" | grep "[0-9]\.[0-9][0-9]")
           echo "$scala_versionsee"
