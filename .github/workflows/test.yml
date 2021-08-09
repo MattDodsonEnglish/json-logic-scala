@@ -1,4 +1,4 @@
-name: Test Coverage CI
+name: Test
 on: [push]
 jobs:
   retrieve-scala-versions:
@@ -87,7 +87,6 @@ jobs:
       - uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-#          directory: ./target/scala-${{ matrix.scala_version }}/
           directory: ./target/scala-${{ matrix.scala_version }}/
           flags: unittests,${{ matrix.scala_version }}/scoverage-report/scoverage.xml
           name: codecov-json-logic-scala

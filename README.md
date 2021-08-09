@@ -1,4 +1,11 @@
+
 # Json Logic Scala
+
+[![Linter](https://github.com/celadari/json-logic-scala/actions/workflows/linter.yml/badge.svg?branch=v2)](https://github.com/celadari/json-logic-scala/actions/workflows/linter.yml)
+[![Test](https://github.com/celadari/json-logic-scala/actions/workflows/test.yml/badge.svg?branch=v2)](https://github.com/celadari/json-logic-scala/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/celadari/json-logic-scala/branch/v2/graph/badge.svg?token=9LEB1I50R3)](https://codecov.io/gh/celadari/json-logic-scala)
+
+
 Build complex rules, serialize them as JSON, and execute them in Scala.
 
 Json-logic-scala enables you to serialize in JSON format logical expressions.
