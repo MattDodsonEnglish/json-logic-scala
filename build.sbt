@@ -29,7 +29,7 @@ libraryDependencies ++= Seq(
     "org.apache.xbean" % "xbean-reflect" % "4.20",
     "org.scalatest" %% "scalatest" % "3.2.9" % Test
 )
-
+//          echo ::set-output name=matrix::"${scala_versions[@]}"
 // scalacOptions ++= ("-feature" :: "-language:postfixOps" :: "-language:implicitConversions" :: Nil)
 scalacOptions ++= Seq(
   "-encoding", "utf8",
