@@ -80,8 +80,6 @@ jobs:
         scala_version: ${{ fromJSON(needs.retrieve-scala-versions.outputs.scala_versions) }}
     steps:
       - uses: actions/checkout@v2
-      - name: TRF
-        run: echo "${{ strategy.matrix.scala_version }}"
       - uses: actions/download-artifact@v2
         with:
           name: coverage-report
@@ -89,8 +87,9 @@ jobs:
       - uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+#          directory: ./target/scala-${{ matrix.scala_version }}/
           directory: ./target/scala-${{ matrix.scala_version }}/
-          flags: unittests,${{ matrix.scala_version }}
+          flags: unittests,${{ matrix.scala_version }}/scoverage-report/scoverage.xml
           name: codecov-json-logic-scala
           fail_ci_if_error: true
           verbose: true
