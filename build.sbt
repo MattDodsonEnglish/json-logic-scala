@@ -8,7 +8,7 @@ version := "2.0.0"
 
 scalaVersion := "2.13.2"
 
-crossScalaVersions := Seq("2.11.12", "2.12.6", "2.13.2")
+crossScalaVersions := Seq("2.11.12", "2.12.13", "2.13.2")
 
 resolvers ++= Seq(
   "sonatype-snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
