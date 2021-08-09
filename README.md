@@ -1,10 +1,10 @@
-
 # Json Logic Scala
 
-[![Linter](https://github.com/celadari/json-logic-scala/actions/workflows/linter.yml/badge.svg?branch=v2)](https://github.com/celadari/json-logic-scala/actions/workflows/linter.yml)
-[![Test](https://github.com/celadari/json-logic-scala/actions/workflows/test.yml/badge.svg?branch=v2)](https://github.com/celadari/json-logic-scala/actions/workflows/test.yml)
+[![Scala versions](https://img.shields.io/badge/scala-2.11%7C2.12%7C2.13-blue.svg)]()
+[![Linter](https://github.com/celadari/json-logic-scala/actions/workflows/linter.yml/badge.svg)](https://github.com/celadari/json-logic-scala/actions/workflows/linter.yml)
+[![Test](https://github.com/celadari/json-logic-scala/actions/workflows/test.yml/badge.svg)](https://github.com/celadari/json-logic-scala/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/celadari/json-logic-scala/branch/v2/graph/badge.svg?token=9LEB1I50R3)](https://codecov.io/gh/celadari/json-logic-scala)
-
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)]()
 
 Build complex rules, serialize them as JSON, and execute them in Scala.
 

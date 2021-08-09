@@ -1,4 +1,4 @@
-name: Test
+name: Unittests
 on: [push]
 jobs:
   retrieve-scala-versions:
