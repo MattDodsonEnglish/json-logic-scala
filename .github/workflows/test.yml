@@ -16,7 +16,7 @@ jobs:
           outputScalaVersion=$(sbt +scalaBinaryVersion)
           echo $outputScalaVersion
           echo "AAAA"
-          something_to_show=$(echo "$outputScalaVersion" | grep -E -o "\[info\] [0-9]\.[0-9]+")
+          something_to_show=$(echo "$outputScalaVersion" | grep -E -o "\[info\]\s[0-9]\.[0-9]+")
           echo "$something_to_show"
           echo "BBBB"
           scala_versions=$(echo "$outputScalaVersion" | grep -E -o "\[info\] [0-9]\.[0-9][0-9]")
