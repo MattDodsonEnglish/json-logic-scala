@@ -15,12 +15,10 @@ jobs:
         run: |
           outputScalaVersion=$(sbt +scalaBinaryVersion)
           echo $outputScalaVersion
-          something_to_show=$(echo "[info] 2.12.13  something [info] 2.13.5" | grep -E \[info\] [0-9]\.[0-9][0-9])
+          something_to_show=$(echo "[info] 2.12.13  something [info] 2.13.5" | sed -E 's/\[info\] ([0-9]\.[0-9]+)/\1/')
           echo "$something_to_show"
-          scala_versions=$(echo "$outputScalaVersion" | grep -E \[info\] [0-9]\.[0-9][0-9])
+          scala_versions=$(echo "$outputScalaVersion" | sed -E 's/\[info\] ([0-9]\.[0-9]+)/\1/')
           echo "$scala_versions"
-          scala_versionsee=$(echo "$scala_versions" | grep -oE "[0-9]\.[0-9][0-9]")
-          echo "$scala_versionsee"
           run: echo ::set-output name=matrix::"${scala_versions[@]}"
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
