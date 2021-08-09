@@ -15,7 +15,7 @@ jobs:
         run: |
           scala_versionsghj=$(sbt +scalaBinaryVersion)
           echo $scala_versionsghj
-          scala_versions=$(sbt +scalaBinaryVersion | cut -f2 -d " " | grep "^[0-9]\.[0-9][0-9]$")
+          scala_versions=$(sbt +scalaBinaryVersion | grep "^\[info\]\s[0-9]\.[0-9][0-9]$")
           echo $scala_versions
           run: echo ::set-output name=matrix::"${scala_versions[@]}"
     outputs:
