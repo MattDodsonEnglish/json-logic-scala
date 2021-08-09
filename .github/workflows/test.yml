@@ -14,7 +14,7 @@ jobs:
         id: set-matrix
         run: |
           outputScalaVersion=$(sbt +scalaBinaryVersion)
-          echo $outputScalaVersion
+          echo "$outputScalaVersion"
           echo "AAAA"
           echo "$outputScalaVersion" | awk '/\[info\] [0-9]\.[0-9]+/{print}'
           echo $outputScalaVersion | grep -oE ".info. 2.12"
