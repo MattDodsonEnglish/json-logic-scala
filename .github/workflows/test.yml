@@ -16,7 +16,7 @@ jobs:
           outputScalaVersion=$(sbt +scalaBinaryVersion)
           echo "$outputScalaVersion"
           echo "AAAA"
-          echo "$outputScalaVersion" | grep -oE '[\]][[:space:]]2'
+          echo "$outputScalaVersion" | grep -oE 'info[\]][[:space:]]'
           echo "$outputScalaVersion" | grep -oE '[\]] 2'
           echo "$outputScalaVersion" | grep -oE '[\]][[:space:]][0-9]'
           echo $outputScalaVersion | grep -oE '[[:space:]][0-9].[0-9]+'
