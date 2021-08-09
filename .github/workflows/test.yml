@@ -1,5 +1,5 @@
 name: Test Coverage CI
-on: [push]
+on: [push] 
 jobs:
   retrieve-scala-versions:
     runs-on: ubuntu-20.04
