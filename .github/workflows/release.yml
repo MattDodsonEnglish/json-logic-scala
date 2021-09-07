@@ -12,8 +12,8 @@ jobs:
 #        run: sbt +doc
       - name: something else1
         run: pwd
-      - name: move doc versions to outside
-        run: mv target ../
+#      - name: move doc versions to outside
+#        run: mv target ../
       - name: git checkout master
         run:  |
           git fetch
