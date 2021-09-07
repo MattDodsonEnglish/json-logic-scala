@@ -10,10 +10,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: Generate API Doc
         run: sbt doc
-      - name: something else1
-        run: pwd
-      - name: move doc versions to outside
-        run: mv target ../
+      - name: Make API Doc directory outside repository
+        run: mkdir ../api_docs
+      - name: Move API Docs to outside directory
+        run: mv target/scala-[0-9].[0-9][0-9] ../api_docs/
+      - name: check something
+        run: ls ../api_docs
       - name: git checkout master
         run:  |
           git fetch
@@ -22,8 +24,6 @@ jobs:
         run: pwd
       - name: something else3
         run: ls ../
-      - name: something else3
-        run: ls ../target/
 
 #  publish-package:
 #    runs-on: ubuntu-latest
