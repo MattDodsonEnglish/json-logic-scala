@@ -8,14 +8,16 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - name: Generate API Doc
-        run: sbt +doc
+#      - name: Generate API Doc
+#        run: sbt +doc
       - name: something else1
         run: pwd
       - name: move doc versions to outside
         run: mv target ../
       - name: git checkout master
-        run: git checkout master
+        run:  |
+          git fetch
+          git checkout master
       - name: something else2
         run: pwd
       - name: something else3
