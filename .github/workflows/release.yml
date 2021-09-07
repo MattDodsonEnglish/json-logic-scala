@@ -10,10 +10,18 @@ jobs:
       - uses: actions/checkout@v2
       - name: Generate API Doc
         run: sbt +doc
-      - name: something else
+      - name: something else1
         run: pwd
-      - name: git status
-        run: git status
+      - name: move doc versions to outside
+        run: mv target ../
+      - name: git checkout master
+        run: git checkout master
+      - name: something else2
+        run: pwd
+      - name: something else3
+        run: ls ../
+      - name: something else3
+        run: ls ../json-logic-scala/
 
 #  publish-package:
 #    runs-on: ubuntu-latest
