@@ -18,7 +18,7 @@ jobs:
           cp .workflow-scripts/move_scala_docs.sh ../api_docs/
           cp .workflow-scripts/update_json_api_versions.py ../api_docs/
           cd ..
-          bash api_docs/move_scala_docs.sh ./api_docs ./target2 $(pwd)/api_docs 'some_path_to_some_json'
+          bash api_docs/move_scala_docs.sh ./api_docs ./target2 ./api_docs 'some_path_to_some_json'
 #        run: mv target/scala-[0-9].[0-9][0-9] ../api_docs/
 #      - name: git checkout master
 #        run:  |
