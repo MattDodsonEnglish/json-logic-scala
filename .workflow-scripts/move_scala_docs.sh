@@ -1,5 +1,6 @@
 
-
+echo "$scala_versions"
+echo "$api_version"
 
 # shellcheck disable=SC2154
 for scala_version in $scala_versions
@@ -9,5 +10,3 @@ do
   python "update_json_api_versions $3 $api_version --scala-versions $scala_versions"
 done
 
-echo "$scala_versions"
-echo "$api_version"

@@ -14,7 +14,7 @@ jobs:
         run: mkdir ../api_docs
       - name: Move API Docs to outside directory
         run: |
-          source .workflow-scripts/put_scala_docs_aside.sh
+          source .workflow-scripts/put_scala_docs_aside.sh .
           bash .workflow-scripts/move_scala_docs.sh
 #        run: mv target/scala-[0-9].[0-9][0-9] ../api_docs/
 #      - name: git checkout master
