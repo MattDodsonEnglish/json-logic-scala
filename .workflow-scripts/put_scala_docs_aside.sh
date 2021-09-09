@@ -1,18 +1,9 @@
 
 
 scala_versions=$(ls "$1" | grep -Eo "[0-9]\.[0-9][0-9]")
-#api_version=$(sbt version | tail -n1 | sed -r 's/[^ \t\r\n\v\f0-9\.] (.+)/APP_VERSION\1/' | sed -r 's/^A?P?P?_?V?E?R?S?I?O?N?info\] (.+)/\1/')
-api_version=$(sbt version | tail -n1 | sed -r 's/[^ \t\r\n\v\f0-9\.]+ (.+)/\1/')
+api_version=$(sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.i?n?f?o?]+ (.+)/APP_VERSION\1/' | sed -n '6p' | grep -Po '(?<=PP_VERSION)(.+)')
 
-#(sbt version | tail -n1)
-u=$(sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.i?n?f?o?]+ (.+)/APP_VERSION\1/' | sed -n '6p') # | sed -r 's/^\[?i?n?f?o?A?P?P?_?V?E?R?S?I?O?N?\]? ?(.+)$/\1/')
-(echo "$u" | grep -Po '(?<=PP_VERSION)(.+)')
-#(sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.i?n?f?o?]+ (.+)/APP_VERSION\1/' | sed -r '^\[info\]? ?(.+)')
-#(sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.i?n?f?o?]+ (.+)/APP_VERSION\1/' | grep -Eo '^\[?i?n?f?o?A?P?P?_?V?E?R?S?I?O?N?\]? ?(.+)' | sed -r 's/^\[?i?n?f?o?A?P?P?_?V?E?R?S?I?O?N?\]? ?(.+)/\1/')
-#
-#(sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.i?n?f?o?]+ (.+)/APP_VERSION\1/' | sed -r 's/^\[?i?n?f?o?A?P?P?_?V?E?R?S?I?O?N?\]? ?(.+)/\1/' )
-#(sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.i?n?f?o?]+ (.+)/\1/')
-#(sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.]+ (.+)/APP_VERSION\1/' | sed -r 's/^A?P?P?_?V?E?R?S?I?O?N?info\] (.+)/\1/' | grep -nE '*')
+
 
 echo "$scala_versions"
 echo "$api_version"
