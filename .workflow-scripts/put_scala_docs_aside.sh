@@ -10,5 +10,5 @@ export api_version
 for scala_version in $scala_versions
 do
   mkdir -p "$2/scala-$scala_version/$api_version"
-  mv "$1/scala-$scala_version/api/*" "$2/scala-$scala_version/$api_version/"
+  mv "$1/scala-$scala_version/api/" "$2/scala-$scala_version/$api_version/"
 done
