@@ -5,7 +5,7 @@ scala_versions=$(ls "$1" | grep -Eo "[0-9]\.[0-9][0-9]")
 api_version=$(sbt version | tail -n1 | sed -r 's/[^ \t\r\n\v\f0-9\.]+ (.+)/\1/')
 
 (sbt version | tail -n1)
-(sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.i?n?f?o?]+ (.+)/APP_VERSION\1/' | sed -n '6p')
+(sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.i?n?f?o?]+ (.+)/APP_VERSION\1/' | sed -n '6p' | sed -r 's/\[infoPP_VERSION(.+)$/\1/')
 (sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.i?n?f?o?]+ (.+)/APP_VERSION\1/' | sed -r "^\[info\]? ?(.+)")
 (sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.i?n?f?o?]+ (.+)/APP_VERSION\1/' | grep -Eo "^\[?i?n?f?o?A?P?P?_?V?E?R?S?I?O?N?\]? ?(.+)" | sed -r 's/^\[?i?n?f?o?A?P?P?_?V?E?R?S?I?O?N?\]? ?(.+)/\1/')
 
