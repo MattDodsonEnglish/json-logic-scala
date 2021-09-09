@@ -1,5 +1,6 @@
 
-
+pwd
+ls "$3"
 # shellcheck disable=SC2154
 for scala_version in $scala_versions
 do
