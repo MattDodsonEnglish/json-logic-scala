@@ -1,9 +1,9 @@
 
 
-scala_versions=$(ls "$1" | grep -Eo "[0-9].[0-9][0-9]")
+scala_versions=$(ls "$1" | grep -Eo "[0-9].[0-9][0-9]" | echo)
 api_version=$(sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.](.)/APP_VERSION\1/' | tail -n1 | sed -r 's/^A?P?P?_?V?E?R?S?I?O?N?info\] (.+)/\1/')
 
-sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.](.)/APP_VERSION\1/'
+(sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.](.)/APP_VERSION\1/')
 
 echo "$scala_versions"
 echo "$api_version"
