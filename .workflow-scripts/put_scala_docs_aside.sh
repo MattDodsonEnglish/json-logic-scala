@@ -5,9 +5,9 @@ scala_versions=$(ls "$1" | grep -Eo "[0-9]\.[0-9][0-9]")
 api_version=$(sbt version | tail -n1 | sed -r 's/[^ \t\r\n\v\f0-9\.]+ (.+)/\1/')
 
 (sbt version | tail -n1)
-(sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.]+ (.+)/\1/' | awk 'END { print }' )
-(sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.] (.+)/APP_VERSION\1/' | sed -r 's/^A?P?P?_?V?E?R?S?I?O?N?info\] (.+)/\1/')
-(sbt version | tail -n1 | sed -r 's/[^ \t\r\n\v\f0-9\.] (.+)/APP_VERSION\1/')
+(sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.]+ (.+)/\1/')
+(sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.]+ (.+)/\1/' | cat)
+(sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.]+ (.+)/\1/' | tr '\n' ',')
 
 echo "$scala_versions"
 echo "$api_version"
