@@ -13,7 +13,7 @@ developers := List(Developer(
 
 licenses += ("MIT", url("https://mit-license.org/"))
 
-version := "SNAPSHOT-2.0.0"
+version := "SNAPSHOT-1.9.9"
 
 scalaVersion := "2.13.2"
 
@@ -60,10 +60,13 @@ Test / testOptions += Tests.Argument("-oGK")
 Test / scalastyleConfig := baseDirectory.value / "scalastyle-test-config.xml"
 
 // Publishing stuff for sonatype
-publishTo := {
-  if (version.value.endsWith("SNAPSHOT")) Some("snapshots" at "https://oss.sonatype.org/content/repositories/snapshots")
-  else Some("releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2")
-}
+publishTo := sonatypePublishToBundle.value
+sonatypeCredentialHost := "s01.oss.sonatype.org"
+sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
+sonatypeBundleDirectory := baseDirectory.value / target.value.getName / "sonatype-staging" / s"scala-${scalaBinaryVersion.value}" / version.value
+
+
+crossPaths := true
 
 publishConfiguration := publishConfiguration.value.withOverwrite(true)
 
