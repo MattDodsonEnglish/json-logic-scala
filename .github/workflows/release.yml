@@ -35,9 +35,9 @@ jobs:
           bash api_docs/move_scala_docs.sh ./api_docs "./${GITHUB_REPOSITORY#*/}/docs/_api" ./api_docs "./${GITHUB_REPOSITORY#*/}/docs/_data/api_versions.json"
       - name: Git add and commit on gh-pages
         run: |
-          echo "${{ env.GITHUB_SHA }}"
+          echo "$GITHUB_SHA"
           echo "${{ github.event.GITHUB_SHA }}"
-          echo "${{ env.GITHUB_REF }}"
+          echo "$GITHUB_REF"
           echo "${{ github.event.GITHUB_REF }}"
 #          git add docs/_api/.
 #          git add docs/_data/update_json_api_versions.py
