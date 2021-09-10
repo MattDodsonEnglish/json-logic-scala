@@ -72,7 +72,7 @@ publishConfiguration := publishConfiguration.value.withOverwrite(true)
 
 credentials += sys.env.get("SONATYPE_USERNAME").zip(sys.env.get("SONATYPE_PASSWORD"))
   .headOption
-  .map{case (username, password) => Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", username, password)}
+  .map{case (username, password) => Credentials("Sonatype Nexus Repository Manager", "s01.oss.sonatype.org", username, password)}
   .getOrElse(Credentials(Path.userHome / ".sbt" / ".credentials"))
 
 Test / publishArtifact := false
