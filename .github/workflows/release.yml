@@ -17,17 +17,22 @@ jobs:
           source .workflow-scripts/put_scala_docs_aside.sh ./target ../api_docs
           cp .workflow-scripts/move_scala_docs.sh ../api_docs/
           cp .workflow-scripts/update_json_api_versions.py ../api_docs/
+      - name: Git checkout on gh-pages
+        run:  |
+          git fetch
+          git checkout gh-pages
+      - name: Move API Docs to website API Docs directory
+      - run:
           cd ..
-          bash api_docs/move_scala_docs.sh ./api_docs ./target2 ./api_docs 'some_path_to_some_json'
-#        run: mv target/scala-[0-9].[0-9][0-9] ../api_docs/
-#      - name: git checkout master
-#        run:  |
-#          git fetch
-#          git checkout gh-pages
-#      - name: check something
-#        run: ls ../api_docs
-#      - name: something else2
-#        run: pwd
+          bash api_docs/move_scala_docs.sh ./api_docs "./${GITHUB_REPOSITORY#*/}/docs/_api" ./api_docs "./${GITHUB_REPOSITORY#*/}/docs/_data/api_versions.json"
+      - name: check something
+        run: ls ./api_docs
+      - name: check Website api docs
+        run: |
+          ls ${GITHUB_REPOSITORY#*/}/docs/_api/scala-[0-9].[0-9][0-9]
+          less ${GITHUB_REPOSITORY#*/}/docs/_data/api_versions.json
+      - name: something else2
+        run: pwd
 #      - name: something else3
 #        run: ls ../
 

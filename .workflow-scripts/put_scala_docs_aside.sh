@@ -1,5 +1,6 @@
 
 
+# shellcheck disable=SC2010
 scala_versions=$(ls "$1" | grep -Eo "[0-9]\.[0-9][0-9]")
 api_version=$(sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.i?n?f?o?]+ (.+)/APP_VERSION\1/' | sed -n '6p' | grep -Po '(?<=PP_VERSION)(.+)')
 
