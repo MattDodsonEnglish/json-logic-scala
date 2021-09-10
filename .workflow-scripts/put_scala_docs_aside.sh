@@ -8,6 +8,12 @@ api_version=$(sbt version | sed -r 's/[^ \t\r\n\v\f0-9\.i?n?f?o?]+ (.+)/APP_VERS
 export scala_versions
 export api_version
 
+echo "SCALA_VERSIONS"
+echo "$scala_versions"
+
+echo "API_VERSION"
+echo "api_version"
+
 for scala_version in $scala_versions
 do
   mkdir -p "$2/scala-$scala_version/$api_version"
