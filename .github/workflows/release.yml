@@ -12,12 +12,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install uni2ascii
       - uses: actions/checkout@v2
-#      - name: Generate API Doc
-#        run: sbt doc
+      - name: Generate API Doc
+        run: sbt doc
       - name: Make API Doc directory outside repository
         run: mkdir -p ../api_docs
       - name: Move API Docs to outside directory
         run: |
+          source .workflow-scripts/put_scala_docs_aside.sh ./target ../api_docs
           echo "SCALA_VERSIONS"
           echo "$scala_versions"
           echo "API_VERSION"
@@ -54,7 +55,6 @@ jobs:
       - name: something else2
         run: pwd
 
-#          source .workflow-scripts/put_scala_docs_aside.sh ./target ../api_docs
 #      - name: something else3
 #        run: ls ../
 #  publish-package:
