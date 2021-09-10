@@ -17,6 +17,10 @@ jobs:
           source .workflow-scripts/put_scala_docs_aside.sh ./target ../api_docs
           cp .workflow-scripts/move_scala_docs.sh ../api_docs/
           cp .workflow-scripts/update_json_api_versions.py ../api_docs/
+          echo "SCALA_VERSIONS"
+          echo "$scala_versions"
+          echo "API_VERSION"
+          echo "$api_version"
       - name: Git checkout on gh-pages
         run:  |
           ls ../api_docs
