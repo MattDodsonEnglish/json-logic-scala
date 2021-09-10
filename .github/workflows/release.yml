@@ -19,11 +19,13 @@ jobs:
           cp .workflow-scripts/update_json_api_versions.py ../api_docs/
       - name: Git checkout on gh-pages
         run:  |
+          ls ../api_docs
           git fetch
           git checkout gh-pages
       - name: Move API Docs to website API Docs directory
         run: |
           cd ..
+          ls ./api_docs
           bash api_docs/move_scala_docs.sh ./api_docs "./${GITHUB_REPOSITORY#*/}/docs/_api" ./api_docs "./${GITHUB_REPOSITORY#*/}/docs/_data/api_versions.json"
       - name: check something
         run: ls ./api_docs
