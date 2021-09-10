@@ -19,41 +19,29 @@ jobs:
       - name: Move API Docs to outside directory
         run: |
           source .workflow-scripts/put_scala_docs_aside.sh ./target ../api_docs
-          echo "SCALA_VERSIONS"
-          echo "$scala_versions"
-          echo "API_VERSION"
-          echo "$api_version"
           cp .workflow-scripts/move_scala_docs.sh ../api_docs/
           cp .workflow-scripts/update_json_api_versions.py ../api_docs/
           echo "scala_versions=$scala_versions" >> $GITHUB_ENV
           echo "api_version=$api_version" >> $GITHUB_ENV
       - name: Git checkout on gh-pages
         run:  |
-          ls ../api_docs
           git fetch
           git checkout gh-pages
       - name: Move API Docs to website API Docs directory
         run: |
           cd ..
-          ls ./api_docs
-          ls ./${GITHUB_REPOSITORY#*/}/
           export scala_versions="${{ env.scala_versions }}"
           export api_version="${{ env.api_version }}"
-          less "./${GITHUB_REPOSITORY#*/}/docs/_data/api_versions.json"
           bash api_docs/move_scala_docs.sh ./api_docs "./${GITHUB_REPOSITORY#*/}/docs/_api" ./api_docs "./${GITHUB_REPOSITORY#*/}/docs/_data/api_versions.json"
-          less "./${GITHUB_REPOSITORY#*/}/docs/_data/api_versions.json"
-      - name: check something
+      - name: Git add and commit on gh-pages
         run: |
-          echo "CHECKING SOMETHING"
-          pwd
-          ls .
-      - name: check Website api docs
-        run: |
-          echo "CHECKIN SOMETHING 2"
-          ls docs/_api/scala-2.13
-          less docs/_data/api_versions.json
-      - name: something else2
-        run: pwd
+          echo "${{ env.GITHUB_SHA }}"
+          echo "${{ github.event.GITHUB_SHA }}"
+          echo "${{ env.GITHUB_REF }}"
+          echo "${{ github.event.GITHUB_REF }}"
+#          git add docs/_api/.
+#          git add docs/_data/update_json_api_versions.py
+#          git commit -m "[RELEASE] Update doc version ${{ env.api_version }}"
 
 #      - name: something else3
 #        run: ls ../
