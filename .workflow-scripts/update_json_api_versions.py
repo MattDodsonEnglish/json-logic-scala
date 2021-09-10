@@ -15,7 +15,7 @@ if __name__ == '__main__':
             data = json.load(f)
     else:
         data = {}
-    for scala_version in parser.scala_versions:
+    for scala_version in args.scala_versions:
         scala_version_indices = [i for i, data_version in enumerate(data) if data_version['scala-version'] == scala_version]
         if scala_version_indices:
             scala_version_index = scala_version_indices[0]

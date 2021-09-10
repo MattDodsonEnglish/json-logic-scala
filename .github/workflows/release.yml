@@ -31,10 +31,6 @@ jobs:
           ls ./${GITHUB_REPOSITORY#*/}/
           export scala_versions="${{ env.scala_versions }}"
           export api_version="${{ env.api_version }}"
-          echo "SCALA_VERSIONS"
-          echo $scala_versions
-          echo "API_VERSION"
-          echo "${{ env.api_version }}"
           less "./${GITHUB_REPOSITORY#*/}/docs/_data/api_versions.json"
           bash api_docs/move_scala_docs.sh ./api_docs "./${GITHUB_REPOSITORY#*/}/docs/_api" ./api_docs "./${GITHUB_REPOSITORY#*/}/docs/_data/api_versions.json"
           less "./${GITHUB_REPOSITORY#*/}/docs/_data/api_versions.json"
