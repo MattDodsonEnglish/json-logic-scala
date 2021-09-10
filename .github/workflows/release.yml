@@ -18,8 +18,8 @@ jobs:
         run: mkdir -p ../api_docs
       - name: Move API Docs to outside directory
         run: |
-          (sbt version | ascii2uni | tail -n2 | head -n1 | uni2ascii)
-          (sbt version | uni2ascii | tail -n2 | head -n1 | ascii2uni)
+          (sbt version | ascii2uni | tail -n2 | head -n1 | uni2ascii | sed -r 's/\[info\] (.+)/\1/')
+          (sbt version | uni2ascii | tail -n2 | head -n1 | ascii2uni | sed -r 's/\[info\] (.+)/\1/')
           echo "SCALA_VERSIONS"
           echo "$scala_versions"
           echo "API_VERSION"
