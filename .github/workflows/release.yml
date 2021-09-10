@@ -12,8 +12,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install uni2ascii
       - uses: actions/checkout@v2
-#      - name: Generate API Doc
-#        run: sbt doc
       - name: Make API Doc directory outside repository
         run: mkdir -p ../api_docs
       - name: Move API Docs to outside directory
@@ -59,6 +57,8 @@ jobs:
       - name: something else2
         run: pwd
 
+#      - name: Generate API Doc
+#        run: sbt doc
 #      - name: something else3
 #        run: ls ../
 #  publish-package:
