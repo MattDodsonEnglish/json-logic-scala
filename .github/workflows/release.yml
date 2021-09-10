@@ -22,7 +22,7 @@ jobs:
           git fetch
           git checkout gh-pages
       - name: Move API Docs to website API Docs directory
-      - run: |
+        run: |
           cd ..
           bash api_docs/move_scala_docs.sh ./api_docs "./${GITHUB_REPOSITORY#*/}/docs/_api" ./api_docs "./${GITHUB_REPOSITORY#*/}/docs/_data/api_versions.json"
       - name: check something
