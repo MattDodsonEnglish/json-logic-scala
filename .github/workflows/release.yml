@@ -23,7 +23,7 @@ jobs:
           echo "$scala_versions"
           echo "API_VERSION"
           echo "$api_version"
-          echo "$api_version" | grep -Eo "\[info\]"
+          (echo "$api_version" | grep -Eo "\[info\]")
           cp .workflow-scripts/move_scala_docs.sh ../api_docs/
           cp .workflow-scripts/update_json_api_versions.py ../api_docs/
           echo "scala_versions=$scala_versions" >> $GITHUB_ENV
