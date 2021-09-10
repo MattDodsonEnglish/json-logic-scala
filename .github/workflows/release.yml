@@ -10,7 +10,7 @@ jobs:
       - name: Install ascii2uni tool
         run: |
           sudo apt-get update
-          sudo apt-get install ascii2uni
+          sudo apt-get install uni2ascii
       - uses: actions/checkout@v2
       - name: Generate API Doc
         run: sbt doc
