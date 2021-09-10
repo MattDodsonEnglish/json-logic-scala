@@ -19,8 +19,10 @@ jobs:
       - name: Move API Docs to outside directory
         run: |
           source .workflow-scripts/put_scala_docs_aside.sh ./target ../api_docs
-          something=$(sbt version | ascii2uni -a U -q | tail -n2)
-          echo "$something"
+          echo "SCALA_VERSIONS"
+          echo "$scala_versions"
+          echo "API_VERSION"
+          echo "$api_version"
           cp .workflow-scripts/move_scala_docs.sh ../api_docs/
           cp .workflow-scripts/update_json_api_versions.py ../api_docs/
           echo "scala_versions=$scala_versions" >> $GITHUB_ENV
