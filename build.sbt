@@ -13,15 +13,15 @@ developers := List(Developer(
 
 licenses += ("MIT", url("https://mit-license.org/"))
 
-version := "1.9.9-SNAPSHOT"
+version := "1.9.10-SNAPSHOT"
 
 scalaVersion := "2.13.2"
 
 crossScalaVersions := Seq("2.11.12", "2.12.13", "2.13.2")
 
 resolvers ++= Seq(
-  "sonatype-snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
-  "sonatype-releases"  at "https://oss.sonatype.org/content/repositories/releases",
+  "sonatype-snapshots" at "https://s01.oss.sonatype.org/content/repositories/snapshots",
+  "sonatype-releases"  at "https://s01.oss.sonatype.org/content/repositories/releases",
 )
 
 // This forbids including Scala related libraries into the dependency
