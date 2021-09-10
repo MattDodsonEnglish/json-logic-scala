@@ -26,7 +26,7 @@ jobs:
         run: |
           cd ..
           ls ./api_docs
-          ls /${GITHUB_REPOSITORY#*/}/
+          ls ./${GITHUB_REPOSITORY#*/}/
           bash api_docs/move_scala_docs.sh ./api_docs "./${GITHUB_REPOSITORY#*/}/docs/_api" ./api_docs "./${GITHUB_REPOSITORY#*/}/docs/_data/api_versions.json"
       - name: check something
         run: |
