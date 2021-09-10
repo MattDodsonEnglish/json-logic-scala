@@ -7,10 +7,10 @@ jobs:
   publish-doc:
     runs-on: ubuntu-20.04
     steps:
-      - name: Install uni2ascii tool
+      - name: Install ansi2txt tool
         run: |
           sudo apt-get update
-          sudo apt-get install uni2ascii
+          sudo apt-get install ansi2txt
       - uses: actions/checkout@v2
       - name: Generate API Doc
         run: sbt doc
