@@ -19,6 +19,8 @@ jobs:
       - name: Move API Docs to outside directory
         run: |
           source .workflow-scripts/put_scala_docs_aside.sh ./target ../api_docs
+          (sbt version | ascii2uni | tail -n2 | head -n1 | sed 's/\[info] //')
+          (sbt version | uni2ascii | tail -n2 | head -n1 | sed 's/\[info] //')
           echo "SCALA_VERSIONS"
           echo "$scala_versions"
           echo "API_VERSION"
