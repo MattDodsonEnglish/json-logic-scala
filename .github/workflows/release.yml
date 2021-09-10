@@ -27,6 +27,9 @@ jobs:
           cd ..
           ls ./api_docs
           ls ./${GITHUB_REPOSITORY#*/}/
+          echo "SCALA_VERSIONS"
+          echo "$scala_versions"
+          echo "API_VERSION"
           echo "$api_version"
           less "./${GITHUB_REPOSITORY#*/}/docs/_data/api_versions.json"
           bash api_docs/move_scala_docs.sh ./api_docs "./${GITHUB_REPOSITORY#*/}/docs/_api" ./api_docs "./${GITHUB_REPOSITORY#*/}/docs/_data/api_versions.json"

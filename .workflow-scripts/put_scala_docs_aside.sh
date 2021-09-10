@@ -12,7 +12,7 @@ echo "SCALA_VERSIONS"
 echo "$scala_versions"
 
 echo "API_VERSION"
-echo "api_version"
+echo "$api_version"
 
 for scala_version in $scala_versions
 do
