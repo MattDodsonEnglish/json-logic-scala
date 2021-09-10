@@ -13,7 +13,7 @@ developers := List(Developer(
 
 licenses += ("MIT", url("https://mit-license.org/"))
 
-version := "1.9.10-SNAPSHOT"
+version := "1.9.11-SNAPSHOT"
 
 scalaVersion := "2.13.2"
 
@@ -83,9 +83,3 @@ pomIncludeRepository := { _ => false }
 
 scmInfo := Some(ScmInfo(url("https://github.com/celadari/json-logic-scala"),
                             "git@github.com:celadari/json-logic-scala.git"))
-
-// sonatype repository settings
-publishTo := Some(
-  if (isSnapshot.value) Opts.resolver.sonatypeSnapshots
-  else Opts.resolver.sonatypeStaging
-)
