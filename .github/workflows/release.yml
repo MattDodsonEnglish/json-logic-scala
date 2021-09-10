@@ -10,7 +10,7 @@ jobs:
       - name: Install ansi2txt tool
         run: |
           sudo apt-get update
-          sudo apt-get install ansi2txt
+          sudo apt-get install colorized-logs
       - uses: actions/checkout@v2
       - name: Generate API Doc
         run: sbt doc
