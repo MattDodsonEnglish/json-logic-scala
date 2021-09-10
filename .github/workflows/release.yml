@@ -6,7 +6,7 @@ on:
 jobs:
   publish-package:
     runs-on: ubuntu-latest
-    needs: [publish-doc]
+#    needs: [publish-doc]
     steps:
       - name: Install gpg secret key
         run: |
