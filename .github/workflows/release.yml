@@ -23,7 +23,7 @@ jobs:
           echo "$scala_versions"
           echo "API_VERSION"
           echo "$api_version"
-          u=$(echo "$api_version" | grep -Eo '[\[]info]')
+          u=$(echo "$api_version" | grep -Po '(?<=\[info\] )(.+)')
           echo "$u"
           cp .workflow-scripts/move_scala_docs.sh ../api_docs/
           cp .workflow-scripts/update_json_api_versions.py ../api_docs/
