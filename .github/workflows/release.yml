@@ -7,6 +7,10 @@ jobs:
   publish-doc:
     runs-on: ubuntu-20.04
     steps:
+      - name: Install ascii2uni tool
+        run: |
+          sudo apt-get update
+          sudo apt-get install ascii2uni
       - uses: actions/checkout@v2
       - name: Generate API Doc
         run: sbt doc
