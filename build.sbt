@@ -13,7 +13,7 @@ developers := List(Developer(
 
 licenses += ("MIT", url("https://mit-license.org/"))
 
-version := "SNAPSHOT-1.9.9"
+version := "1.9.9-SNAPSHOT"
 
 scalaVersion := "2.13.2"
 
