@@ -28,9 +28,13 @@ jobs:
           ls ./api_docs
           bash api_docs/move_scala_docs.sh ./api_docs "./${GITHUB_REPOSITORY#*/}/docs/_api" ./api_docs "./${GITHUB_REPOSITORY#*/}/docs/_data/api_versions.json"
       - name: check something
-        run: ls ./api_docs
+        run: |
+          echo "CHECKING SOMETHING"
+          pwd
+          ls .
       - name: check Website api docs
         run: |
+          echo "CHECKIN SOMETHING 2"
           ls ${GITHUB_REPOSITORY#*/}/docs/_api/scala-[0-9].[0-9][0-9]
           less ${GITHUB_REPOSITORY#*/}/docs/_data/api_versions.json
       - name: something else2
