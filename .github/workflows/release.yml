@@ -12,6 +12,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install colorized-logs
       - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
       - name: Generate API Doc
         run: sbt doc
       - name: Make API Doc directory outside repository
@@ -42,6 +44,7 @@ jobs:
           git add docs/_api/.
           git add docs/_data/update_json_api_versions.py
           git commit -m "[RELEASE] Update doc version from branch \"$GITHUB_REF\" commit \"$GITHUB_REF\""
+          git push
 
 #      - name: something else3
 #        run: ls ../
