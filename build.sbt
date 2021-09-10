@@ -63,7 +63,7 @@ Test / scalastyleConfig := baseDirectory.value / "scalastyle-test-config.xml"
 publishTo := sonatypePublishToBundle.value
 sonatypeCredentialHost := "s01.oss.sonatype.org"
 sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
-sonatypeBundleDirectory := baseDirectory.value / target.value.getName / "sonatype-staging" / s"scala-${scalaBinaryVersion.value}" / version.value
+//sonatypeBundleDirectory := baseDirectory.value / target.value.getName / "sonatype-staging" / s"scala-${scalaBinaryVersion.value}" / version.value
 
 
 crossPaths := true
