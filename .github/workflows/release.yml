@@ -41,6 +41,7 @@ jobs:
           echo "${{ github.event.GITHUB_SHA }}"
           echo "$GITHUB_REF"
           echo "${{ github.event.GITHUB_REF }}"
+          GITHUB_ACTOR
           git add docs/_api/.
           git add docs/_data/api_versions.json
           git commit -m "[RELEASE] Update doc version from branch \"$GITHUB_REF\" commit \"$GITHUB_REF\""
