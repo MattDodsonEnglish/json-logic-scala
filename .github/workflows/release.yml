@@ -18,14 +18,10 @@ jobs:
         run: mkdir -p ../api_docs
       - name: Move API Docs to outside directory
         run: |
-          (sbt version | ascii2uni -q -a U | tail -n2 | head -n1 | grep -Po '(?<=nfo\] )(.+)')
-          (sbt version | uni2ascii -q -a U | tail -n2 | head -n1 | grep -Po '(?<=nfo\] )(.+)')
           echo "SCALA_VERSIONS"
           echo "$scala_versions"
           echo "API_VERSION"
           echo "$api_version"
-          u=$(echo "$api_version" | grep -Po '(?<=\[info\] )(.+)')
-          echo "$u"
           cp .workflow-scripts/move_scala_docs.sh ../api_docs/
           cp .workflow-scripts/update_json_api_versions.py ../api_docs/
           echo "scala_versions=$scala_versions" >> $GITHUB_ENV
