@@ -7,20 +7,20 @@ jobs:
   publish-doc:
     runs-on: ubuntu-20.04
     steps:
-      - name: Install ascii2uni tool
+      - name: Install uni2ascii tool
         run: |
           sudo apt-get update
           sudo apt-get install uni2ascii
       - uses: actions/checkout@v2
-      - name: Generate API Doc
-        run: sbt doc
+#      - name: Generate API Doc
+#        run: sbt doc
       - name: Make API Doc directory outside repository
         run: mkdir -p ../api_docs
       - name: Move API Docs to outside directory
         run: |
-          source .workflow-scripts/put_scala_docs_aside.sh ./target ../api_docs
-          (sbt version | ascii2uni | tail -n2 | head -n1 | sed 's/\[info] //')
-          (sbt version | uni2ascii | tail -n2 | head -n1 | sed 's/\[info] //')
+#          source .workflow-scripts/put_scala_docs_aside.sh ./target ../api_docs
+          (sbt version | ascii2uni | tail -n2 | head -n1)
+          (sbt version | uni2ascii | tail -n2 | head -n1)
           echo "SCALA_VERSIONS"
           echo "$scala_versions"
           echo "API_VERSION"
