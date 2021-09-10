@@ -13,7 +13,7 @@ developers := List(Developer(
 
 licenses += ("MIT", url("https://mit-license.org/"))
 
-version := "1.9.11-SNAPSHOT"
+version := "1.9.14"
 
 scalaVersion := "2.13.2"
 
@@ -39,6 +39,8 @@ libraryDependencies ++= Seq(
     "org.scalatest" %% "scalatest" % "3.2.9" % Test
 )
 
+versionScheme := Some("early-semver")
+
 scalacOptions ++= Seq(
   "-encoding",
   "utf8",
@@ -60,11 +62,10 @@ Test / testOptions += Tests.Argument("-oGK")
 Test / scalastyleConfig := baseDirectory.value / "scalastyle-test-config.xml"
 
 // Publishing stuff for sonatype
+sonatypeBundleDirectory := baseDirectory.value / target.value.getName / s"scala-${scalaBinaryVersion.value}" / "sonatype-staging" / version.value
 publishTo := sonatypePublishToBundle.value
 sonatypeCredentialHost := "s01.oss.sonatype.org"
 sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
-//sonatypeBundleDirectory := baseDirectory.value / target.value.getName / "sonatype-staging" / s"scala-${scalaBinaryVersion.value}" / version.value
-
 
 crossPaths := true
 
