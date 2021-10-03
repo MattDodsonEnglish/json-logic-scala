@@ -1,24 +1,29 @@
+// Copyright 2019 celadari. All rights reserved. MIT license.
 package com.celadari.jsonlogicscala.evaluate
 
 import java.lang.reflect.Method
 import scala.collection.mutable
 
 
+/**
+ * Companion object that defines utility function to find minimum (class inheritance as partial order) classes
+ * among set of classes.
+ */
 object MethodSignatureFinder {
 
   /**
-   * Returns minimum super-classes of classOb
+   * Returns minimum super-classes of classOb among set of classes.
    * @example A   B     C
    *         / \ / \  /
    *        D   E   F
    *            \  /
    *             G
    *     maxMins of G is Set(E,F)
-   * @param classObj
-   * @param classesToScan
-   * @return
+   * @param classObj: class to find minimum super-classes of.
+   * @param classesToScan: set of classes to consider for minimums search.
+   * @return set of minimum super-classes of classOb.
    */
-  def maxMins(classObj: Class[_], classesToScan: Set[Class[_]]): Set[Class[_]] = {
+  def minsSup(classObj: Class[_], classesToScan: Set[Class[_]]): Set[Class[_]] = {
     // retrieve super classes of classObj
     val closeClasses = mutable.Set[Class[_]]()
     closeClasses ++= classesToScan.filter(_.isAssignableFrom(classObj))
@@ -35,7 +40,14 @@ object MethodSignatureFinder {
     closests.toSet
   }
 
-  def maxs(classObjs: Set[Class[_]]): Set[Class[_]] = {
+  /**
+   * Returns minimum classes among set of classes.
+   * @example class A, class B extends A, class C, class D extends B, trait E, class F extends B with E, class G extends B with E
+   *          then result is set {class C, class D, class F, class G}
+   * @param classObjs: set of classes to look for minimums.
+   * @return set of minimums.
+   */
+  def mins(classObjs: Set[Class[_]]): Set[Class[_]] = {
     val visitedClasses = mutable.Set[Class[_]]()
     val toVisitClasses = mutable.Stack[Class[_]]() ++ classObjs
 
@@ -46,10 +58,18 @@ object MethodSignatureFinder {
     visitedClasses.toSet
   }
 
-  def maxMinsAndCastedValues(values: Array[Any], classesToScan: Set[Class[_]]): (Set[Class[_]], Array[Any]) = {
+  /**
+   * Returns tuple of (set of classes, array).
+   * Set of classes corresponds to set of minimum classes of common ancestor class of all elements in values.
+   * Returned array is values whose elements are casted as common ancestor.
+   * @param values: array to look for element's common ancestor.
+   * @param classesToScan: set of classes to consider for minimums search.
+   * @return tuple of (minimum_classes, casted_values).
+   */
+  def minsSupAndCastedValues(values: Array[Any], classesToScan: Set[Class[_]]): (Set[Class[_]], Array[Any]) = {
     // check different types of arrClassObj
     val arrClassObj = values.map(_.getClass)
-    val parentClasses = maxs(arrClassObj.toSet)
+    val parentClasses = mins(arrClassObj.toSet)
     val parentClass = if (parentClasses.size >= 2) classOf[java.lang.Object] else parentClasses.head
 
     // retrieve assignable classes of values
@@ -57,11 +77,19 @@ object MethodSignatureFinder {
     val parentArrClass = parentArr.getClass
     for (idx <- values.indices) java.lang.reflect.Array.set(parentArr, idx, values(idx))
 
-    (maxMins(parentArrClass, classesToScan), parentArr.asInstanceOf[Array[Any]])
+    (minsSup(parentArrClass, classesToScan), parentArr.asInstanceOf[Array[Any]])
   }
 
 }
 
+
+/**
+ * Responsible for finding paths of a compatible classes in case there exists multiple overloaded method versions
+ * of operator's method.
+ * @example
+ * overloaded_method(int, int): int
+ *
+ */
 class MethodSignatureFinder(
                              val conditionsValues: Array[Any],
                              val confMethod: MethodConf
@@ -81,6 +109,13 @@ class MethodSignatureFinder(
     paths ++= classMethods.map(method => Array((method, valueClassMethods.nonEmpty)))
   }
 
+  /**
+   * Returns set of overloaded methods that are compatible with value1 and value2Opt (if defined) as input.
+   * @param ownerMethod: object the methods belong to.
+   * @param value1: first input to search for compatibility among overloaded methods.
+   * @param value2Opt: second input to search for compatibility among overloaded methods.
+   * @return set of overloaded methods.
+   */
   protected[this] def findFirstMethods(ownerMethod: Any, value1: Any, value2Opt: Option[Any]): Set[Method] = {
     ownerMethod
       .getClass
@@ -122,6 +157,10 @@ class MethodSignatureFinder(
     classMethods.map(method => path ++ Array((method, valueClassMethods.nonEmpty)))
   }
 
+  /**
+   * Triggers search for compatible paths with "conditionsValues" and "confMethod".
+   * @return set of compatible paths.
+   */
   def eval(): Unit = {
     while (conditionsValuesEval.nonEmpty) {
       val value = conditionsValuesEval.pop()
@@ -153,6 +192,11 @@ class MethodSignatureFinder(
     }
   }
 
+  /**
+   * Returns set of optimized compatible paths with "conditionsValues" and "confMethod".
+   * If search has not yet been triggered, it is triggered, otherwise returns cached value.
+   * @return set of compatible paths.
+   */
   def findPaths(): Set[Array[(Method, Boolean)]] = {
     if (!isEvaluated) {
       eval()

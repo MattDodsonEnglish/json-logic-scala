@@ -1,3 +1,5 @@
+// Copyright 2019 celadari. All rights reserved. MIT license.
+
 name := "json-logic-scala"
 
 organization := "com.celadari"

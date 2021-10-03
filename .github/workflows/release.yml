@@ -1,3 +1,4 @@
+# Copyright 2019 celadari. All rights reserved. MIT license.
 name: Publish documentation to project website and Package to Maven Central Repository
 on:
 #  release:
