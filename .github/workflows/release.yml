@@ -51,10 +51,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: [publish-doc]
     steps:
-      - name: Install gpg secret key
-        run: |
-          cat <(echo -e "${{ secrets.SONATYPE_GPG_SECRET_KEY }}") | gpg --batch --import
-          gpg --list-secret-keys --keyid-format LONG
+#      - name: Install gpg secret key
+#        run: |
+#          cat <(echo -e "${{ secrets.SONATYPE_GPG_SECRET_KEY }}") | gpg --batch --import
+#          gpg --list-secret-keys --keyid-format LONG
       - uses: actions/checkout@v2
       - name: Set up Java
         uses: actions/setup-java@v2
@@ -63,8 +63,8 @@ jobs:
           distribution: 'adopt'
       - name: Publish package
         run: |
-          sbt +publishSigned
-          sbt +sonatypeBundleRelease
+#          sbt +publishSigned
+#          sbt +sonatypeBundleRelease
         env:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
