@@ -1,9 +1,8 @@
 # Copyright 2019 celadari. All rights reserved. MIT license.
 name: Publish documentation to project website and Package to Maven Central Repository
 on:
-#  release:
-#    types: [created]
-  [push]
+  release:
+    types: [created]
 jobs:
   publish-doc:
     runs-on: ubuntu-20.04
@@ -24,9 +23,7 @@ jobs:
           source .workflow-scripts/put_scala_docs_aside.sh ./target ../api_docs
           cp .workflow-scripts/move_scala_docs.sh ../api_docs/
           cp .workflow-scripts/update_json_api_versions.py ../api_docs/
-          echo "$scala_versions"
           echo "scala_versions=$scala_versions" >> $GITHUB_ENV
-          echo "$api_version"
           echo "api_version=$api_version" >> $GITHUB_ENV
       - name: Git checkout on gh-pages
         run:  |
@@ -51,21 +48,20 @@ jobs:
     runs-on: ubuntu-latest
     needs: [publish-doc]
     steps:
-      - run: echo "Hi"
-#      - name: Install gpg secret key
-#        run: |
-#          cat <(echo -e "${{ secrets.SONATYPE_GPG_SECRET_KEY }}") | gpg --batch --import
-#          gpg --list-secret-keys --keyid-format LONG
+      - name: Install gpg secret key
+        run: |
+          cat <(echo -e "${{ secrets.SONATYPE_GPG_SECRET_KEY }}") | gpg --batch --import
+          gpg --list-secret-keys --keyid-format LONG
       - uses: actions/checkout@v2
       - name: Set up Java
         uses: actions/setup-java@v2
         with:
           java-version: '11'
           distribution: 'adopt'
-#      - name: Publish package
-#        run: |
-#          sbt +publishSigned
-#          sbt +sonatypeBundleRelease
-#        env:
-#          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-#          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+      - name: Publish package
+        run: |
+          sbt +publishSigned
+          sbt +sonatypeBundleRelease
+        env:
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
