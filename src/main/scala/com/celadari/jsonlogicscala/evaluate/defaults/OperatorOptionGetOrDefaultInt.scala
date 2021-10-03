@@ -9,12 +9,12 @@ object OperatorOptionGetOrDefaultInt extends UnaryOperator {
 
   /**
    * Returns int value from Option.
-   * Returns value itself if value is an [[Int]].
-   * Returns 0 if provided [[None]] input value.
+   * Returns value itself if value is an Int.
+   * Returns 0 if provided None input value.
    * @param value: value operator operates on.
    * @return int.
    * @note throws an [[com.celadari.jsonlogicscala.exceptions.IllegalInputException]] if input is neither an
-   *       [[Option[Int ] ]] nor a [[Int]] type.
+   *       Option[Int]  nor a Int type.
    */
   def unaryOperator(value: Any): Any = {
     value match {

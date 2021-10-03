@@ -22,7 +22,7 @@ object EvaluatorValueLogic {
  *
  *                AND
  *             /       \
- *           =         <
+ *           <         <
  *         /   \      / \
  *        A     5    B  -4
  *
@@ -31,7 +31,7 @@ object EvaluatorValueLogic {
  *
  *                AND
  *             /       \
- *           =         <
+ *           <         <
  *         /   \      / \
  *        A     5    B   4
  */

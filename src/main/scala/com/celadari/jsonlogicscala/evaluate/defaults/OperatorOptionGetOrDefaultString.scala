@@ -9,12 +9,12 @@ object OperatorOptionGetOrDefaultString extends UnaryOperator {
 
   /**
    * Returns string value from Option.
-   * Returns value itself if value is a [[String]].
-   * Returns empty string if provided [[None]] input value.
+   * Returns value itself if value is a String.
+   * Returns empty string if provided None input value.
    * @param value: value operator operates on.
    * @return string.
    * @note throws an [[com.celadari.jsonlogicscala.exceptions.IllegalInputException]] if input is neither an
-   *       [[Option[String ] ]] nor a [[String]] type.
+   *       Option[String] nor a String type.
    */
   def unaryOperator(value: Any): Any = {
     value match {

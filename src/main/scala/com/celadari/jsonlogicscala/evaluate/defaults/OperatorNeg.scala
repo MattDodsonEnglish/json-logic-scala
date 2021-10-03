@@ -11,7 +11,7 @@ object OperatorNeg extends UnaryOperator {
    * Returns negation value of boolean.
    * @param value: value operator operates on.
    * @return negated value.
-   * @note throws an [[com.celadari.jsonlogicscala.exceptions.IllegalInputException]] if input is not a [[Boolean]] type.
+   * @note throws an [[com.celadari.jsonlogicscala.exceptions.IllegalInputException]] if input is not a Boolean type.
    */
   def unaryOperator(value: Any): Any = {
     value match {

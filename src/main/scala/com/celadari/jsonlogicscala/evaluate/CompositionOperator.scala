@@ -31,8 +31,8 @@ object CompositionOperator {
      * [[com.celadari.jsonlogicscala.tree.VariableLogic]] object.
      * @param jsonLogicCore: current traversed node.
      * @param parentComposeLogicOperatorOpt: last traversed composition operator.
-     * @return [[JsonLogicCore]] with [[com.celadari.jsonlogicscala.tree.VariableLogic]] for nodes representing
-     *         variable from composition operators.
+     * @return [[com.celadari.jsonlogicscala.tree.JsonLogicCore]] with
+     *         [[com.celadari.jsonlogicscala.tree.VariableLogic]] for nodes representing variable from composition operators.
      */
     protected[this] def traverse(jsonLogicCore: JsonLogicCore, parentComposeLogicOperatorOpt: Option[ComposeLogic]): JsonLogicCore = {
       try {

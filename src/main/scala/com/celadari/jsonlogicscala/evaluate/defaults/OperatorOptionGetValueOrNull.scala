@@ -8,7 +8,7 @@ object OperatorOptionGetValueOrNull extends UnaryOperator {
 
   /**
    * Returns value from Option.
-   * Returns value itself if value is not a [[Option[_] ]].
+   * Returns value itself if value is not a Option[_].
    * @param value: value operator operates on.
    * @return value.
    */

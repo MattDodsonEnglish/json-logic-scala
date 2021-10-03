@@ -9,12 +9,12 @@ object OperatorOptionGetOrDefaultByte extends UnaryOperator {
 
   /**
    * Returns byte value from Option.
-   * Returns value itself if value is a [[Byte]].
-   * Returns 0 if provided [[None]] input value.
+   * Returns value itself if value is a Byte.
+   * Returns 0 if provided None input value.
    * @param value: value operator operates on.
    * @return byte.
    * @note throws an [[com.celadari.jsonlogicscala.exceptions.IllegalInputException]] if input is neither an
-   *       [[Option[Byte ] ]] nor a [[Byte]] type.
+   *       Option[Byte]  nor a Byte type.
    */
   def unaryOperator(value: Any): Any = {
     value match {
