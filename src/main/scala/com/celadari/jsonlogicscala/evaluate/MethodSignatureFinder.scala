@@ -87,8 +87,23 @@ object MethodSignatureFinder {
  * Responsible for finding paths of a compatible classes in case there exists multiple overloaded method versions
  * of operator's method.
  * @example
- * overloaded_method(int, int): int
+ * class A, class B extends A
+ * conditionsValues(a, b, c) (a object of A, b object of B, c object of C)
+ * overloaded methods have the following signatures:
+ * overloaded_method(A, A): B
+ * overloaded_method(A, B): A
+ * overloaded_method(A, C): D
+ * overloaded_method(A, D): A
+ * overloaded_method(B, A): A
+ * overloaded_method(B, C): A
+ * overloaded_method(D, C): A
  *
+ * then compatible paths are
+ * Array((overloaded_method(A, A): B), (overloaded_method(B, C): A))
+ * Array((overloaded_method(A, B): A), (overloaded_method(A, C): D))
+ *
+ * This search is used on reduce type operators as conditions might not be the same type and which overloaded method
+ * to be applied must be found before evaluation.
  */
 class MethodSignatureFinder(
                              val conditionsValues: Array[Any],
@@ -99,6 +114,11 @@ class MethodSignatureFinder(
   protected[this] var paths: Set[Array[(Method, Boolean)]] = Set()
   initializePaths()
 
+  /**
+   * Initiates parameters values before paths search.
+   * Required as first search compares classes/types of "conditionsValues"'s first element and second element while
+   * next searches compares classes/types of last element of "paths" and current element of "conditionsValues".
+   */
   protected[this] def initializePaths(): Unit = {
     val condValueEval1 = conditionsValuesEval.pop()
     val condValueEval2Opt = if (conditionsValuesEval.headOption.nonEmpty) Some(conditionsValuesEval.pop()) else None
@@ -133,6 +153,14 @@ class MethodSignatureFinder(
       .toSet
   }
 
+  /**
+   * Returns set of overloaded methods of "objClass" that are compatible with return type of the last method
+   * of "path" and "value" as first and second input.
+   * @param objClass: object overloaded methods belong to.
+   * @param value: value to check class/type's compatibility with overloaded methods signature.
+   * @param path: array to check last element's class/type compatibility with overloaded methods signature.
+   * @return set of overloaded methods.
+   */
   protected[this] def filterExplorable(objClass: Class[_], value: Any, path: Array[(Method, Boolean)]): Set[Method] = {
     val valueClass = value.getClass
 
@@ -147,6 +175,16 @@ class MethodSignatureFinder(
       })
   }
 
+  /**
+   * Returns set of paths.
+   * Set of paths corresponds to the different possible paths that extend "path" by adding an overloaded method
+   * compatible with "path"'s last element (class/type is [[com.celadari.jsonlogicscala.evaluate.MethodConf]]) return
+   * type as first input and value as second input.
+   * @param value: value to check class/type's compatibility with overloaded methods signature.
+   * @param ownerMethodOpt: object overloaded methods belong to.
+   * @param path: array of methods to be extended.
+   * @return set of compatible paths.
+   */
   protected[this] def explorePath(
                                  value: Any,
                                  ownerMethodOpt: Option[Class[_]],
@@ -170,6 +208,20 @@ class MethodSignatureFinder(
     isEvaluated = true
   }
 
+  /**
+   * Optimizes found paths by removing a path if there exists another path with a method with sub-types input arguments.
+   * @example
+   * class A, class B extends A, class C, class D extends C, class E
+   * path1: Array((method(A, C), _), ...)
+   * path2: Array((method(A, D), _), ...)
+   * path3: Array((method(B, C), _), ...)
+   * path4: Array((method(B, D), _), ...)
+   * path5: Array((method(A, E), _), ...)
+   *
+   * optimized paths are
+   * path1: Array((method(B, D), _), ...)
+   * path5: Array((method(A, E), _), ...)
+   */
   def optimizePaths(): Unit = {
     val n = paths.headOption.map(_.length).getOrElse(0)
 
