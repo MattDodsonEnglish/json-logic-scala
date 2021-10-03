@@ -13,7 +13,7 @@ import com.celadari.jsonlogicscala.exceptions.ConfigurationException
 object ConfigurationFetcher {
 
   /**
-   * Returns boolean property from [[java.util.Properties]] object or else defaultValue.
+   * Returns boolean property from "java.util.Properties" object or else defaultValue.
    * @param key: key to look for in prop.
    * @param defaultValue: value to return is key doesn't exist in prop.
    * @param prop: configuration to look key into.
