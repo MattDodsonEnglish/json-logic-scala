@@ -21,6 +21,12 @@ object OperatorIn extends Operator {
     }
   }
 
+  /**
+   * Returns boolean if element is in array.
+   * First condition is value to look if is inside array, second condition is array.
+   * @param values: conditions.
+   * @return true if element in array, false otherwise.
+   */
   def in(values: Array[java.lang.Object]): java.lang.Boolean = {
 
     if (values.length != 2) {
@@ -33,6 +39,12 @@ object OperatorIn extends Operator {
     list.contains(value)
   }
 
+  /**
+   * Returns boolean if element is in string.
+   * First condition is substring to look if is inside string, second condition is string.
+   * @param values: conditions.
+   * @return true if element is substring of string, false otherwise.
+   */
   def in(values: Array[java.lang.String]): java.lang.Boolean = {
 
     if (values.length != 2) {

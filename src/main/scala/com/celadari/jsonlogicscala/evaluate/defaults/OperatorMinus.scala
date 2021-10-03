@@ -4,6 +4,9 @@ package com.celadari.jsonlogicscala.evaluate.defaults
 import com.celadari.jsonlogicscala.evaluate.Operator
 
 
+/**
+ * Operator that subtracts two numbers.
+ */
 object OperatorMinus extends Operator {
 
   def $minus(num1: java.lang.Byte, num2: java.lang.Byte): java.lang.Integer = num1 - num2

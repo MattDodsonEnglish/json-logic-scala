@@ -7,6 +7,12 @@ import com.celadari.jsonlogicscala.exceptions.{IllegalInputException, WrongNumbe
 
 object OperatorAt extends Operator {
 
+  /**
+   * Returns value at given position inside array.
+   * First condition is index to look at, second condition is array to be applied index.
+   * @param values: conditions.
+   * @return selected element from array.
+   */
   def at(values: Array[Any]): Any = {
 
     if (values.length != 2) {

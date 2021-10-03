@@ -4,6 +4,9 @@ package com.celadari.jsonlogicscala.evaluate.defaults
 import com.celadari.jsonlogicscala.evaluate.Operator
 
 
+/**
+ * Operator that exponentiates two numbers.
+ */
 object OperatorPow extends Operator {
 
   private[defaults] def pow(num1: java.lang.Integer, num2: java.lang.Integer): java.lang.Integer = {

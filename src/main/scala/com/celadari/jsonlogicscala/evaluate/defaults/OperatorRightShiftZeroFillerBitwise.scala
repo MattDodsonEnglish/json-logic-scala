@@ -4,6 +4,9 @@ package com.celadari.jsonlogicscala.evaluate.defaults
 import com.celadari.jsonlogicscala.evaluate.Operator
 
 
+/**
+ * Reduce type operator of Bitwise RIGHT SHIFT with zeros >>>.
+ */
 object OperatorRightShiftZeroFillerBitwise extends Operator {
 
   def $greater$greater$greater(num1: java.lang.Byte, num2: java.lang.Byte): java.lang.Integer = num1 >>> num2.toInt

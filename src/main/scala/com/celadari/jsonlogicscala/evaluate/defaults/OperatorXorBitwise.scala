@@ -4,6 +4,9 @@ package com.celadari.jsonlogicscala.evaluate.defaults
 import com.celadari.jsonlogicscala.evaluate.Operator
 
 
+/**
+ * Reduce type operator of Bitwise XOR.
+ */
 object OperatorXorBitwise extends Operator {
 
   def $up(num1: java.lang.Byte, num2: java.lang.Byte): java.lang.Integer = num1 ^ num2

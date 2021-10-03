@@ -7,6 +7,15 @@ import com.celadari.jsonlogicscala.exceptions.IllegalInputException
 
 object OperatorOptionGetOrDefaultShort extends UnaryOperator {
 
+  /**
+   * Returns short value from Option.
+   * Returns value itself if value is a [[Short]].
+   * Returns 0 if provided [[None]] input value.
+   * @param value: value operator operates on.
+   * @return short.
+   * @note throws an [[com.celadari.jsonlogicscala.exceptions.IllegalInputException]] if input is neither an
+   *       [[Option[Short ] ]] nor a [[Short]] type.
+   */
   def unaryOperator(value: Any): Any = {
     value match {
       case Some(s) => {
